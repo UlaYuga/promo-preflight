@@ -1,0 +1,444 @@
+- generic [ref=e1]:
+  - generic:
+    - alert
+  - generic:
+    - complementary:
+      - generic:
+        - generic:
+          - paragraph: Preflight
+        - paragraph: Internal ops workspace
+      - navigation "Workspace":
+        - button "01 Campaigns G C":
+          - generic: "01"
+          - generic: Campaigns
+          - generic:
+            - generic: G C
+        - button "02 Intake G I":
+          - generic: "02"
+          - generic: Intake
+          - generic:
+            - generic: G I
+        - button "03 Risk Report G R":
+          - generic: "03"
+          - generic: Risk Report
+          - generic:
+            - generic: G R
+        - button "04 Handoff G H":
+          - generic: "04"
+          - generic: Handoff
+          - generic:
+            - generic: G H
+        - button "05 Launch Readiness G L":
+          - generic: "05"
+          - generic: Launch Readiness
+          - generic:
+            - generic: G L
+        - button "06 Rules G U":
+          - generic: "06"
+          - generic: Rules
+          - generic:
+            - generic: G U
+        - button "07 Owners G O":
+          - generic: "07"
+          - generic: Owners
+          - generic:
+            - generic: G O
+      - generic:
+        - button "Search and commands ⌘K":
+          - img
+          - generic: Search and commands
+          - generic: ⌘K
+        - generic:
+          - generic: M
+          - generic:
+            - paragraph: Maya Chen
+            - paragraph: Product
+    - generic:
+      - banner:
+        - generic:
+          - generic:
+            - generic: Engine unavailable
+          - generic:
+            - generic "Language":
+              - button "EN"
+              - button "RU"
+            - button "Search ⌘K":
+              - img
+              - generic: Search
+              - generic: ⌘K
+            - button "Run check ↵":
+              - img
+              - text: Run check
+              - generic: ↵
+      - main:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - paragraph: Campaign bundle
+                  - heading "Campaign bundle" [level=2]
+                  - paragraph: Add campaign facts, channel copy, terms, links, and owner status before running the check.
+                - button "Sample cases":
+                  - img
+                  - text: Sample cases
+            - generic:
+              - article:
+                - generic:
+                  - heading "Campaign metadata" [level=3]
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: Campaign name
+                      - generic: "*"
+                    - textbox "Campaign name *": Operator X BR Welcome
+                  - generic:
+                    - generic:
+                      - generic: Operator label
+                    - textbox "Operator label":
+                      - /placeholder: Operator A
+                      - text: Operator X
+                  - generic:
+                    - generic:
+                      - generic: Promo type
+                      - generic: "*"
+                    - combobox "Promo type *":
+                      - option "Select type"
+                      - option "Welcome" [selected]
+                      - option "Reload"
+                      - option "Freebet"
+                      - option "Cashback"
+                      - option "Tournament"
+                      - option "Loyalty"
+                      - option "Reactivation"
+                  - generic:
+                    - generic:
+                      - generic: GEO / jurisdiction
+                      - generic: "*"
+                    - combobox "GEO / jurisdiction *":
+                      - option "Select jurisdiction"
+                      - option "BR" [selected]
+                      - option "EU"
+                      - option "CIS"
+                      - option "Curacao"
+                      - option "Other"
+                  - generic:
+                    - generic:
+                      - generic: Language / locale
+                      - generic: "*"
+                    - textbox "Language / locale *":
+                      - /placeholder: en-GB
+                      - text: pt-BR
+                  - generic:
+                    - generic:
+                      - generic: Currency
+                    - textbox "Currency":
+                      - /placeholder: EUR
+                      - text: BRL
+                  - generic:
+                    - generic:
+                      - generic: Launch date
+                    - textbox "Launch date": 2026-06-10
+                  - generic:
+                    - generic:
+                      - generic: Channels included
+                    - generic:
+                      - generic:
+                        - checkbox "Email" [checked]
+                        - text: Email
+                      - generic:
+                        - checkbox "Push"
+                        - text: Push
+                      - generic:
+                        - checkbox "Onsite"
+                        - text: Onsite
+                      - generic:
+                        - checkbox "Landing" [checked]
+                        - text: Landing
+                      - generic:
+                        - checkbox "SMS"
+                        - text: SMS
+                      - generic:
+                        - checkbox "In-app"
+                        - text: In-app
+              - article:
+                - generic:
+                  - heading "Offer basics" [level=3]
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: Min deposit
+                    - spinbutton "Min deposit": "30"
+                  - generic:
+                    - generic:
+                      - generic: Bonus amount
+                    - spinbutton "Bonus amount"
+                  - generic:
+                    - generic:
+                      - generic: Bonus percentage
+                    - spinbutton "Bonus percentage": "100"
+                  - generic:
+                    - generic:
+                      - generic: Max bonus
+                    - spinbutton "Max bonus": "300"
+                  - generic:
+                    - generic:
+                      - generic: Wagering requirement
+                    - textbox "Wagering requirement": 35x bonus
+                  - generic:
+                    - generic:
+                      - generic: Max cashout
+                    - spinbutton "Max cashout": "900"
+                  - generic:
+                    - generic:
+                      - generic: Max bet
+                    - spinbutton "Max bet"
+                  - generic:
+                    - generic:
+                      - generic: Cooldown
+                    - textbox "Cooldown"
+                  - generic:
+                    - generic:
+                      - generic: Eligible games
+                    - textbox "Eligible games"
+                  - generic:
+                    - generic:
+                      - generic: Contribution
+                    - textbox "Contribution"
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Eligibility rules
+                      - textbox "Eligibility rules"
+              - article:
+                - generic:
+                  - heading "Copy and assets" [level=3]
+                  - paragraph: T&C is required. Add at least one Email, Push, or Onsite copy field.
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: T&C text
+                        - generic: "*"
+                      - textbox "T&C text * 137/50000": "Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new users only. Valid until 30 June 2026."
+                      - generic: 137/50000
+                  - generic:
+                    - generic:
+                      - generic: Email subject
+                    - textbox "Email subject 39/120": "Oferta de boas-vindas: 100% ate 300 BRL"
+                    - generic: 39/120
+                  - generic:
+                    - generic:
+                      - generic: Email body
+                    - textbox "Email body 0/4000"
+                    - generic: 0/4000
+                  - generic:
+                    - generic:
+                      - generic: Push title
+                    - textbox "Push title 0/80"
+                    - generic: 0/80
+                  - generic:
+                    - generic:
+                      - generic: Push body
+                    - textbox "Push body 0/240"
+                    - generic: 0/240
+                  - generic:
+                    - generic:
+                      - generic: Onsite banner copy
+                    - textbox "Onsite banner copy 0/500"
+                    - generic: 0/500
+                  - generic:
+                    - generic:
+                      - generic: Landing page hero / CTA
+                    - textbox "Landing page hero / CTA 26/1000": Oferta de boas-vindas hoje
+                    - generic: 26/1000
+                  - generic:
+                    - generic:
+                      - generic: SMS copy
+                    - textbox "SMS copy 0/320"
+                    - generic: 0/320
+                  - generic:
+                    - generic:
+                      - generic: In-app copy
+                    - textbox "In-app copy 0/1000"
+                    - generic: 0/1000
+              - article:
+                - generic:
+                  - heading "Links" [level=3]
+                - generic:
+                  - generic:
+                    - paragraph: Link QA
+                    - paragraph: CTA URL for Link QA
+                  - generic:
+                    - checkbox "Enabled" [checked]
+                    - text: Enabled
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: CTA URL
+                      - generic: "*"
+                    - textbox "CTA URL *":
+                      - /placeholder: https://example.internal/offer
+                      - text: https://example.com/br-welcome?utm_source=email&utm_medium=crm&utm_campaign=br_welcome
+                  - generic:
+                    - generic:
+                      - generic: Landing URL
+                    - textbox "Landing URL":
+                      - /placeholder: https://example.internal/landing
+                  - generic:
+                    - generic:
+                      - generic: Deep link
+                    - textbox "Deep link":
+                      - /placeholder: app://promo/example
+                  - generic:
+                    - generic:
+                      - generic: UTM parameters
+                    - textbox "UTM parameters":
+                      - /placeholder: utm_source=crm&utm_campaign=...
+              - article:
+                - generic:
+                  - heading "Owners" [level=3]
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Product owner
+                      - textbox "Product owner":
+                        - /placeholder: Name or team
+                    - generic:
+                      - generic:
+                        - generic: Product owner status
+                      - combobox "Product owner status":
+                        - option "Pending"
+                        - option "Approved" [selected]
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: CRM owner
+                      - textbox "CRM owner":
+                        - /placeholder: Name or team
+                    - generic:
+                      - generic:
+                        - generic: CRM owner status
+                      - combobox "CRM owner status":
+                        - option "Pending"
+                        - option "Approved" [selected]
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Legal owner
+                      - textbox "Legal owner":
+                        - /placeholder: Name or team
+                    - generic:
+                      - generic:
+                        - generic: Legal owner status
+                      - combobox "Legal owner status":
+                        - option "Pending"
+                        - option "Approved" [selected]
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Risk owner
+                      - textbox "Risk owner":
+                        - /placeholder: Name or team
+                    - generic:
+                      - generic:
+                        - generic: Risk owner status
+                      - combobox "Risk owner status":
+                        - option "Pending"
+                        - option "Approved" [selected]
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Localization owner
+                      - textbox "Localization owner":
+                        - /placeholder: Name or team
+                    - generic:
+                      - generic:
+                        - generic: Localization owner status
+                      - combobox "Localization owner status":
+                        - option "Pending"
+                        - option "Approved" [selected]
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Analytics owner
+                      - textbox "Analytics owner":
+                        - /placeholder: Name or team
+                    - generic:
+                      - generic:
+                        - generic: Analytics owner status
+                      - combobox "Analytics owner status":
+                        - option "Pending"
+                        - option "Approved" [selected]
+                        - option "Blocked"
+                        - option "Not required"
+              - article:
+                - generic:
+                  - heading "Notes" [level=3]
+                - generic:
+                  - generic:
+                    - generic: Internal launch notes
+                  - textbox "Internal launch notes 57/5000": Synthetic BR welcome sample for the desktop product tour.
+                  - generic: 57/5000
+          - complementary:
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic:
+                  - heading "Save" [level=3]
+                  - paragraph: Draft saved.
+            - generic:
+              - generic:
+                - heading "Required fields are filled." [level=3]
+                - generic: 7/7
+              - generic:
+                - generic:
+                  - img
+                  - generic: Campaign name
+                - generic:
+                  - img
+                  - generic: Promo type
+                - generic:
+                  - img
+                  - generic: GEO / jurisdiction
+                - generic:
+                  - img
+                  - generic: Language / locale
+                - generic:
+                  - img
+                  - generic: T&C text
+                - generic:
+                  - img
+                  - generic: At least one Email, Push, or Onsite asset
+                - generic:
+                  - img
+                  - generic: CTA URL for Link QA
+            - generic:
+              - heading "Run check" [level=3]
+              - paragraph: Required fields are filled.
+              - button "Run check" [expanded] [ref=e315] [cursor=pointer]:
+                - img [ref=e316]
+                - text: Run check
+  - img
+  - dialog "Run the 8-stage check" [ref=e319]:
+    - text: Product tour
+    - button "Skip" [active] [ref=e320] [cursor=pointer]
+    - banner [ref=e322]: Run the 8-stage check
+    - generic [ref=e323]: Preflight returns 8 stage results and shows where the campaign has PASS, WARN, or FAIL.
+    - contentinfo [ref=e324]:
+      - generic [ref=e325]: 03 / 13
+      - generic [ref=e326]:
+        - button "Back" [ref=e327] [cursor=pointer]
+        - button "Next" [ref=e328] [cursor=pointer]

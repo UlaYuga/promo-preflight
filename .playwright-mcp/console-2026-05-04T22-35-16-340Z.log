@@ -1,0 +1,29 @@
+[      14ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/app/campaigns/test-id-123:0
+[  369082ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/app/readiness:0
+[  371100ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/app/rules:0
+[  373116ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/app/owners:0
+[  375133ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/app/campaigns/test-123:0
+[  404325ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/app/readiness?_rsc=og1y3:0
+[  404335ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/app/readiness:0
+[  604902ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/app/campaigns/test-123:0
+[  606424ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/app/campaigns/test-123/versions/1:0
+[  826508ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/app/campaigns/nonexistent:0
+[  827834ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/app/campaigns/nonexistent/versions/1:0
+[  900729ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rX (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:47213)
+    at iu (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:98254)
+    at sd (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:138944)
+    at http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:133830
+    at se (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:133931)
+    at s$ (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:160495)
+    at MessagePort.O (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:8660)
+[  906019ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/app/campaigns/nonexistent:0
+[  907339ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/app/campaigns/nonexistent/versions/1:0
+[  910824ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rX (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:47213)
+    at iu (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:98254)
+    at sd (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:138944)
+    at http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:133830
+    at se (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:133931)
+    at s$ (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:160495)
+    at MessagePort.O (http://localhost:3000/_next/static/chunks/0n~dq4kpx9xxx.js:1:8660)

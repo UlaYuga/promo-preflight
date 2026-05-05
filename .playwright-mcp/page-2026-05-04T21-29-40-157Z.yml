@@ -1,0 +1,91 @@
+- generic [ref=e1]:
+  - main:
+    - generic:
+      - generic:
+        - generic "Language":
+          - button "EN"
+          - button "RU"
+      - generic:
+        - generic [ref=e9]:
+          - heading "Promo Preflight" [level=1] [ref=e10]:
+            - text: Promo
+            - text: Preflight
+          - paragraph [ref=e11]: Pre-launch checks for regulated promo campaigns
+          - paragraph [ref=e12]: Load a campaign bundle, run the check, review blockers, assign owners, prepare a handoff summary, and compare versions without changing the existing workflow.
+          - generic [ref=e13]:
+            - button "Start 90-second tour" [ref=e174] [cursor=pointer]:
+              - img [ref=e15]
+              - text: Start 90-second tour
+            - link "Open campaign bundle" [ref=e175] [cursor=pointer]:
+              - /url: /app/intake
+              - text: Open campaign bundle
+              - img [ref=e19]
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - img [ref=e23]
+              - text: Portfolio demo workspace.
+            - generic [ref=e28]: 8-stage check · 23 rules · 6 owners · EN/RU
+        - complementary:
+          - generic:
+            - generic:
+              - paragraph: Workflow at a glance
+              - heading "From loading a campaign bundle to comparing versions" [level=2]
+            - generic:
+              - img
+          - generic:
+            - generic:
+              - generic: "01"
+              - generic:
+                - paragraph: Load the campaign bundle
+                - paragraph: Metadata, offer math, T&C text, and channel copy
+              - img
+            - generic:
+              - generic: "02"
+              - generic:
+                - paragraph: Run the check
+                - paragraph: An 8-stage check runs against 23 rules
+              - img
+            - generic:
+              - generic: "03"
+              - generic:
+                - paragraph: Review blockers
+                - paragraph: Risk Report shows what blocks launch and who needs to act
+              - img
+            - generic:
+              - generic: "04"
+              - generic:
+                - paragraph: Prepare the handoff summary
+                - paragraph: Copy a short summary for Markdown or Slack
+              - img
+            - generic:
+              - generic: "05"
+              - generic:
+                - paragraph: Compare versions
+                - paragraph: See what changed between campaign versions
+              - img
+          - generic:
+            - generic:
+              - paragraph: "08"
+              - paragraph: check stages
+            - generic:
+              - paragraph: "23"
+              - paragraph: rules
+            - generic:
+              - paragraph: "06"
+              - paragraph: owners
+            - generic:
+              - paragraph: "02"
+              - paragraph: languages
+  - generic:
+    - alert
+  - dialog "Promo Preflight in 90 seconds" [ref=e241]:
+    - text: Product tour
+    - button "Skip" [active] [ref=e242] [cursor=pointer]
+    - banner [ref=e244]: Promo Preflight in 90 seconds
+    - generic [ref=e245]: "A workflow for regulated promo launches: campaign bundle, 8-stage check, Risk Report, readiness board, rules, owners, and version comparison."
+    - contentinfo [ref=e246]:
+      - generic [ref=e247]: 01 / 13
+      - generic [ref=e248]:
+        - button "Back" [disabled] [ref=e249]
+        - button "Next" [ref=e250] [cursor=pointer]
+  - img

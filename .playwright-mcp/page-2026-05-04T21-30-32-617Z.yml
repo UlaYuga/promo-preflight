@@ -1,0 +1,414 @@
+- generic [ref=e1]:
+  - generic:
+    - alert
+  - generic:
+    - complementary:
+      - generic:
+        - generic:
+          - paragraph: Preflight
+        - paragraph: Internal ops workspace
+      - navigation "Workspace":
+        - button "01 Campaigns G C":
+          - generic: "01"
+          - generic: Campaigns
+          - generic:
+            - generic: G C
+        - button "02 Intake G I":
+          - generic: "02"
+          - generic: Intake
+          - generic:
+            - generic: G I
+        - button "03 Risk Report G R":
+          - generic: "03"
+          - generic: Risk Report
+          - generic:
+            - generic: G R
+        - button "04 Handoff G H":
+          - generic: "04"
+          - generic: Handoff
+          - generic:
+            - generic: G H
+        - button "05 Launch Readiness G L":
+          - generic: "05"
+          - generic: Launch Readiness
+          - generic:
+            - generic: G L
+        - button "06 Rules G U":
+          - generic: "06"
+          - generic: Rules
+          - generic:
+            - generic: G U
+        - button "07 Owners G O":
+          - generic: "07"
+          - generic: Owners
+          - generic:
+            - generic: G O
+      - generic:
+        - button "Search and commands ⌘K":
+          - img
+          - generic: Search and commands
+          - generic: ⌘K
+        - generic:
+          - generic: M
+          - generic:
+            - paragraph: Maya Chen
+            - paragraph: Product
+    - generic:
+      - banner:
+        - generic:
+          - generic:
+            - generic: Engine unavailable
+          - generic:
+            - generic "Language":
+              - button "EN"
+              - button "RU"
+            - button "Search ⌘K":
+              - img
+              - generic: Search
+              - generic: ⌘K
+            - button "Run check ↵":
+              - img
+              - text: Run check
+              - generic: ↵
+      - main:
+        - generic:
+          - generic:
+            - generic:
+              - paragraph: Risk Report
+              - heading "Check results" [level=2]
+              - paragraph: Report for Operator X BR Welcome. Issues are grouped by severity and include suggested fixes and assigned owners.
+            - generic:
+              - generic: Saved report
+              - button "Save run":
+                - img
+                - text: Save run
+          - generic:
+            - generic:
+              - generic:
+                - paragraph: Overall status
+                - paragraph: FAIL
+              - generic:
+                - paragraph: Pass / warn / fail
+                - generic:
+                  - generic:
+                    - text: PASS
+                    - generic: "5"
+                  - generic:
+                    - text: WARN
+                    - generic: "1"
+                  - generic:
+                    - text: FAIL
+                    - generic: "2"
+              - generic:
+                - paragraph: Critical blockers
+                - paragraph: "0"
+              - generic:
+                - paragraph: Generated
+                - paragraph: May 5, 2026, 12:30 AM
+              - generic:
+                - generic:
+                  - paragraph: Export
+                  - generic:
+                    - button "Markdown" [pressed]:
+                      - img
+                      - text: Markdown
+                    - button "Slack":
+                      - img
+                      - text: Slack
+                    - button "Copy":
+                      - img
+                      - text: Copy
+                  - paragraph: Plain text, ready to copy.
+          - region "Check stages" [ref=e379]:
+            - heading "Check stages" [level=3] [ref=e380]
+            - article [ref=e381]:
+              - generic [ref=e382]:
+                - heading "Jurisdictional risk signals" [level=3] [ref=e383]
+                - generic [ref=e384]:
+                  - img [ref=e385]
+                  - text: FAIL
+              - paragraph [ref=e389]: Jurisdictional risk signals found high-risk wording or missing disclaimers.
+              - generic [ref=e390]:
+                - generic [ref=e391]:
+                  - term [ref=e392]: Severity
+                  - definition [ref=e393]: HIGH
+                - generic [ref=e394]:
+                  - term [ref=e395]: Issues
+                  - definition [ref=e396]: "3"
+                - generic [ref=e397]:
+                  - term [ref=e398]: Fixes
+                  - definition [ref=e399]: "3"
+                - generic [ref=e400]:
+                  - term [ref=e401]: Confidence
+                  - definition [ref=e402]: 85%
+            - article [ref=e403]:
+              - generic [ref=e404]:
+                - heading "Terms robustness" [level=3] [ref=e405]
+                - generic [ref=e406]:
+                  - img [ref=e407]
+                  - text: FAIL
+              - paragraph [ref=e411]: Terms robustness found missing or ambiguous restrictions.
+              - generic [ref=e412]:
+                - generic [ref=e413]:
+                  - term [ref=e414]: Severity
+                  - definition [ref=e415]: HIGH
+                - generic [ref=e416]:
+                  - term [ref=e417]: Issues
+                  - definition [ref=e418]: "3"
+                - generic [ref=e419]:
+                  - term [ref=e420]: Fixes
+                  - definition [ref=e421]: "3"
+                - generic [ref=e422]:
+                  - term [ref=e423]: Confidence
+                  - definition [ref=e424]: 79%
+            - article [ref=e425]:
+              - generic [ref=e426]:
+                - heading "Offer math sanity" [level=3] [ref=e427]
+                - generic [ref=e428]:
+                  - img [ref=e429]
+                  - text: WARN
+              - paragraph [ref=e431]: Offer math contains deterministic contradictions or warnings.
+              - generic [ref=e432]:
+                - generic [ref=e433]:
+                  - term [ref=e434]: Severity
+                  - definition [ref=e435]: MEDIUM
+                - generic [ref=e436]:
+                  - term [ref=e437]: Issues
+                  - definition [ref=e438]: "1"
+                - generic [ref=e439]:
+                  - term [ref=e440]: Fixes
+                  - definition [ref=e441]: "1"
+                - generic [ref=e442]:
+                  - term [ref=e443]: Confidence
+                  - definition [ref=e444]: 87%
+            - article [ref=e445]:
+              - generic [ref=e446]:
+                - heading "Channel consistency" [level=3] [ref=e447]
+                - generic [ref=e448]:
+                  - img [ref=e449]
+                  - text: PASS
+              - paragraph [ref=e452]: Marketing assets, terms, and offer fields are aligned.
+              - generic [ref=e453]:
+                - generic [ref=e454]:
+                  - term [ref=e455]: Severity
+                  - definition [ref=e456]: —
+                - generic [ref=e457]:
+                  - term [ref=e458]: Issues
+                  - definition [ref=e459]: "0"
+                - generic [ref=e460]:
+                  - term [ref=e461]: Fixes
+                  - definition [ref=e462]: "0"
+                - generic [ref=e463]:
+                  - term [ref=e464]: Confidence
+                  - definition [ref=e465]: 90%
+            - article [ref=e466]:
+              - generic [ref=e467]:
+                - heading "Format QA" [level=3] [ref=e468]
+                - generic [ref=e469]:
+                  - img [ref=e470]
+                  - text: PASS
+              - paragraph [ref=e473]: Assets are within configured channel format limits.
+              - generic [ref=e474]:
+                - generic [ref=e475]:
+                  - term [ref=e476]: Severity
+                  - definition [ref=e477]: —
+                - generic [ref=e478]:
+                  - term [ref=e479]: Issues
+                  - definition [ref=e480]: "0"
+                - generic [ref=e481]:
+                  - term [ref=e482]: Fixes
+                  - definition [ref=e483]: "0"
+                - generic [ref=e484]:
+                  - term [ref=e485]: Confidence
+                  - definition [ref=e486]: 90%
+            - article [ref=e487]:
+              - generic [ref=e488]:
+                - heading "Launch ownership" [level=3] [ref=e489]
+                - generic [ref=e490]:
+                  - img [ref=e491]
+                  - text: PASS
+              - paragraph [ref=e494]: Owner coverage and sign-off fields are complete.
+              - generic [ref=e495]:
+                - generic [ref=e496]:
+                  - term [ref=e497]: Severity
+                  - definition [ref=e498]: —
+                - generic [ref=e499]:
+                  - term [ref=e500]: Issues
+                  - definition [ref=e501]: "0"
+                - generic [ref=e502]:
+                  - term [ref=e503]: Fixes
+                  - definition [ref=e504]: "0"
+                - generic [ref=e505]:
+                  - term [ref=e506]: Confidence
+                  - definition [ref=e507]: 90%
+            - article [ref=e508]:
+              - generic [ref=e509]:
+                - heading "Link QA" [level=3] [ref=e510]
+                - generic [ref=e511]:
+                  - img [ref=e512]
+                  - text: PASS
+              - paragraph [ref=e515]: Links are valid, domain checks pass, and required UTM signals exist.
+              - generic [ref=e516]:
+                - generic [ref=e517]:
+                  - term [ref=e518]: Severity
+                  - definition [ref=e519]: —
+                - generic [ref=e520]:
+                  - term [ref=e521]: Issues
+                  - definition [ref=e522]: "0"
+                - generic [ref=e523]:
+                  - term [ref=e524]: Fixes
+                  - definition [ref=e525]: "0"
+                - generic [ref=e526]:
+                  - term [ref=e527]: Confidence
+                  - definition [ref=e528]: 90%
+            - article [ref=e529]:
+              - generic [ref=e530]:
+                - heading "Localization QA" [level=3] [ref=e531]
+                - generic [ref=e532]:
+                  - img [ref=e533]
+                  - text: PASS
+              - paragraph [ref=e536]: Locale, currency, and date signals are coherent.
+              - generic [ref=e537]:
+                - generic [ref=e538]:
+                  - term [ref=e539]: Severity
+                  - definition [ref=e540]: —
+                - generic [ref=e541]:
+                  - term [ref=e542]: Issues
+                  - definition [ref=e543]: "0"
+                - generic [ref=e544]:
+                  - term [ref=e545]: Fixes
+                  - definition [ref=e546]: "0"
+                - generic [ref=e547]:
+                  - term [ref=e548]: Confidence
+                  - definition [ref=e549]: 90%
+          - generic:
+            - generic:
+              - generic:
+                - heading "Issues" [level=3]
+                - generic: "7"
+              - generic:
+                - table:
+                  - rowgroup:
+                    - row "Stage Severity Issue Evidence Suggested fix Owner Blocker":
+                      - columnheader "Stage"
+                      - columnheader "Severity"
+                      - columnheader "Issue"
+                      - columnheader "Evidence"
+                      - columnheader "Suggested fix"
+                      - columnheader "Owner"
+                      - columnheader "Blocker"
+                  - rowgroup:
+                    - 'row "Jurisdictional risk signals HIGH BR jurisdiction context is missing responsible-use wording. BR; Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new… Add responsible-use wording appropriate for the BR review context. Legal FAIL"':
+                      - cell "Jurisdictional risk signals":
+                        - button "Jurisdictional risk signals"
+                      - cell "HIGH":
+                        - generic: HIGH
+                      - cell "BR jurisdiction context is missing responsible-use wording."
+                      - 'cell "BR; Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new…"'
+                      - cell "Add responsible-use wording appropriate for the BR review context."
+                      - cell "Legal"
+                      - cell "FAIL"
+                    - 'row "Jurisdictional risk signals HIGH Non-generic jurisdiction context is missing GEO availability or restriction wording. BR; Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new… Add clear GEO availability or restriction language to the terms. Legal FAIL"':
+                      - cell "Jurisdictional risk signals":
+                        - button "Jurisdictional risk signals"
+                      - cell "HIGH":
+                        - generic: HIGH
+                      - cell "Non-generic jurisdiction context is missing GEO availability or restriction wording."
+                      - 'cell "BR; Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new…"'
+                      - cell "Add clear GEO availability or restriction language to the terms."
+                      - cell "Legal"
+                      - cell "FAIL"
+                    - 'row "Jurisdictional risk signals HIGH Regulated GEO context is missing basic age or responsible-use signals. BR; Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new… Add age and responsible-use wording appropriate for the selected review context. Legal FAIL"':
+                      - cell "Jurisdictional risk signals":
+                        - button "Jurisdictional risk signals"
+                      - cell "HIGH":
+                        - generic: HIGH
+                      - cell "Regulated GEO context is missing basic age or responsible-use signals."
+                      - 'cell "BR; Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new…"'
+                      - cell "Add age and responsible-use wording appropriate for the selected review context."
+                      - cell "Legal"
+                      - cell "FAIL"
+                    - 'row "Terms robustness HIGH Terms are missing critical restriction clauses for the configured promo mechanics. Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new…; Missing: max bet, max cashout Add neutral clauses for each missing critical term before launch review. Legal FAIL"':
+                      - cell "Terms robustness":
+                        - button "Terms robustness"
+                      - cell "HIGH":
+                        - generic: HIGH
+                      - cell "Terms are missing critical restriction clauses for the configured promo mechanics."
+                      - 'cell "Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new…; Missing: max bet, max cashout"'
+                      - cell "Add neutral clauses for each missing critical term before launch review."
+                      - cell "Legal"
+                      - cell "FAIL"
+                    - row "Offer math sanity MEDIUM Wagering is configured but max bet is missing from offer basics. 35x bonus Add a max bet value for the active wagering period before review. Risk PASS":
+                      - cell "Offer math sanity":
+                        - button "Offer math sanity"
+                      - cell "MEDIUM":
+                        - generic: MEDIUM
+                      - cell "Wagering is configured but max bet is missing from offer basics."
+                      - cell "35x bonus"
+                      - cell "Add a max bet value for the active wagering period before review."
+                      - cell "Risk"
+                      - cell "PASS"
+                    - 'row "Terms robustness MEDIUM Terms omit recommended guardrails that usually need owner confirmation. Missing: one-per-household/IP/payment limit, eligible or excluded games, contribution rules, cooldown or repeat-use tim... Confirm whether the missing guardrails are intentionally excluded, then add concise clauses where required. Risk PASS"':
+                      - cell "Terms robustness":
+                        - button "Terms robustness"
+                      - cell "MEDIUM":
+                        - generic: MEDIUM
+                      - cell "Terms omit recommended guardrails that usually need owner confirmation."
+                      - 'cell "Missing: one-per-household/IP/payment limit, eligible or excluded games, contribution rules, cooldown or repeat-use tim..."'
+                      - cell "Confirm whether the missing guardrails are intentionally excluded, then add concise clauses where required."
+                      - cell "Risk"
+                      - cell "PASS"
+                    - 'row "Terms robustness MEDIUM Value-bearing mechanics do not describe withdrawal or cashout handling. Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new… Add neutral withdrawal or cashout handling before owner review. Legal PASS"':
+                      - cell "Terms robustness":
+                        - button "Terms robustness"
+                      - cell "MEDIUM":
+                        - generic: MEDIUM
+                      - cell "Value-bearing mechanics do not describe withdrawal or cashout handling."
+                      - 'cell "Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new…"'
+                      - cell "Add neutral withdrawal or cashout handling before owner review."
+                      - cell "Legal"
+                      - cell "PASS"
+            - complementary:
+              - generic:
+                - generic:
+                  - paragraph: Jurisdictional risk signals
+                  - heading "Issue detail" [level=3]
+                - generic: HIGH
+              - generic:
+                - generic:
+                  - heading "Check stage" [level=4]
+                  - paragraph: Jurisdictional risk signals
+                - generic:
+                  - heading "Issue explanation" [level=4]
+                  - paragraph: BR jurisdiction context is missing responsible-use wording.
+                - generic:
+                  - heading "Affected source fields" [level=4]
+                  - paragraph: metadata.geo, termsText
+                - generic:
+                  - heading "Evidence" [level=4]
+                  - paragraph: "metadata.geo: \"BR\"; termsText: \"Termos sinteticos BR: 100% ate 300 BRL. Deposito minimo 30 BRL. 35x wagering on bonus. Eligible new…\""
+                - generic:
+                  - heading "Suggested fix" [level=4]
+                  - paragraph: Add responsible-use wording appropriate for the BR review context.
+                - generic:
+                  - heading "Why it matters" [level=4]
+                  - paragraph: This is a blocker because the campaign should not move to launch readiness until the assigned owner resolves it or accepts the risk.
+                - generic:
+                  - heading "Owner" [level=4]
+                  - paragraph: Legal
+              - link "Launch Readiness":
+                - /url: /app/readiness
+                - text: Launch Readiness
+                - img
+              - paragraph: The linked Risk Report has no FAIL checks, but review dependencies remain.
+  - img
+  - dialog "Check cards show the essentials" [ref=e550]:
+    - text: Product tour
+    - button "Skip" [active] [ref=e551] [cursor=pointer]
+    - banner [ref=e553]: Check cards show the essentials
+    - generic [ref=e554]: Each card shows the stage, status, severity, issue count, and confidence level for faster triage.
+    - contentinfo [ref=e555]:
+      - generic [ref=e556]: 05 / 13
+      - generic [ref=e557]:
+        - button "Back" [ref=e558] [cursor=pointer]
+        - button "Next" [ref=e559] [cursor=pointer]

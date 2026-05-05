@@ -1,0 +1,441 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - paragraph [ref=e7]: Preflight
+        - paragraph [ref=e8]: Internal ops workspace
+      - navigation "Workspace" [ref=e9]:
+        - button "01 Campaigns G C" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: "01"
+          - generic [ref=e12]: Campaigns
+          - generic [ref=e14]: G C
+        - button "02 Intake G I" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]: "02"
+          - generic [ref=e17]: Intake
+          - generic [ref=e19]: G I
+        - button "03 Risk Report G R" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: "03"
+          - generic [ref=e22]: Risk Report
+          - generic [ref=e24]: G R
+        - button "04 Handoff G H" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: "04"
+          - generic [ref=e28]: Handoff
+          - generic [ref=e30]: G H
+        - button "05 Launch Readiness G L" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: "05"
+          - generic [ref=e33]: Launch Readiness
+          - generic [ref=e35]: G L
+        - button "06 Rules G U" [ref=e36] [cursor=pointer]:
+          - generic [ref=e37]: "06"
+          - generic [ref=e38]: Rules
+          - generic [ref=e40]: G U
+        - button "07 Owners G O" [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: "07"
+          - generic [ref=e43]: Owners
+          - generic [ref=e45]: G O
+      - generic [ref=e46]:
+        - button "Search and commands ⌘K" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Search and commands
+          - generic [ref=e52]: ⌘K
+        - generic [ref=e53]:
+          - generic [ref=e54]: M
+          - generic [ref=e55]:
+            - paragraph [ref=e56]: Maya Chen
+            - paragraph [ref=e57]: Product
+    - generic [ref=e58]:
+      - banner [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e63]: Engine unavailable
+          - generic [ref=e64]:
+            - generic "Language" [ref=e65]:
+              - button "EN" [ref=e66] [cursor=pointer]
+              - button "RU" [ref=e67] [cursor=pointer]
+            - button "Search ⌘K" [ref=e68] [cursor=pointer]:
+              - img [ref=e69]
+              - generic [ref=e72]: Search
+              - generic [ref=e73]: ⌘K
+            - button "Run check ↵" [ref=e74] [cursor=pointer]:
+              - img [ref=e75]
+              - text: Run check
+              - generic [ref=e77]: ↵
+      - main [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e80]:
+            - generic [ref=e81]:
+              - paragraph [ref=e82]: Risk Report
+              - heading "Check results" [level=2] [ref=e83]
+              - paragraph [ref=e84]: Report for Operator A Reload May. Issues are grouped by severity and include suggested fixes and assigned owners.
+            - generic [ref=e85]:
+              - generic [ref=e86]: Sample report
+              - button "Save run" [ref=e87] [cursor=pointer]:
+                - img [ref=e88]
+                - text: Save run
+          - generic [ref=e91]:
+            - generic [ref=e92]:
+              - paragraph [ref=e93]: Overall status
+              - paragraph [ref=e94]: FAIL
+            - generic [ref=e96]:
+              - paragraph [ref=e97]: Pass / warn / fail
+              - generic [ref=e98]:
+                - generic [ref=e99]:
+                  - text: PASS
+                  - generic [ref=e100]: "3"
+                - generic [ref=e101]:
+                  - text: WARN
+                  - generic [ref=e102]: "1"
+                - generic [ref=e103]:
+                  - text: FAIL
+                  - generic [ref=e104]: "4"
+            - generic [ref=e106]:
+              - paragraph [ref=e107]: Critical blockers
+              - paragraph [ref=e108]: "0"
+            - generic [ref=e110]:
+              - paragraph [ref=e111]: Generated
+              - paragraph [ref=e112]: May 3, 2026, 3:00 AM
+            - generic [ref=e114]:
+              - paragraph [ref=e115]: Export
+              - generic [ref=e116]:
+                - button "Markdown" [pressed] [ref=e117] [cursor=pointer]:
+                  - img [ref=e118]
+                  - text: Markdown
+                - button "Slack" [ref=e121] [cursor=pointer]:
+                  - img [ref=e122]
+                  - text: Slack
+                - button "Copy" [ref=e124] [cursor=pointer]:
+                  - img [ref=e125]
+                  - text: Copy
+              - paragraph [ref=e128]: Plain text, ready to copy.
+          - region "Check stages" [ref=e129]:
+            - heading "Check stages" [level=3] [ref=e130]
+            - article [ref=e131]:
+              - generic [ref=e132]:
+                - heading "Channel consistency" [level=3] [ref=e133]
+                - generic [ref=e134]:
+                  - img [ref=e135]
+                  - text: FAIL
+              - paragraph [ref=e139]: Channel consistency found conflicting or incomplete claims.
+              - generic [ref=e140]:
+                - generic [ref=e141]:
+                  - term [ref=e142]: Severity
+                  - definition [ref=e143]: HIGH
+                - generic [ref=e144]:
+                  - term [ref=e145]: Issues
+                  - definition [ref=e146]: "1"
+                - generic [ref=e147]:
+                  - term [ref=e148]: Fixes
+                  - definition [ref=e149]: "1"
+                - generic [ref=e150]:
+                  - term [ref=e151]: Confidence
+                  - definition [ref=e152]: 94%
+            - article [ref=e153]:
+              - generic [ref=e154]:
+                - heading "Jurisdictional risk signals" [level=3] [ref=e155]
+                - generic [ref=e156]:
+                  - img [ref=e157]
+                  - text: FAIL
+              - paragraph [ref=e161]: Jurisdictional risk signals found high-risk wording or missing disclaimers.
+              - generic [ref=e162]:
+                - generic [ref=e163]:
+                  - term [ref=e164]: Severity
+                  - definition [ref=e165]: HIGH
+                - generic [ref=e166]:
+                  - term [ref=e167]: Issues
+                  - definition [ref=e168]: "2"
+                - generic [ref=e169]:
+                  - term [ref=e170]: Fixes
+                  - definition [ref=e171]: "2"
+                - generic [ref=e172]:
+                  - term [ref=e173]: Confidence
+                  - definition [ref=e174]: 88%
+            - article [ref=e175]:
+              - generic [ref=e176]:
+                - heading "Launch ownership" [level=3] [ref=e177]
+                - generic [ref=e178]:
+                  - img [ref=e179]
+                  - text: FAIL
+              - paragraph [ref=e183]: Launch ownership has missing or unresolved owner coverage.
+              - generic [ref=e184]:
+                - generic [ref=e185]:
+                  - term [ref=e186]: Severity
+                  - definition [ref=e187]: HIGH
+                - generic [ref=e188]:
+                  - term [ref=e189]: Issues
+                  - definition [ref=e190]: "4"
+                - generic [ref=e191]:
+                  - term [ref=e192]: Fixes
+                  - definition [ref=e193]: "4"
+                - generic [ref=e194]:
+                  - term [ref=e195]: Confidence
+                  - definition [ref=e196]: 81%
+            - article [ref=e197]:
+              - generic [ref=e198]:
+                - heading "Terms robustness" [level=3] [ref=e199]
+                - generic [ref=e200]:
+                  - img [ref=e201]
+                  - text: FAIL
+              - paragraph [ref=e205]: Terms robustness found missing or ambiguous restrictions.
+              - generic [ref=e206]:
+                - generic [ref=e207]:
+                  - term [ref=e208]: Severity
+                  - definition [ref=e209]: HIGH
+                - generic [ref=e210]:
+                  - term [ref=e211]: Issues
+                  - definition [ref=e212]: "3"
+                - generic [ref=e213]:
+                  - term [ref=e214]: Fixes
+                  - definition [ref=e215]: "3"
+                - generic [ref=e216]:
+                  - term [ref=e217]: Confidence
+                  - definition [ref=e218]: 79%
+            - article [ref=e219]:
+              - generic [ref=e220]:
+                - heading "Link QA" [level=3] [ref=e221]
+                - generic [ref=e222]:
+                  - img [ref=e223]
+                  - text: WARN
+              - paragraph [ref=e225]: Link QA found deterministic URL, domain, or tracking issues.
+              - generic [ref=e226]:
+                - generic [ref=e227]:
+                  - term [ref=e228]: Severity
+                  - definition [ref=e229]: LOW
+                - generic [ref=e230]:
+                  - term [ref=e231]: Issues
+                  - definition [ref=e232]: "1"
+                - generic [ref=e233]:
+                  - term [ref=e234]: Fixes
+                  - definition [ref=e235]: "1"
+                - generic [ref=e236]:
+                  - term [ref=e237]: Confidence
+                  - definition [ref=e238]: 94%
+            - article [ref=e239]:
+              - generic [ref=e240]:
+                - heading "Format QA" [level=3] [ref=e241]
+                - generic [ref=e242]:
+                  - img [ref=e243]
+                  - text: PASS
+              - paragraph [ref=e246]: Assets are within configured channel format limits.
+              - generic [ref=e247]:
+                - generic [ref=e248]:
+                  - term [ref=e249]: Severity
+                  - definition [ref=e250]: —
+                - generic [ref=e251]:
+                  - term [ref=e252]: Issues
+                  - definition [ref=e253]: "0"
+                - generic [ref=e254]:
+                  - term [ref=e255]: Fixes
+                  - definition [ref=e256]: "0"
+                - generic [ref=e257]:
+                  - term [ref=e258]: Confidence
+                  - definition [ref=e259]: 90%
+            - article [ref=e260]:
+              - generic [ref=e261]:
+                - heading "Localization QA" [level=3] [ref=e262]
+                - generic [ref=e263]:
+                  - img [ref=e264]
+                  - text: PASS
+              - paragraph [ref=e267]: Locale, currency, and date signals are coherent.
+              - generic [ref=e268]:
+                - generic [ref=e269]:
+                  - term [ref=e270]: Severity
+                  - definition [ref=e271]: —
+                - generic [ref=e272]:
+                  - term [ref=e273]: Issues
+                  - definition [ref=e274]: "0"
+                - generic [ref=e275]:
+                  - term [ref=e276]: Fixes
+                  - definition [ref=e277]: "0"
+                - generic [ref=e278]:
+                  - term [ref=e279]: Confidence
+                  - definition [ref=e280]: 90%
+            - article [ref=e281]:
+              - generic [ref=e282]:
+                - heading "Offer math sanity" [level=3] [ref=e283]
+                - generic [ref=e284]:
+                  - img [ref=e285]
+                  - text: PASS
+              - paragraph [ref=e288]: Deterministic offer math fields are internally plausible.
+              - generic [ref=e289]:
+                - generic [ref=e290]:
+                  - term [ref=e291]: Severity
+                  - definition [ref=e292]: —
+                - generic [ref=e293]:
+                  - term [ref=e294]: Issues
+                  - definition [ref=e295]: "0"
+                - generic [ref=e296]:
+                  - term [ref=e297]: Fixes
+                  - definition [ref=e298]: "0"
+                - generic [ref=e299]:
+                  - term [ref=e300]: Confidence
+                  - definition [ref=e301]: 90%
+          - generic [ref=e302]:
+            - generic [ref=e303]:
+              - generic [ref=e304]:
+                - heading "Issues" [level=3] [ref=e305]
+                - generic [ref=e306]: "11"
+              - table [ref=e308]:
+                - rowgroup [ref=e309]:
+                  - row "Stage Severity Issue Evidence Suggested fix Owner Blocker" [ref=e310]:
+                    - columnheader "Stage" [ref=e311]
+                    - columnheader "Severity" [ref=e312]
+                    - columnheader "Issue" [ref=e313]
+                    - columnheader "Evidence" [ref=e314]
+                    - columnheader "Suggested fix" [ref=e315]
+                    - columnheader "Owner" [ref=e316]
+                    - columnheader "Blocker" [ref=e317]
+                - rowgroup [ref=e318]:
+                  - row "Channel consistency HIGH A channel asset contains numeric offer claims that differ from approved offer fields. Get 100% up to 500 EUR today; 50% up to 300 EUR Align channel copy with the approved offer fields or update the offer fields before launch review. Crm FAIL" [ref=e319]:
+                    - cell "Channel consistency" [ref=e320]:
+                      - button "Channel consistency" [ref=e321] [cursor=pointer]
+                    - cell "HIGH" [ref=e322]:
+                      - generic [ref=e323]: HIGH
+                    - cell "A channel asset contains numeric offer claims that differ from approved offer fields." [ref=e324]
+                    - cell "Get 100% up to 500 EUR today; 50% up to 300 EUR" [ref=e325]
+                    - cell "Align channel copy with the approved offer fields or update the offer fields before launch review." [ref=e326]
+                    - cell "Crm" [ref=e327]
+                    - cell "FAIL" [ref=e328]
+                  - row "Jurisdictional risk signals HIGH EU jurisdiction context is missing age-verification disclaimer wording. MGA generic; Synthetic T&C excerpt for portfolio demo. Add age-verification wording to terms and visible promotional copy. Legal FAIL" [ref=e329]:
+                    - cell "Jurisdictional risk signals" [ref=e330]:
+                      - button "Jurisdictional risk signals" [ref=e331] [cursor=pointer]
+                    - cell "HIGH" [ref=e332]:
+                      - generic [ref=e333]: HIGH
+                    - cell "EU jurisdiction context is missing age-verification disclaimer wording." [ref=e334]
+                    - cell "MGA generic; Synthetic T&C excerpt for portfolio demo." [ref=e335]
+                    - cell "Add age-verification wording to terms and visible promotional copy." [ref=e336]
+                    - cell "Legal" [ref=e337]
+                    - cell "FAIL" [ref=e338]
+                  - row "Jurisdictional risk signals HIGH Regulated GEO context is missing basic age or responsible-use signals. MGA generic; Synthetic T&C excerpt for portfolio demo. Add age and responsible-use wording appropriate for the selected review context. Legal FAIL" [ref=e339]:
+                    - cell "Jurisdictional risk signals" [ref=e340]:
+                      - button "Jurisdictional risk signals" [ref=e341] [cursor=pointer]
+                    - cell "HIGH" [ref=e342]:
+                      - generic [ref=e343]: HIGH
+                    - cell "Regulated GEO context is missing basic age or responsible-use signals." [ref=e344]
+                    - cell "MGA generic; Synthetic T&C excerpt for portfolio demo." [ref=e345]
+                    - cell "Add age and responsible-use wording appropriate for the selected review context." [ref=e346]
+                    - cell "Legal" [ref=e347]
+                    - cell "FAIL" [ref=e348]
+                  - 'row "Launch ownership HIGH Required launch owner roles are missing for Product, Legal, or Risk coverage. Missing: legal, risk; channel_consistency, terms_robustness, jurisdictional_risk_signals Assign Product, Legal, and Risk owners before using the report for launch readiness. Product FAIL" [ref=e349]':
+                    - cell "Launch ownership" [ref=e350]:
+                      - button "Launch ownership" [ref=e351] [cursor=pointer]
+                    - cell "HIGH" [ref=e352]:
+                      - generic [ref=e353]: HIGH
+                    - cell "Required launch owner roles are missing for Product, Legal, or Risk coverage." [ref=e354]
+                    - 'cell "Missing: legal, risk; channel_consistency, terms_robustness, jurisdictional_risk_signals" [ref=e355]'
+                    - cell "Assign Product, Legal, and Risk owners before using the report for launch readiness." [ref=e356]
+                    - cell "Product" [ref=e357]
+                    - cell "FAIL" [ref=e358]
+                  - 'row "Terms robustness HIGH Terms are missing critical restriction clauses for the configured promo mechanics. Synthetic T&C excerpt for portfolio demo.; Missing: wagering clause, eligibility, expiry or campaign period, max cashout Add neutral clauses for each missing critical term before launch review. Legal FAIL" [ref=e359]':
+                    - cell "Terms robustness" [ref=e360]:
+                      - button "Terms robustness" [ref=e361] [cursor=pointer]
+                    - cell "HIGH" [ref=e362]:
+                      - generic [ref=e363]: HIGH
+                    - cell "Terms are missing critical restriction clauses for the configured promo mechanics." [ref=e364]
+                    - 'cell "Synthetic T&C excerpt for portfolio demo.; Missing: wagering clause, eligibility, expiry or campaign period, max cashout" [ref=e365]'
+                    - cell "Add neutral clauses for each missing critical term before launch review." [ref=e366]
+                    - cell "Legal" [ref=e367]
+                    - cell "FAIL" [ref=e368]
+                  - 'row "Launch ownership MEDIUM Operational owner coverage is incomplete for launch handoff. Missing: crm, localization, analytics Assign missing CRM, Localization, or Analytics owners where those workstreams are in scope. Product PASS" [ref=e369]':
+                    - cell "Launch ownership" [ref=e370]:
+                      - button "Launch ownership" [ref=e371] [cursor=pointer]
+                    - cell "MEDIUM" [ref=e372]:
+                      - generic [ref=e373]: MEDIUM
+                    - cell "Operational owner coverage is incomplete for launch handoff." [ref=e374]
+                    - 'cell "Missing: crm, localization, analytics" [ref=e375]'
+                    - cell "Assign missing CRM, Localization, or Analytics owners where those workstreams are in scope." [ref=e376]
+                    - cell "Product" [ref=e377]
+                    - cell "PASS" [ref=e378]
+                  - 'row "Terms robustness MEDIUM Terms omit recommended guardrails that usually need owner confirmation. Missing: one-per-household/IP/payment limit, eligible or excluded games, contribution rules, cooldown or repeat-use tim... Confirm whether the missing guardrails are intentionally excluded, then add concise clauses where required. Risk PASS" [ref=e379]':
+                    - cell "Terms robustness" [ref=e380]:
+                      - button "Terms robustness" [ref=e381] [cursor=pointer]
+                    - cell "MEDIUM" [ref=e382]:
+                      - generic [ref=e383]: MEDIUM
+                    - cell "Terms omit recommended guardrails that usually need owner confirmation." [ref=e384]
+                    - 'cell "Missing: one-per-household/IP/payment limit, eligible or excluded games, contribution rules, cooldown or repeat-use tim..." [ref=e385]'
+                    - cell "Confirm whether the missing guardrails are intentionally excluded, then add concise clauses where required." [ref=e386]
+                    - cell "Risk" [ref=e387]
+                    - cell "PASS" [ref=e388]
+                  - row "Terms robustness MEDIUM Value-bearing mechanics do not describe withdrawal or cashout handling. Synthetic T&C excerpt for portfolio demo. Add neutral withdrawal or cashout handling before owner review. Legal PASS" [ref=e389]:
+                    - cell "Terms robustness" [ref=e390]:
+                      - button "Terms robustness" [ref=e391] [cursor=pointer]
+                    - cell "MEDIUM" [ref=e392]:
+                      - generic [ref=e393]: MEDIUM
+                    - cell "Value-bearing mechanics do not describe withdrawal or cashout handling." [ref=e394]
+                    - cell "Synthetic T&C excerpt for portfolio demo." [ref=e395]
+                    - cell "Add neutral withdrawal or cashout handling before owner review." [ref=e396]
+                    - cell "Legal" [ref=e397]
+                    - cell "PASS" [ref=e398]
+                  - 'row "Launch ownership LOW Some owner sign-offs are still pending and need launch tracking. Pending: product Confirm each pending owner has a clear review due date and approval path. Product PASS" [ref=e399]':
+                    - cell "Launch ownership" [ref=e400]:
+                      - button "Launch ownership" [ref=e401] [cursor=pointer]
+                    - cell "LOW" [ref=e402]:
+                      - generic [ref=e403]: LOW
+                    - cell "Some owner sign-offs are still pending and need launch tracking." [ref=e404]
+                    - 'cell "Pending: product" [ref=e405]'
+                    - cell "Confirm each pending owner has a clear review due date and approval path." [ref=e406]
+                    - cell "Product" [ref=e407]
+                    - cell "PASS" [ref=e408]
+                  - 'row "Launch ownership LOW Pending owner rows do not include due dates for launch follow-up. Missing due dates: product Add due dates for pending owner sign-offs. Product PASS" [ref=e409]':
+                    - cell "Launch ownership" [ref=e410]:
+                      - button "Launch ownership" [ref=e411] [cursor=pointer]
+                    - cell "LOW" [ref=e412]:
+                      - generic [ref=e413]: LOW
+                    - cell "Pending owner rows do not include due dates for launch follow-up." [ref=e414]
+                    - 'cell "Missing due dates: product" [ref=e415]'
+                    - cell "Add due dates for pending owner sign-offs." [ref=e416]
+                    - cell "Product" [ref=e417]
+                    - cell "PASS" [ref=e418]
+                  - 'row "Link QA LOW A tracked link is missing required UTM parameters. Missing: utm_medium, utm_campaign Add utm_source, utm_medium, and utm_campaign to tracked links before launch. Analytics PASS" [ref=e419]':
+                    - cell "Link QA" [ref=e420]:
+                      - button "Link QA" [ref=e421] [cursor=pointer]
+                    - cell "LOW" [ref=e422]:
+                      - generic [ref=e423]: LOW
+                    - cell "A tracked link is missing required UTM parameters." [ref=e424]
+                    - 'cell "Missing: utm_medium, utm_campaign" [ref=e425]'
+                    - cell "Add utm_source, utm_medium, and utm_campaign to tracked links before launch." [ref=e426]
+                    - cell "Analytics" [ref=e427]
+                    - cell "PASS" [ref=e428]
+            - complementary [ref=e429]:
+              - generic [ref=e430]:
+                - generic [ref=e431]:
+                  - paragraph [ref=e432]: Channel consistency
+                  - heading "Issue detail" [level=3] [ref=e433]
+                - generic [ref=e434]: HIGH
+              - generic [ref=e435]:
+                - generic [ref=e436]:
+                  - heading "Check stage" [level=4] [ref=e437]
+                  - paragraph [ref=e438]: Channel consistency
+                - generic [ref=e439]:
+                  - heading "Issue explanation" [level=4] [ref=e440]
+                  - paragraph [ref=e441]: A channel asset contains numeric offer claims that differ from approved offer fields.
+                - generic [ref=e442]:
+                  - heading "Affected source fields" [level=4] [ref=e443]
+                  - paragraph [ref=e444]: email.subject, offer
+                - generic [ref=e445]:
+                  - heading "Evidence" [level=4] [ref=e446]
+                  - paragraph [ref=e447]: "email.subject: \"Get 100% up to 500 EUR today\"; offer: \"50% up to 300 EUR\""
+                - generic [ref=e448]:
+                  - heading "Suggested fix" [level=4] [ref=e449]
+                  - paragraph [ref=e450]: Align channel copy with the approved offer fields or update the offer fields before launch review.
+                - generic [ref=e451]:
+                  - heading "Why it matters" [level=4] [ref=e452]
+                  - paragraph [ref=e453]: This is a blocker because the campaign should not move to launch readiness until the assigned owner resolves it or accepts the risk.
+                - generic [ref=e454]:
+                  - heading "Owner" [level=4] [ref=e455]
+                  - paragraph [ref=e456]: Crm
+              - link "Launch Readiness" [ref=e457] [cursor=pointer]:
+                - /url: /app/readiness
+                - text: Launch Readiness
+                - img [ref=e458]
+              - paragraph [ref=e461]: The linked Risk Report has no FAIL checks, but review dependencies remain.
+  - generic [ref=e464]:
+    - generic [ref=e467]: Promo Preflight
+    - heading "Choose language" [level=2] [ref=e468]
+    - paragraph [ref=e469]: Choose the language for this demo workspace.
+    - generic [ref=e470]:
+      - button "EN English" [ref=e471] [cursor=pointer]:
+        - generic [ref=e472]: EN
+        - text: English
+      - button "RU Русский" [ref=e473] [cursor=pointer]:
+        - generic [ref=e474]: RU
+        - text: Русский
+    - paragraph [ref=e475]: You can switch languages later from the header.

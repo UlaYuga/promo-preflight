@@ -1,0 +1,148 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - paragraph [ref=e7]: Preflight
+        - paragraph [ref=e8]: Internal ops workspace
+      - navigation "Workspace" [ref=e9]:
+        - button "01 Campaigns G C" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: "01"
+          - generic [ref=e12]: Campaigns
+          - generic [ref=e14]: G C
+        - button "02 Intake G I" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]: "02"
+          - generic [ref=e17]: Intake
+          - generic [ref=e19]: G I
+        - button "03 Risk Report G R" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: "03"
+          - generic [ref=e22]: Risk Report
+          - generic [ref=e24]: G R
+        - button "04 Handoff G H" [ref=e25] [cursor=pointer]:
+          - generic [ref=e26]: "04"
+          - generic [ref=e27]: Handoff
+          - generic [ref=e29]: G H
+        - button "05 Launch Readiness G L" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: "05"
+          - generic [ref=e33]: Launch Readiness
+          - generic [ref=e35]: G L
+        - button "06 Rules G U" [ref=e36] [cursor=pointer]:
+          - generic [ref=e37]: "06"
+          - generic [ref=e38]: Rules
+          - generic [ref=e40]: G U
+        - button "07 Owners G O" [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: "07"
+          - generic [ref=e43]: Owners
+          - generic [ref=e45]: G O
+      - generic [ref=e46]:
+        - button "Search and commands ⌘K" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Search and commands
+          - generic [ref=e52]: ⌘K
+        - generic [ref=e53]:
+          - generic [ref=e54]: M
+          - generic [ref=e55]:
+            - paragraph [ref=e56]: Maya Chen
+            - paragraph [ref=e57]: Product
+    - generic [ref=e58]:
+      - banner [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e63]: Engine unavailable
+          - generic [ref=e64]:
+            - generic "Language" [ref=e65]:
+              - button "EN" [ref=e66] [cursor=pointer]
+              - button "RU" [ref=e67] [cursor=pointer]
+            - button "Search ⌘K" [ref=e68] [cursor=pointer]:
+              - img [ref=e69]
+              - generic [ref=e72]: Search
+              - generic [ref=e73]: ⌘K
+            - button "Run check ↵" [ref=e74] [cursor=pointer]:
+              - img [ref=e75]
+              - text: Run check
+              - generic [ref=e77]: ↵
+      - main [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e81]:
+            - paragraph [ref=e82]: 05 / Handoff
+            - heading "Prepare handoff summary" [level=2] [ref=e83]
+            - paragraph [ref=e84]: Generate a Slack-ready summary so the launch team gets context without opening the tool.
+          - generic [ref=e85]:
+            - generic [ref=e86]:
+              - heading "Slack preview" [level=3] [ref=e87]
+              - generic [ref=e89]:
+                - img [ref=e91]
+                - generic [ref=e93]:
+                  - generic [ref=e94]:
+                    - generic [ref=e95]: Preflight Bot
+                    - generic [ref=e96]: 05.05.2026
+                  - generic [ref=e97]: "#promo-launches"
+                  - generic [ref=e98]:
+                    - paragraph [ref=e99]: Operator A Reload May
+                    - generic [ref=e101]: NO-GO
+                    - generic [ref=e102]:
+                      - paragraph [ref=e103]: Blockers
+                      - list [ref=e104]:
+                        - listitem [ref=e105]:
+                          - text: • A channel asset contains numeric offer claims that differ from approved offer fields. —
+                          - generic [ref=e106]: "@CRM"
+                        - listitem [ref=e107]:
+                          - text: • Terms are missing critical restriction clauses for the configured promo mechanics. —
+                          - generic [ref=e108]: "@Legal"
+                    - generic [ref=e110]: 1 Warnings
+                    - generic [ref=e111]:
+                      - generic [ref=e112]: "Target launch:"
+                      - generic [ref=e113]: 2026-05-10
+                    - link "Open Risk Report" [ref=e114] [cursor=pointer]:
+                      - /url: /app/risk-report
+                      - text: Open Risk Report
+                      - img [ref=e115]
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e122]: Channel
+                - combobox [ref=e123]:
+                  - option "#promo-launches" [selected]
+                  - option "#general"
+                  - option "#releases"
+              - generic [ref=e124]:
+                - generic [ref=e125]: Mention level
+                - generic [ref=e126]:
+                  - generic [ref=e127] [cursor=pointer]:
+                    - radio "Owners only" [checked] [ref=e128]
+                    - generic [ref=e129]: Owners only
+                  - generic [ref=e130] [cursor=pointer]:
+                    - radio "Owners + leads" [ref=e131]
+                    - generic [ref=e132]: Owners + leads
+                  - generic [ref=e133] [cursor=pointer]:
+                    - radio "Full team" [ref=e134]
+                    - generic [ref=e135]: Full team
+              - generic [ref=e136] [cursor=pointer]:
+                - checkbox "Include passed checks summary" [ref=e137]
+                - generic [ref=e138]: Include passed checks summary
+              - generic [ref=e139]:
+                - generic [ref=e140]: Tone
+                - combobox [ref=e141]:
+                  - option "Neutral" [selected]
+                  - option "Urgent"
+                  - option "Friendly"
+          - generic [ref=e142]:
+            - button "Copy to clipboard" [ref=e143] [cursor=pointer]:
+              - img [ref=e144]
+              - text: Copy to clipboard
+            - button "Export as Markdown" [ref=e147] [cursor=pointer]:
+              - img [ref=e148]
+              - text: Export as Markdown
+            - button "Compare versions" [disabled] [ref=e152]:
+              - text: Compare versions
+              - img [ref=e153]
+  - generic [ref=e157]:
+    - generic [ref=e160]: Promo Preflight
+    - heading "Choose language" [level=2] [ref=e161]
+    - paragraph [ref=e162]: Choose the language for this demo workspace.
+    - generic [ref=e163]:
+      - button "EN English" [ref=e164] [cursor=pointer]:
+        - generic [ref=e165]: EN
+        - text: English
+      - button "RU Русский" [ref=e166] [cursor=pointer]:
+        - generic [ref=e167]: RU
+        - text: Русский
+    - paragraph [ref=e168]: You can switch languages later from the header.
+  - alert [ref=e169]

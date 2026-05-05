@@ -1,0 +1,55 @@
+{
+  "name": "promo-preflight",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && node scripts/fix-build-output.mjs",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "schema:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types schemas/schema-check.mjs",
+    "checks:mock": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/checks/mock-smoke.mjs",
+    "checks:run": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/checks/regression-smoke.mjs",
+    "versioning:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/versioning-smoke.mjs",
+    "rules:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/rules/check.mjs",
+    "owners:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/owners/check.mjs",
+    "i18n:check": "node lib/i18n/check.mjs",
+    "ai:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/ai/ai-smoke.mjs",
+    "db:check": "node db/check.mjs",
+    "mcp:refero": "node refero-proxy.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.92.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "driver.js": "^1.4.0",
+    "lucide-react": "^1.14.0",
+    "next": "^16.2.4",
+    "pg": "^8.20.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss-animate": "^1.0.7",
+    "yaml": "^2.8.4",
+    "zod": "^4.4.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/language-server": "^0.14.29",
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.4",
+    "postcss": "^8.5.13",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^6.0.3",
+    "typescript-language-server": "^5.1.3",
+    "yaml-language-server": "^1.22.0"
+  },
+  "overrides": {
+    "postcss": "^8.5.13"
+  }
+}

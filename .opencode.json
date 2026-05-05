@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "refero": {
+      "type": "sse",
+      "url": "https://api.refero.design/mcp",
+      "headers": {
+        "Authorization": "Bearer mcp-sDYacvjdeRjShYOh"
+      }
+    }
+  }
+}
