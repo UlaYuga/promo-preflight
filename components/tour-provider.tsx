@@ -88,7 +88,7 @@ export function TourProvider() {
 
       let nextState = readTourState();
 
-      if (activeIndex === 0 || activeIndex === 2) {
+      if (activeIndex === 0) {
         loadTourSample({ language });
         nextState = {
           ...nextState,
