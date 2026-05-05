@@ -141,7 +141,7 @@ function LanguageGate() {
           <div className="mb-6 inline-flex items-center gap-2">
             <span className="block h-2 w-2 rounded-full bg-[#c5ff3d] shadow-[0_0_28px_rgba(197,255,61,0.32)]" />
             <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#5a5a62]">
-              Promo Preflight
+              Preflight
             </span>
           </div>
           <h2 className="text-[32px] font-medium leading-tight tracking-tight text-[#ededee]">
