@@ -49,7 +49,7 @@ export function formatMarkdownExport(payload: ExportPayloadInput) {
   });
   const issueRows = getIssueRows(report);
   const lines = [
-    `# Preflight Risk Report: ${sanitizeLine(report.campaignName)}`,
+    `# Promo Preflight Risk Report: ${sanitizeLine(report.campaignName)}`,
     "",
     "## Metadata",
     `- Campaign: ${sanitizeLine(report.campaignName)}`,
@@ -110,7 +110,7 @@ export function formatSlackReadyExport(payload: ExportPayloadInput) {
   const issueRows = getIssueRows(report);
   const ownerGroups = groupIssuesByOwner(issueRows);
   const lines = [
-    `Preflight handoff: ${sanitizeLine(report.campaignName)}`,
+    `Promo Preflight handoff: ${sanitizeLine(report.campaignName)}`,
     `Status: ${report.overallStatus} | ${formatCounts(report)}`,
     `Report: ${sanitizeLine(report.reportId)} | Generated: ${sanitizeLine(
       report.generatedAt
