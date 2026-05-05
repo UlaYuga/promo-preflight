@@ -1,0 +1,85 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - paragraph [ref=e7]: Preflight
+        - paragraph [ref=e8]: Internal ops workspace
+      - navigation "Workspace" [ref=e9]:
+        - button "01 Campaigns G C" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: "01"
+          - generic [ref=e12]: Campaigns
+          - generic [ref=e14]: G C
+        - button "02 Intake G I" [ref=e16] [cursor=pointer]:
+          - generic [ref=e17]: "02"
+          - generic [ref=e18]: Intake
+          - generic [ref=e20]: G I
+        - button "03 Risk Report G R" [ref=e21] [cursor=pointer]:
+          - generic [ref=e22]: "03"
+          - generic [ref=e23]: Risk Report
+          - generic [ref=e25]: G R
+        - button "04 Handoff G H" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: "04"
+          - generic [ref=e28]: Handoff
+          - generic [ref=e30]: G H
+        - button "05 Launch Readiness G L" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: "05"
+          - generic [ref=e33]: Launch Readiness
+          - generic [ref=e35]: G L
+        - button "06 Rules G U" [ref=e36] [cursor=pointer]:
+          - generic [ref=e37]: "06"
+          - generic [ref=e38]: Rules
+          - generic [ref=e40]: G U
+        - button "07 Owners G O" [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: "07"
+          - generic [ref=e43]: Owners
+          - generic [ref=e45]: G O
+      - generic [ref=e46]:
+        - button "Search and commands ⌘K" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Search and commands
+          - generic [ref=e52]: ⌘K
+        - generic [ref=e53]:
+          - generic [ref=e54]: M
+          - generic [ref=e55]:
+            - paragraph [ref=e56]: Maya Chen
+            - paragraph [ref=e57]: Product
+    - generic [ref=e58]:
+      - banner [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e63]: Engine unavailable
+          - generic [ref=e64]:
+            - generic "Language" [ref=e65]:
+              - button "EN" [ref=e66] [cursor=pointer]
+              - button "RU" [ref=e67] [cursor=pointer]
+            - button "Search ⌘K" [ref=e68] [cursor=pointer]:
+              - img [ref=e69]
+              - generic [ref=e72]: Search
+              - generic [ref=e73]: ⌘K
+            - button "Run check ↵" [ref=e74] [cursor=pointer]:
+              - img [ref=e75]
+              - text: Run check
+              - generic [ref=e77]: ↵
+      - main [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e82]:
+            - paragraph [ref=e83]: 01 / Workspace · Promo
+            - heading "Campaigns in flight" [level=1] [ref=e84]:
+              - text: Campaigns
+              - text: in flight
+            - paragraph [ref=e85]: Ten check runs across the workspace.
+          - generic [ref=e86]:
+            - paragraph [ref=e89]: 02 / All runs
+            - generic [ref=e90]: Loading
+  - generic [ref=e93]:
+    - generic [ref=e96]: Promo Preflight
+    - heading "Choose language" [level=2] [ref=e97]
+    - paragraph [ref=e98]: Choose the language for this demo workspace.
+    - generic [ref=e99]:
+      - button "EN English" [ref=e100] [cursor=pointer]:
+        - generic [ref=e101]: EN
+        - text: English
+      - button "RU Русский" [ref=e102] [cursor=pointer]:
+        - generic [ref=e103]: RU
+        - text: Русский
+    - paragraph [ref=e104]: You can switch languages later from the header.
+  - alert [ref=e105]

@@ -1,0 +1,77 @@
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic "Язык" [ref=e105]:
+        - button "EN" [ref=e6] [cursor=pointer]
+        - button "RU" [active] [ref=e7] [cursor=pointer]
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - heading "Promo Preflight" [level=1] [ref=e10]:
+            - text: Promo
+            - text: Preflight
+          - paragraph [ref=e11]: Проверка регулируемых промо-кампаний перед запуском
+          - paragraph [ref=e12]: Загрузите пакет кампании, запустите проверку, разберите блокеры, назначьте роли, подготовьте резюме для передачи в работу и сравните версии — без изменений в текущем процессе.
+          - generic [ref=e13]:
+            - button "Пройти тур за 90 секунд" [ref=e106] [cursor=pointer]:
+              - img [ref=e15]
+              - text: Пройти тур за 90 секунд
+            - link "Открыть пакет кампании" [ref=e107] [cursor=pointer]:
+              - /url: /app/intake
+              - text: Открыть пакет кампании
+              - img [ref=e19]
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - img [ref=e23]
+              - text: Демо-пространство для портфолио.
+            - generic [ref=e28]: 8 этапов проверки · 23 правила · 6 ролей · EN/RU
+        - complementary [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - paragraph [ref=e32]: Как устроен процесс
+              - heading "От загрузки пакета кампании до сравнения версий" [level=2] [ref=e108]
+            - img [ref=e35]
+          - generic [ref=e38]:
+            - generic [ref=e109]:
+              - generic [ref=e110]: "01"
+              - generic [ref=e111]:
+                - paragraph [ref=e112]: Загрузите пакет кампании
+                - paragraph [ref=e113]: Метаданные, расчёт оффера, условия, тексты для каналов
+              - img [ref=e114]
+            - generic [ref=e119]:
+              - generic [ref=e120]: "02"
+              - generic [ref=e121]:
+                - paragraph [ref=e122]: Запустите проверку
+                - paragraph [ref=e123]: Проверка проходит по 8 этапам и 23 правилам
+              - img [ref=e124]
+            - generic [ref=e131]:
+              - generic [ref=e132]: "03"
+              - generic [ref=e133]:
+                - paragraph [ref=e134]: Разберите блокеры
+                - paragraph [ref=e135]: Отчёт о рисках показывает, что мешает запуску и кто должен это закрыть
+              - img [ref=e136]
+            - generic [ref=e141]:
+              - generic [ref=e142]: "04"
+              - generic [ref=e143]:
+                - paragraph [ref=e144]: Подготовьте резюме для передачи в работу
+                - paragraph [ref=e145]: Скопируйте краткое резюме для Markdown или Slack
+              - img [ref=e146]
+            - generic [ref=e149]:
+              - generic [ref=e150]: "05"
+              - generic [ref=e151]:
+                - paragraph [ref=e152]: Сравните версии
+                - paragraph [ref=e153]: Посмотрите, что изменилось между версиями кампании
+              - img [ref=e154]
+          - generic [ref=e91]:
+            - generic [ref=e161]:
+              - paragraph [ref=e162]: "08"
+              - paragraph [ref=e163]: этапов проверки
+            - generic [ref=e164]:
+              - paragraph [ref=e165]: "23"
+              - paragraph [ref=e166]: правил
+            - generic [ref=e167]:
+              - paragraph [ref=e168]: "06"
+              - paragraph [ref=e169]: ролей
+            - generic [ref=e170]:
+              - paragraph [ref=e171]: "02"
+              - paragraph [ref=e172]: языка
+  - alert [ref=e104]

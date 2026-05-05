@@ -1,0 +1,122 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - paragraph [ref=e7]: Preflight
+        - paragraph [ref=e8]: Internal ops workspace
+      - navigation "Workspace" [ref=e9]:
+        - button "01 Campaigns G C" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: "01"
+          - generic [ref=e12]: Campaigns
+          - generic [ref=e14]: G C
+        - button "02 Intake G I" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]: "02"
+          - generic [ref=e17]: Intake
+          - generic [ref=e19]: G I
+        - button "03 Risk Report G R" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: "03"
+          - generic [ref=e22]: Risk Report
+          - generic [ref=e24]: G R
+        - button "04 Handoff G H" [ref=e25] [cursor=pointer]:
+          - generic [ref=e26]: "04"
+          - generic [ref=e27]: Handoff
+          - generic [ref=e29]: G H
+        - button "05 Launch Readiness G L" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: "05"
+          - generic [ref=e32]: Launch Readiness
+          - generic [ref=e34]: G L
+        - button "06 Rules G U" [ref=e35] [cursor=pointer]:
+          - generic [ref=e36]: "06"
+          - generic [ref=e37]: Rules
+          - generic [ref=e39]: G U
+        - button "07 Owners G O" [ref=e40] [cursor=pointer]:
+          - generic [ref=e41]: "07"
+          - generic [ref=e42]: Owners
+          - generic [ref=e44]: G O
+      - generic [ref=e46]:
+        - button "Search and commands ⌘K" [ref=e47] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Search and commands
+          - generic [ref=e52]: ⌘K
+        - generic [ref=e53]:
+          - generic [ref=e54]: M
+          - generic [ref=e55]:
+            - paragraph [ref=e56]: Maya Chen
+            - paragraph [ref=e57]: Product
+    - generic [ref=e58]:
+      - banner [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e63]: Engine unavailable
+          - generic [ref=e64]:
+            - generic "Language" [ref=e65]:
+              - button "EN" [ref=e66] [cursor=pointer]
+              - button "RU" [ref=e67] [cursor=pointer]
+            - button "Search ⌘K" [ref=e68] [cursor=pointer]:
+              - img [ref=e69]
+              - generic [ref=e72]: Search
+              - generic [ref=e73]: ⌘K
+            - button "Run check ↵" [ref=e74] [cursor=pointer]:
+              - img [ref=e75]
+              - text: Run check
+              - generic [ref=e77]: ↵
+      - main [ref=e78]:
+        - generic [ref=e79]:
+          - generic [ref=e80]:
+            - paragraph [ref=e81]: Owners
+            - heading "Workspace owner settings" [level=1] [ref=e82]
+            - paragraph [ref=e83]: Read-only owner assignments used in readiness and version views. Names come from workspace defaults or campaign overrides.
+            - generic [ref=e84]: config/owners.yaml
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - heading "Workspace owners" [level=3] [ref=e88]
+              - paragraph [ref=e89]: Names are loaded from config/owners.yaml. Campaign overrides can replace these names on saved campaigns.
+            - table [ref=e91]:
+              - rowgroup [ref=e92]:
+                - row "Role Owner name Assignment" [ref=e93]:
+                  - columnheader "Role" [ref=e94]
+                  - columnheader "Owner name" [ref=e95]
+                  - columnheader "Assignment" [ref=e96]
+              - rowgroup [ref=e97]:
+                - row "Project / Delivery Maya Chen Assigned" [ref=e98]:
+                  - cell "Project / Delivery" [ref=e99]
+                  - cell "Maya Chen" [ref=e100]
+                  - cell "Assigned" [ref=e101]:
+                    - generic [ref=e102]:
+                      - img [ref=e103]
+                      - text: Assigned
+                - row "CRM Noah Patel Assigned" [ref=e106]:
+                  - cell "CRM" [ref=e107]
+                  - cell "Noah Patel" [ref=e108]
+                  - cell "Assigned" [ref=e109]:
+                    - generic [ref=e110]:
+                      - img [ref=e111]
+                      - text: Assigned
+                - row "Legal Elena Rossi Assigned" [ref=e114]:
+                  - cell "Legal" [ref=e115]
+                  - cell "Elena Rossi" [ref=e116]
+                  - cell "Assigned" [ref=e117]:
+                    - generic [ref=e118]:
+                      - img [ref=e119]
+                      - text: Assigned
+                - row "Risk Omar Haddad Assigned" [ref=e122]:
+                  - cell "Risk" [ref=e123]
+                  - cell "Omar Haddad" [ref=e124]
+                  - cell "Assigned" [ref=e125]:
+                    - generic [ref=e126]:
+                      - img [ref=e127]
+                      - text: Assigned
+                - row "Localization Anika Weber Assigned" [ref=e130]:
+                  - cell "Localization" [ref=e131]
+                  - cell "Anika Weber" [ref=e132]
+                  - cell "Assigned" [ref=e133]:
+                    - generic [ref=e134]:
+                      - img [ref=e135]
+                      - text: Assigned
+                - row "Analytics Jonas Reed Assigned" [ref=e138]:
+                  - cell "Analytics" [ref=e139]
+                  - cell "Jonas Reed" [ref=e140]
+                  - cell "Assigned" [ref=e141]:
+                    - generic [ref=e142]:
+                      - img [ref=e143]
+                      - text: Assigned
+  - alert [ref=e146]

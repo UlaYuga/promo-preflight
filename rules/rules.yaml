@@ -1,0 +1,430 @@
+version: 1
+artifact: promo_preflight_rules
+runtime_note: This YAML artifact is documentation only; runtime behavior is implemented in TypeScript check modules.
+rules:
+  - id: channel_consistency
+    public_name: Channel consistency
+    description_en: Compares approved offer basics, terms, and supplied channel assets for conflicting amounts, currencies, percentages, or validity windows.
+    description_ru: Сравнивает утвержденные параметры предложения, условия и материалы каналов на расхождения в суммах, валюте, процентах или сроках действия.
+    severity: HIGH
+    owner: crm
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags when channel copy or terms contain offer claims that conflict with the structured offer fields, or when supplied channel fields are empty.
+    suggested_fix: Align channel copy and terms with the approved offer fields, or update the structured offer fields before launch review.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/channel-consistency.ts.
+
+  - id: terms_robustness
+    public_name: Terms robustness
+    description_en: Checks whether terms include critical restrictions and recommended guardrails for the configured promotional mechanics.
+    description_ru: Проверяет, содержат ли условия критические ограничения и рекомендуемые защитные формулировки для настроенной механики промо.
+    severity: HIGH
+    owner: legal
+    channels:
+      - landing
+      - onsite
+      - email
+    condition: Flags missing critical clauses such as wagering base, max bet, eligibility, expiry, max cashout, or ambiguous restriction wording.
+    suggested_fix: Add neutral, owner-approved clauses for missing critical terms and clarify ambiguous restrictions before launch review.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/terms-robustness.ts.
+
+  - id: offer_math_sanity
+    public_name: Offer math sanity
+    description_en: Performs deterministic arithmetic checks on structured offer fields to catch implausible caps, percentages, and wagering values.
+    description_ru: Выполняет детерминированные арифметические проверки параметров предложения, чтобы найти неправдоподобные лимиты, проценты и вейджерные значения.
+    severity: MEDIUM
+    owner: product
+    channels:
+      - landing
+      - onsite
+      - email
+      - in_app
+    condition: Flags contradictions such as max cashout below max bonus, unclear wagering multipliers, missing max bet, or unusually high wagering burden.
+    suggested_fix: Correct the structured offer math, clarify the wagering base, and route high-burden mechanics to Product or Risk confirmation.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/offer-math-sanity.ts.
+
+  - id: jurisdictional_risk_signals
+    public_name: Jurisdictional risk signals
+    description_en: Scans supplied copy, terms, and GEO metadata for high-risk certainty claims or missing age and responsible-use signals.
+    description_ru: Проверяет предоставленные тексты, условия и GEO-метаданные на рискованные гарантированные утверждения или отсутствие возрастных и ответственных дисклеймеров.
+    severity: HIGH
+    owner: legal
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags certainty claims, missing age or responsible-use wording in regulated review contexts, and Brazil locale or currency mismatches.
+    suggested_fix: Replace certainty wording with neutral mechanics and add required age, responsible-use, locale, or currency wording for review.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/jurisdictional-risk-signals.ts.
+
+  - id: localization_qa
+    public_name: Localization QA
+    description_en: Checks locale, GEO, currency, language hints, and date formats for cross-market consistency.
+    description_ru: Проверяет локаль, GEO, валюту, языковые признаки и форматы дат на согласованность для разных рынков.
+    severity: MEDIUM
+    owner: localization
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags mismatched currency signals, English-only copy for pt-BR context, or ambiguous numeric dates.
+    suggested_fix: Align copy, terms, currency, and metadata with the selected locale, and use unambiguous date formats.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/localization-qa.ts.
+
+  - id: launch_ownership
+    public_name: Launch ownership
+    description_en: Verifies launch owner coverage, owner statuses, and follow-up dates for the operational handoff.
+    description_ru: Проверяет покрытие владельцами запуска, статусы согласования и даты последующих действий для операционной передачи.
+    severity: MEDIUM
+    owner: product
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags missing Product, Legal, Risk, CRM, Localization, or Analytics owners, blocked owners, pending approvals, or pending rows without due dates.
+    suggested_fix: Assign missing owners, resolve blocked statuses, and add due dates for pending sign-offs before launch readiness.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/launch-ownership.ts.
+
+  - id: link_qa
+    public_name: Link QA
+    description_en: Validates campaign link shape, expected-domain alignment, and required UTM tracking parameters.
+    description_ru: Проверяет корректность ссылок кампании, соответствие ожидаемому домену и обязательные UTM-параметры.
+    severity: MEDIUM
+    owner: analytics
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags malformed or unsupported URLs, links that do not match expected domains, missing UTM parameters, or unexplained multiple destination domains.
+    suggested_fix: Replace malformed URLs, align destinations with approved domains, and add required UTM tracking parameters.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/link-qa.ts.
+
+  - id: format_qa
+    public_name: Format QA
+    description_en: Checks asset fields against channel-specific character limits and flags empty or oversized content.
+    description_ru: Проверяет поля материалов на соответствие символьным лимитам каналов и находит пустые или превышенные поля.
+    severity: MEDIUM
+    owner: crm
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags asset fields that are empty, exceed hard limits by 20%+, exceed hard limits, or reach soft limits for the target channel.
+    suggested_fix: Rewrite fields within hard limits, add missing copy for empty fields, or tighten copy near soft limits.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/format-qa.ts.
+
+  - id: risk_free_with_wagering
+    source_check_id: jurisdictional_risk_signals
+    public_name: Risk-free claim with wagering
+    description_en: Flags risk-free or no-risk promotional copy when wagering or playthrough mechanics are present.
+    description_ru: Находит формулировки risk-free или no-risk, когда в механике есть wagering или playthrough.
+    severity: HIGH
+    owner: legal
+    jurisdictions:
+      - Global
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags supplied copy or terms that combine certainty wording such as risk-free, no risk, or cannot lose with wagering terms.
+    suggested_fix: Replace certainty wording with neutral mechanics and state wagering conditions clearly.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/jurisdictional-risk-signals.ts.
+
+  - id: bonus_amount_mismatch_across_channels
+    source_check_id: channel_consistency
+    public_name: Bonus amount mismatch across channels
+    description_en: Compares structured bonus amount, percentage, and cap fields against channel copy and terms.
+    description_ru: Сравнивает сумму бонуса, процент и лимит из структурных полей с текстами каналов и условиями.
+    severity: HIGH
+    owner: crm
+    jurisdictions:
+      - Global
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags when channel assets or terms contain amounts or percentages that differ from approved offer fields.
+    suggested_fix: Align all channel claims with the approved offer fields before launch review.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/channel-consistency.ts.
+
+  - id: wagering_window_shorter_than_bonus_expiry
+    source_check_id: channel_consistency
+    public_name: Wagering window shorter than bonus expiry
+    description_en: Detects mismatched timing when wagering must be completed before the broader bonus expiry window.
+    description_ru: Находит несогласованные сроки, когда wagering должен быть выполнен раньше общего срока действия бонуса.
+    severity: MEDIUM
+    owner: legal
+    jurisdictions:
+      - Global
+    channels:
+      - landing
+      - onsite
+      - email
+    condition: Flags terms or assets that mention a shorter wagering window alongside a longer bonus validity or expiry window.
+    suggested_fix: State both timing windows explicitly and align channel urgency copy with approved terms.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/channel-consistency.ts.
+
+  - id: missing_utm_on_cta
+    source_check_id: link_qa
+    public_name: Missing UTM on CTA
+    description_en: Validates that tracked CTA links include source, medium, and campaign UTM parameters.
+    description_ru: Проверяет, что CTA-ссылки для трекинга содержат utm_source, utm_medium и utm_campaign.
+    severity: LOW
+    owner: analytics
+    jurisdictions:
+      - Global
+    channels:
+      - email
+      - push
+      - landing
+      - sms
+      - in_app
+    condition: Flags CTA links marked as tracked when required UTM parameters are absent.
+    suggested_fix: Add the required UTM parameters to CTA links before launch.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/link-qa.ts.
+
+  - id: currency_mismatch_across_channels
+    source_check_id: localization_qa
+    public_name: Currency mismatch across channels
+    description_en: Checks that currency mentions in terms and channel assets match campaign metadata and jurisdiction context.
+    description_ru: Проверяет, что валюты в условиях и каналах соответствуют метаданным кампании и GEO-контексту.
+    severity: HIGH
+    owner: localization
+    jurisdictions:
+      - Global
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags currency mentions that differ from metadata currency, including expected BRL for BR context.
+    suggested_fix: Align metadata, copy, and terms currency before owner review.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/localization-qa.ts.
+
+  - id: free_spins_without_eligible_games
+    source_check_id: terms_robustness
+    public_name: Free spins without eligible games
+    description_en: Requires eligible or excluded game scope when free-spin style mechanics are used.
+    description_ru: Требует указания eligible или excluded games для механик типа free spins.
+    severity: HIGH
+    owner: legal
+    jurisdictions:
+      - EU
+      - Curacao
+      - Other
+    channels:
+      - landing
+      - onsite
+      - email
+      - in_app
+    condition: Flags free-spin copy or terms when neither offer basics nor terms define eligible or excluded games.
+    suggested_fix: Add eligible or excluded game scope to the terms and affected channel copy.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/terms-robustness.ts.
+
+  - id: br_market_missing_responsible_gaming
+    source_check_id: jurisdictional_risk_signals
+    public_name: BR market missing responsible-use wording
+    description_en: Requires responsible-use wording for BR jurisdiction bundles.
+    description_ru: Требует responsible-use формулировку для пакетов с BR GEO.
+    severity: HIGH
+    owner: legal
+    jurisdictions:
+      - BR
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags BR metadata when supplied copy and terms do not include responsible-use wording.
+    suggested_fix: Add BR-appropriate responsible-use wording to the terms and visible promotional copy.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/jurisdictional-risk-signals.ts.
+
+  - id: eu_market_missing_age_verification_disclaimer
+    source_check_id: jurisdictional_risk_signals
+    public_name: EU market missing age verification disclaimer
+    description_en: Requires age or adult-only disclaimer signals for EU jurisdiction bundles.
+    description_ru: Требует возрастной дисклеймер или adult-only сигнал для пакетов с EU GEO.
+    severity: HIGH
+    owner: legal
+    jurisdictions:
+      - EU
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags EU metadata when supplied copy and terms do not include age verification wording.
+    suggested_fix: Add age-verification wording to the terms and visible promotional copy.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/jurisdictional-risk-signals.ts.
+
+  - id: max_bet_during_wagering_undefined
+    source_check_id: offer_math_sanity
+    public_name: Max bet during wagering undefined
+    description_en: Requires max bet to be defined when wagering or playthrough mechanics are configured.
+    description_ru: Требует max bet, если в механике указаны wagering или playthrough условия.
+    severity: MEDIUM
+    owner: risk
+    jurisdictions:
+      - Global
+    channels:
+      - landing
+      - onsite
+      - email
+      - in_app
+    condition: Flags offer basics that include wagering but do not define a max bet value.
+    suggested_fix: Add max bet for the active wagering period before review.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/offer-math-sanity.ts.
+
+  - id: vip_eligibility_undefined
+    source_check_id: terms_robustness
+    public_name: VIP eligibility undefined
+    description_en: Requires explicit eligibility rules when VIP or invite-only mechanics are referenced.
+    description_ru: Требует явных eligibility rules, если упоминаются VIP или invite-only механики.
+    severity: HIGH
+    owner: product
+    jurisdictions:
+      - CIS
+      - Other
+      - Global
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - in_app
+    condition: Flags VIP copy or terms when eligibility rules are absent or only generic.
+    suggested_fix: Define qualifying audience, exclusions, and approval owner for the VIP mechanic.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/terms-robustness.ts.
+
+  - id: withdrawal_terms_missing
+    source_check_id: terms_robustness
+    public_name: Withdrawal terms missing
+    description_en: Requires withdrawal or cashout handling when bonus value, cashback, or max cashout mechanics are present.
+    description_ru: Требует описание withdrawal или cashout условий для бонусной ценности, cashback или max cashout механик.
+    severity: MEDIUM
+    owner: legal
+    jurisdictions:
+      - Global
+    channels:
+      - landing
+      - onsite
+      - email
+      - in_app
+    condition: Flags value-bearing offers when terms do not mention withdrawal, cashout, or payout handling.
+    suggested_fix: Add withdrawal or cashout handling in neutral owner-approved language.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/terms-robustness.ts.
+
+  - id: cashback_percentage_mismatch
+    source_check_id: channel_consistency
+    public_name: Cashback percentage mismatch
+    description_en: Compares cashback percentage claims across offer basics, terms, and channel assets.
+    description_ru: Сравнивает cashback percentage в offer basics, условиях и каналах.
+    severity: HIGH
+    owner: crm
+    jurisdictions:
+      - CIS
+      - Other
+      - Global
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - in_app
+    condition: Flags cashback bundles where channel or terms percentages differ from the structured bonus percentage.
+    suggested_fix: Align cashback percentages across all supplied campaign surfaces.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/channel-consistency.ts.
+
+  - id: min_deposit_undefined_or_inconsistent
+    source_check_id: offer_math_sanity
+    public_name: Minimum deposit undefined or inconsistent
+    description_en: Checks that minimum deposit is defined for deposit-triggered mechanics and consistent with terms.
+    description_ru: Проверяет, что minimum deposit задан для депозитных механик и согласован с условиями.
+    severity: MEDIUM
+    owner: product
+    jurisdictions:
+      - Global
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags welcome or reload bundles with missing minimum deposit or conflicting minimum deposit amounts in terms.
+    suggested_fix: Add one approved minimum deposit value and align all references to it.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/offer-math-sanity.ts.
+
+  - id: geo_restriction_missing
+    source_check_id: jurisdictional_risk_signals
+    public_name: GEO restriction missing
+    description_en: Requires supported or restricted geography wording for non-generic jurisdiction bundles.
+    description_ru: Требует формулировку supported или restricted geography для non-generic GEO пакетов.
+    severity: HIGH
+    owner: legal
+    jurisdictions:
+      - BR
+      - EU
+      - CIS
+      - Curacao
+      - Other
+    channels:
+      - landing
+      - onsite
+      - email
+      - in_app
+    condition: Flags non-generic GEO metadata when terms omit country, territory, availability, or restriction wording.
+    suggested_fix: Add clear GEO availability or restriction language to the terms.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/jurisdictional-risk-signals.ts.
+
+  - id: time_limited_offer_without_end_date
+    source_check_id: channel_consistency
+    public_name: Time-limited offer without end date
+    description_en: Requires explicit end date when assets use today-only, limited-time, or urgency wording.
+    description_ru: Требует явную дату окончания, если в каналах используются today-only, limited-time или urgency формулировки.
+    severity: MEDIUM
+    owner: crm
+    jurisdictions:
+      - Global
+    channels:
+      - email
+      - push
+      - onsite
+      - landing
+      - sms
+      - in_app
+    condition: Flags urgency copy when neither metadata nor terms provide a clear end date or validity period.
+    suggested_fix: Add the approved end date or remove unsupported urgency wording.
+    runtime_note: Documentation only; runtime behavior is implemented in TypeScript in lib/checks/modules/channel-consistency.ts.

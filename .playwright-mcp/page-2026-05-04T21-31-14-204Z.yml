@@ -1,0 +1,142 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e104]
+  - generic [ref=e665]:
+    - complementary [ref=e666]:
+      - generic [ref=e667]:
+        - paragraph [ref=e670]: Preflight
+        - paragraph [ref=e671]: Internal ops workspace
+      - navigation "Workspace" [ref=e672]:
+        - button "01 Campaigns G C" [ref=e673] [cursor=pointer]:
+          - generic [ref=e674]: "01"
+          - generic [ref=e675]: Campaigns
+          - generic [ref=e677]: G C
+        - button "02 Intake G I" [ref=e678] [cursor=pointer]:
+          - generic [ref=e679]: "02"
+          - generic [ref=e680]: Intake
+          - generic [ref=e682]: G I
+        - button "03 Risk Report G R" [ref=e683] [cursor=pointer]:
+          - generic [ref=e684]: "03"
+          - generic [ref=e685]: Risk Report
+          - generic [ref=e687]: G R
+        - button "04 Handoff G H" [ref=e688] [cursor=pointer]:
+          - generic [ref=e689]: "04"
+          - generic [ref=e690]: Handoff
+          - generic [ref=e692]: G H
+        - button "05 Launch Readiness G L" [ref=e694] [cursor=pointer]:
+          - generic [ref=e695]: "05"
+          - generic [ref=e696]: Launch Readiness
+          - generic [ref=e698]: G L
+        - button "06 Rules G U" [ref=e699] [cursor=pointer]:
+          - generic [ref=e700]: "06"
+          - generic [ref=e701]: Rules
+          - generic [ref=e703]: G U
+        - button "07 Owners G O" [ref=e704] [cursor=pointer]:
+          - generic [ref=e705]: "07"
+          - generic [ref=e706]: Owners
+          - generic [ref=e708]: G O
+      - generic [ref=e709]:
+        - button "Search and commands ⌘K" [ref=e710] [cursor=pointer]:
+          - img [ref=e711]
+          - generic [ref=e714]: Search and commands
+          - generic [ref=e715]: ⌘K
+        - generic [ref=e716]:
+          - generic [ref=e717]: M
+          - generic [ref=e718]:
+            - paragraph [ref=e719]: Maya Chen
+            - paragraph [ref=e720]: Product
+    - generic [ref=e721]:
+      - banner [ref=e722]:
+        - generic [ref=e723]:
+          - generic [ref=e726]: Engine unavailable
+          - generic [ref=e727]:
+            - generic "Language" [ref=e728]:
+              - button "EN" [ref=e729] [cursor=pointer]
+              - button "RU" [ref=e730] [cursor=pointer]
+            - button "Search ⌘K" [ref=e731] [cursor=pointer]:
+              - img [ref=e732]
+              - generic [ref=e735]: Search
+              - generic [ref=e736]: ⌘K
+            - button "Run check ↵" [ref=e737] [cursor=pointer]:
+              - img [ref=e738]
+              - text: Run check
+              - generic [ref=e740]: ↵
+      - main [ref=e741]:
+        - generic [ref=e742]:
+          - generic [ref=e744]:
+            - paragraph [ref=e745]: 05 / Handoff
+            - heading "Prepare handoff summary" [level=2] [ref=e746]
+            - paragraph [ref=e747]: Generate a Slack-ready summary so the launch team gets context without opening the tool.
+          - generic [ref=e748]:
+            - generic [ref=e749]:
+              - heading "Slack preview" [level=3] [ref=e750]
+              - generic [ref=e752]:
+                - img [ref=e754]
+                - generic [ref=e756]:
+                  - generic [ref=e757]:
+                    - generic [ref=e758]: Preflight Bot
+                    - generic [ref=e759]: 05.05.2026
+                  - generic [ref=e760]: "#promo-launches"
+                  - generic [ref=e761]:
+                    - paragraph [ref=e762]: Operator X BR Welcome
+                    - generic [ref=e764]: NO-GO
+                    - generic [ref=e765]:
+                      - paragraph [ref=e766]: Blockers
+                      - list [ref=e767]:
+                        - listitem [ref=e768]:
+                          - text: • Terms are missing critical restriction clauses for the configured promo mechanics. —
+                          - generic [ref=e769]: "@Legal"
+                        - listitem [ref=e770]:
+                          - text: • BR jurisdiction context is missing responsible-use wording. —
+                          - generic [ref=e771]: "@Legal"
+                        - listitem [ref=e772]:
+                          - text: • Non-generic jurisdiction context is missing GEO availability or restriction wording. —
+                          - generic [ref=e773]: "@Legal"
+                        - listitem [ref=e774]:
+                          - text: • Regulated GEO context is missing basic age or responsible-use signals. —
+                          - generic [ref=e775]: "@Legal"
+                    - generic [ref=e777]: 1 Warnings
+                    - generic [ref=e778]:
+                      - generic [ref=e779]: "Target launch:"
+                      - generic [ref=e780]: 2026-06-10
+                    - link "Open Risk Report" [ref=e781] [cursor=pointer]:
+                      - /url: /app/risk-report
+                      - text: Open Risk Report
+                      - img [ref=e782]
+            - generic [ref=e787]:
+              - generic [ref=e788]:
+                - generic [ref=e789]: Channel
+                - combobox [ref=e790]:
+                  - option "#promo-launches" [selected]
+                  - option "#general"
+                  - option "#releases"
+              - generic [ref=e791]:
+                - generic [ref=e792]: Mention level
+                - generic [ref=e793]:
+                  - generic [ref=e794] [cursor=pointer]:
+                    - radio "Owners only" [checked] [ref=e795]
+                    - generic [ref=e796]: Owners only
+                  - generic [ref=e797] [cursor=pointer]:
+                    - radio "Owners + leads" [ref=e798]
+                    - generic [ref=e799]: Owners + leads
+                  - generic [ref=e800] [cursor=pointer]:
+                    - radio "Full team" [ref=e801]
+                    - generic [ref=e802]: Full team
+              - generic [ref=e803] [cursor=pointer]:
+                - checkbox "Include passed checks summary" [ref=e804]
+                - generic [ref=e805]: Include passed checks summary
+              - generic [ref=e806]:
+                - generic [ref=e807]: Tone
+                - combobox [ref=e808]:
+                  - option "Neutral" [selected]
+                  - option "Urgent"
+                  - option "Friendly"
+          - generic [ref=e809]:
+            - button "Copy to clipboard" [ref=e810] [cursor=pointer]:
+              - img [ref=e811]
+              - text: Copy to clipboard
+            - button "Export as Markdown" [ref=e814] [cursor=pointer]:
+              - img [ref=e815]
+              - text: Export as Markdown
+            - button "Compare versions" [disabled] [ref=e819]:
+              - text: Compare versions
+              - img [ref=e820]

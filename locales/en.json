@@ -1,0 +1,564 @@
+{
+  "meta": {
+    "target": "en",
+    "instruction": "Native English UI copy. Do not change keys. Preserve placeholders like {campaignName}, {count}, {step}, {version}, {path}. Keep product name Promo Preflight unchanged. Avoid technical storage guarantees in user-facing copy.",
+    "keep_english": [
+      "Promo Preflight",
+      "Email",
+      "Push",
+      "Onsite",
+      "Landing",
+      "SMS",
+      "In-app",
+      "T&C",
+      "CRM",
+      "Legal",
+      "Risk",
+      "Analytics",
+      "Project / Delivery",
+      "Localization",
+      "Critical",
+      "High",
+      "Medium",
+      "Low",
+      "PASS",
+      "WARN",
+      "FAIL",
+      "N/A",
+      "Markdown",
+      "Slack",
+      "EX09 sample promo content"
+    ]
+  },
+  "languageGate": {
+    "title": "Choose language",
+    "subtitle": "Choose the interface language for this demo.",
+    "english": "English",
+    "russian": "Русский",
+    "note": "You can switch languages later from the header."
+  },
+  "languageToggle": {
+    "label": "Language",
+    "en": "EN",
+    "ru": "RU"
+  },
+  "appShell": {
+    "workspaceLabel": "Demo workspace",
+    "sideNote": "Portfolio MVP for campaign launch checks. Shows the workflow without connecting to production systems.",
+    "mobileNotice": "Portfolio demo. Use a larger screen to access the full workspace navigation."
+  },
+  "sidebarNav": {
+    "searchCmd": "Search and commands"
+  },
+  "topbar": {
+    "engineOffline": "",
+    "search": "Search",
+    "runPreflight": "Run check"
+  },
+  "nav": {
+    "intake": "Campaign bundle",
+    "intakeDescription": "Inputs and materials",
+    "riskReport": "Risk Report",
+    "riskReportDescription": "Stages and issues",
+    "handoff": "Handoff",
+    "handoffDescription": "Summary for launch",
+    "readiness": "Launch Readiness",
+    "readinessDescription": "Owners and blockers",
+    "rules": "Rules",
+    "rulesDescription": "Rule docs",
+    "owners": "Owners",
+    "ownersDescription": "Roles and defaults",
+    "campaigns": "Campaigns",
+    "campaignsDescription": "Version history",
+    "versiondiff": "Version comparison"
+  },
+  "welcome": {
+    "eyebrow": "Start here · 90-second tour",
+    "headline": "Promo Preflight",
+    "positioning": "Pre-launch checks for regulated promo campaigns",
+    "body": "Load a campaign bundle, run the check, review blockers, assign owners, prepare a handoff summary, and compare versions without changing the existing workflow.",
+    "openIntake": "Open campaign bundle",
+    "testCases": "Sample cases",
+    "workflowTitle": "Workflow at a glance",
+    "workflowSubtitle": "From loading a campaign bundle to comparing versions",
+    "safetyNote": "Portfolio demo workspace.",
+    "strip": "8-stage check · 23 rules · 6 owners · EN/RU",
+    "workflowPreview": [
+      {
+        "label": "Load the campaign bundle",
+        "description": "Metadata, offer math, T&C text, and channel copy"
+      },
+      {
+        "label": "Run the check",
+        "description": "A 7-stage check runs against 23 rules"
+      },
+      {
+        "label": "Review blockers",
+        "description": "Risk Report shows what blocks launch and who needs to act"
+      },
+      {
+        "label": "Prepare the handoff summary",
+        "description": "Copy a short summary for Markdown or Slack"
+      },
+      {
+        "label": "Compare versions",
+        "description": "See what changed between campaign versions"
+      }
+    ],
+    "metrics": {
+      "checks": "check stages",
+      "rules": "rules",
+      "owners": "owners",
+      "languages": "languages"
+    }
+  },
+  "tour": {
+    "eyebrow": "Guided tour",
+    "takeTour": "Start 90-second tour",
+    "restartTour": "Restart tour",
+    "continueFromStep": "Continue tour · {step} / 7",
+    "desktopOnly": "Tour works best on desktop.",
+    "mobileDisabled": "Tour works best on desktop.",
+    "mobileDisabledShort": "Desktop tour",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "done": "Done",
+    "steps": [
+      {
+        "title": "Start with active campaigns",
+        "description": "The workspace lists every saved campaign check with its status, open issues, and the owner responsible for the next step."
+      },
+      {
+        "title": "Load a campaign bundle",
+        "description": "All campaign facts in one place: metadata, offer math, terms, channel assets, links, and launch owners."
+      },
+      {
+        "title": "Run the preflight check",
+        "description": "One click runs eight checks across the campaign and maps every finding against the rule set before launch."
+      },
+      {
+        "title": "Review what blocks launch",
+        "description": "The Risk Report ranks issues by severity so the team sees blockers, warnings, and clean checks at a glance."
+      },
+      {
+        "title": "Turn findings into action",
+        "description": "Each issue shows the affected field, evidence, suggested fix, and the owner who should resolve it."
+      },
+      {
+        "title": "Check launch readiness",
+        "description": "The readiness board collects blockers and owner sign-offs into one go/no-go decision before handoff."
+      },
+      {
+        "title": "Keep the process repeatable",
+        "description": "Twenty-three rules backed by eight checks make the workflow auditable: see what was checked, who owns it, and what changed between runs."
+      }
+    ]
+  },
+  "common": {
+    "loading": "Loading",
+    "cancel": "Cancel",
+    "save": "Save",
+    "copy": "Copy",
+    "reset": "Reset",
+    "clear": "Clear",
+    "close": "Close",
+    "view": "View",
+    "viewDiff": "View diff",
+    "none": "None",
+    "unassigned": "Unassigned",
+    "notAssigned": "Not assigned",
+    "notRequired": "Not required",
+    "savedSuccessfully": "Saved",
+    "saveFailed": "Couldn't save.",
+    "campaignNotFound": "Campaign not found",
+    "versionNotFound": "Version not found",
+    "clearDemoData": "Clear demo data",
+    "demoDataCleared": "Demo data cleared"
+  },
+  "intake": {
+    "eyebrow": "02 / Campaign bundle",
+    "title": "Campaign bundle",
+    "subtitle": "Add campaign facts, channel copy, terms, links, and owner status before running the check.",
+    "workedExamples": "Sample cases",
+    "workedExamplesSubtitle": "Load a sample case to test a specific rule.",
+    "closeExamples": "Close cases",
+    "load": "Load",
+    "draftSaved": "Draft saved.",
+    "noSavedDraft": "No draft yet. Changes save automatically.",
+    "draftCleared": "Draft cleared.",
+    "runPreflight": "Run check",
+    "runPreflightSubtitle": "Open the Risk Report after the check.",
+    "runPreflightReady": "Required fields are complete.",
+    "runPreflightMissing": "Fill in the required fields before running the check.",
+    "unknownRunError": "Something went wrong while running the check.",
+    "sections": {
+      "metadata": "Campaign metadata",
+      "offer": "Offer basics",
+      "assets": "Copy and materials",
+      "links": "Links",
+      "owners": "Owners",
+      "notes": "Notes"
+    },
+    "fields": {
+      "campaignName": "Campaign name",
+      "operatorLabel": "Operator",
+      "promoType": "Promo type",
+      "geo": "GEO / jurisdiction",
+      "locale": "Language / locale",
+      "currency": "Currency",
+      "launchDate": "Launch date",
+      "channelsIncluded": "Channels",
+      "minDeposit": "Min deposit",
+      "bonusAmount": "Bonus amount",
+      "bonusPercentage": "Bonus percentage",
+      "maxBonus": "Max bonus",
+      "wageringRequirement": "Wagering requirement",
+      "maxCashout": "Max cashout",
+      "maxBet": "Max bet",
+      "cooldown": "Cooldown",
+      "eligibleGames": "Eligible games",
+      "contribution": "Contribution",
+      "eligibilityRules": "Eligibility rules",
+      "termsText": "T&C text",
+      "linkQa": "Link check",
+      "internalNotes": "Internal launch notes"
+    },
+    "placeholders": {
+      "operatorLabel": "Operator A",
+      "selectType": "Select type",
+      "selectJurisdiction": "Select jurisdiction",
+      "selectOperator": "Select operator",
+      "selectLocale": "Select locale",
+      "selectCurrency": "Select currency",
+      "currency": "EUR",
+      "ownerName": "Name or team"
+    },
+    "assetHint": "T&C is required. Add at least one Email, Push, or Onsite copy field.",
+    "requirements": {
+      "campaignName": "Campaign name",
+      "promoType": "Promo type",
+      "geo": "GEO / jurisdiction",
+      "locale": "Language / locale",
+      "termsText": "T&C text",
+      "asset": "At least one Email, Push, or Onsite asset",
+      "cta": "CTA URL for Link QA"
+    },
+    "exampleDescriptions": {
+      "EX01": "Email subject says 100% / €500 — offer says 50% / €300",
+      "EX02": "Terms are too short; max bet clause missing",
+      "EX03": "Max cashout (€100) lower than max bonus (€200)",
+      "EX04": "UKGC geo — copy says \"guaranteed outcome\" with no responsible gambling wording",
+      "EX05": "pt-BR locale with EUR currency",
+      "EX06": "Only the product owner is assigned — Legal, Risk, and Analytics are missing",
+      "EX07": "CTA URL is missing a scheme (not a valid URL)",
+      "EX08": "Push title is 69 characters; hard limit is 55 (warning threshold 66)",
+      "EX09": "BR welcome offer is missing responsible-gambling wording, GEO terms, and max-bet terms",
+      "EX10": "EU free spins offer is missing eligible games and age wording",
+      "EX11": "CIS VIP cashback is missing eligibility rules and has a percentage mismatch"
+    }
+  },
+  "riskReport": {
+    "eyebrow": "03 / Risk Report",
+    "title": "Check results",
+    "subtitle": "Report for {campaignName}. Issues are grouped by severity, with suggested fixes and assigned owners.",
+    "savedReport": "Saved report",
+    "offlineSample": "Sample report",
+    "savedReportInvalid": "The saved report cannot be shown because its data is invalid.",
+    "useFallback": "Use sample report",
+    "summary": {
+      "overallStatus": "Overall status",
+      "criticalBlockers": "Critical blockers",
+      "generated": "Generated",
+      "passWarnFail": "Pass / warn / fail"
+    },
+    "checks": {
+      "title": "Check stages",
+      "severity": "Severity",
+      "issues": "Issues",
+      "fixes": "Fixes",
+      "confidence": "Confidence"
+    },
+    "export": {
+      "title": "Export",
+      "copyReady": "Plain text, ready to copy.",
+      "copied": "Copied {format} export.",
+      "failed": "Couldn't copy to the clipboard. Use the text field below.",
+      "manualText": "Copy the text below manually.",
+      "selectedTextAria": "Selected export text"
+    },
+    "issueTable": {
+      "title": "Issues",
+      "check": "Stage",
+      "severity": "Severity",
+      "detectedIssue": "Issue",
+      "evidence": "Evidence",
+      "suggestedFix": "Suggested fix",
+      "owner": "Owner",
+      "blocker": "Blocker"
+    },
+    "issueDetail": {
+      "title": "Issue detail",
+      "check": "Check stage",
+      "fullIssueExplanation": "Issue explanation",
+      "sourceFieldsAffected": "Affected source fields",
+      "evidence": "Evidence",
+      "suggestedFix": "Suggested fix",
+      "whyItMatters": "Why it matters",
+      "ownerToAssign": "Owner",
+      "notSpecified": "Not specified",
+      "whyBlocker": "This is a blocker because the campaign should not move to launch readiness until the assigned owner resolves it or accepts the risk.",
+      "whyHighSeverity": "This needs owner review because it may affect approval, handoff clarity, or post-launch handling.",
+      "whyDefault": "Clean this up before handoff so launch owners have clear, traceable actions."
+    },
+    "empty": {
+      "noIssueSelected": "No issue selected",
+      "description": "Issue details, affected fields, suggested fix, and assignment appear here."
+    }
+  },
+  "readiness": {
+    "eyebrow": "04 / Launch Readiness",
+    "title": "Owners, blockers, dependencies",
+    "subtitle": "Readiness board for {campaignName}, based on the current Risk Report and owner data.",
+    "goNoGo": "Go / No-Go",
+    "savedReport": "Saved report",
+    "offlineSample": "Sample readiness",
+    "savedReportInvalid": "The saved report data is invalid, so sample readiness is shown.",
+    "schemaInvalid": "The readiness data did not match the schema, so sample readiness is shown.",
+    "notUsedTitle": "Saved report not used",
+    "states": {
+      "ready": "Ready",
+      "readyWithWarnings": "Ready with warnings",
+      "blocked": "Blocked",
+      "needsReview": "Needs review"
+    },
+    "stateDescriptions": {
+      "ready": "The linked Risk Report has no FAIL or WARN checks.",
+      "readyWithWarnings": "The linked Risk Report has no FAIL checks, but review dependencies remain.",
+      "blocked": "One or more critical or high-severity blockers must be resolved before launch handoff.",
+      "needsReview": "Uncertainty or low confidence on a core check requires manual review before go/no-go."
+    },
+    "metrics": {
+      "fail": "FAIL",
+      "warn": "WARN",
+      "blockers": "Blockers"
+    },
+    "ownerMatrix": {
+      "title": "Owner matrix",
+      "role": "Role",
+      "owner": "Owner",
+      "status": "Status",
+      "linkedIssues": "Linked issues",
+      "dueDate": "Due date",
+      "notes": "Notes",
+      "none": "None",
+      "noNote": "No readiness note"
+    },
+    "blockers": {
+      "title": "Blockers",
+      "emptyTitle": "No blockers",
+      "emptyDescription": "FAIL issues and missing Legal or Risk owner assignments appear here.",
+      "action": "Action",
+      "status": "Status",
+      "due": "Due"
+    },
+    "dependencies": {
+      "title": "Dependencies",
+      "emptyTitle": "No dependencies",
+      "emptyDescription": "WARN issues from the Risk Report appear here as review dependencies.",
+      "dependency": "Dependency",
+      "dependsOn": "Depends on",
+      "owner": "Owner",
+      "status": "Status",
+      "notes": "Notes",
+      "riskReport": "Risk Report",
+      "ownerReviewRequired": "Owner review required"
+    },
+    "checklist": {
+      "title": "Launch checklist"
+    },
+    "ownerNotes": {
+      "resolveBlockers": "Resolve linked blockers before go/no-go review.",
+      "reviewIssues": "Review linked issues and confirm the launch handoff path.",
+      "noAction": "No linked readiness action.",
+      "noActionGenerated": "No action generated from the current Risk Report.",
+      "confirmStatus": "Confirm owner status before launch handoff."
+    }
+  },
+  "rules": {
+    "pageEyebrow": "Rules",
+    "pageTitle": "Rules library",
+    "pageSubtitle": "Read-only view of deterministic check stages and domain rules. Runtime behavior stays in TypeScript modules.",
+    "artifactTitle": "Documented check stages",
+    "artifactSubtitle": "Reference documentation for the existing TypeScript check modules. These rows are not evaluated at runtime.",
+    "showing": "Showing {shown} of {total} rules",
+    "filters": {
+      "severity": "Severity",
+      "owner": "Owner",
+      "jurisdiction": "Jurisdiction",
+      "all": "All {label}"
+    },
+    "columns": {
+      "rule": "Rule",
+      "description": "Description",
+      "severity": "Severity",
+      "owner": "Owner",
+      "jurisdiction": "Jurisdiction",
+      "channels": "Channels",
+      "condition": "Condition",
+      "suggestedFix": "Suggested fix",
+      "source": "Source: {checkId}"
+    }
+  },
+  "owners": {
+    "pageEyebrow": "Owners",
+    "pageTitle": "Workspace owner settings",
+    "pageSubtitle": "Read-only owner assignments used in readiness and version views. Names come from workspace defaults or campaign overrides.",
+    "configBadge": "Workspace defaults",
+    "tableTitle": "Workspace owners",
+    "tableSubtitle": "Names come from workspace defaults. Saved campaigns can override them.",
+    "columns": {
+      "role": "Role",
+      "ownerName": "Owner name",
+      "assignment": "Assignment"
+    },
+    "assigned": "Assigned",
+    "notAssigned": "Not assigned"
+  },
+  "ownerOverrides": {
+    "title": "Owner overrides",
+    "subtitle": "Optional campaign-specific owner names. Saved records store only the role-to-name mapping.",
+    "current": "Current: {ownerName}",
+    "emptyUsesDefault": "Empty fields use the workspace defaults.",
+    "clearOverrides": "Clear overrides",
+    "saveOverrides": "Save overrides",
+    "saved": "Owner overrides saved",
+    "cleared": "Owner overrides cleared",
+    "campaignNotFound": "Campaign not found"
+  },
+  "campaigns": {
+    "pageEyebrow": "Versioning",
+    "pageTitle": "Campaigns",
+    "emptyTitle": "No campaigns saved yet",
+    "emptyDescription": "All your checks with version history will appear here. Start with a ready-made scenario or fill in the campaign bundle manually.",
+    "goToIntake": "Open campaign bundle",
+    "columns": {
+      "campaign": "Campaign",
+      "versions": "Versions",
+      "latestState": "Latest state",
+      "lastRun": "Last run"
+    },
+    "detailEyebrow": "Campaign",
+    "created": "Created {date} · {count} {versionWord}",
+    "versionsTitle": "Versions",
+    "version": "Version",
+    "readinessState": "Readiness state",
+    "blockers": "Blockers",
+    "createdColumn": "Created",
+    "versionSingular": "version",
+    "versionPlural": "versions"
+  },
+  "versionDiff": {
+    "eyebrow": "Version details",
+    "backToCampaign": "Back to {campaignName}",
+    "overall": "Overall",
+    "diffTitle": "Blocker comparison: v{prev} → v{current}",
+    "diffSummary": "{resolved} resolved · {newCount} new · {reopened} reopened · {stillOpen} still open",
+    "columns": {
+      "status": "Status",
+      "check": "Check",
+      "blocker": "Blocker",
+      "severity": "Severity",
+      "owner": "Owner"
+    },
+    "baselineTitle": "Blockers (v1 baseline)",
+    "noBlockers": "No blockers in this version.",
+    "statuses": {
+      "new": "New",
+      "resolved": "Resolved",
+      "stillOpen": "Still open",
+      "reopened": "Reopened"
+    }
+  },
+  "handoff": {
+    "eyebrow": "06 / Handoff",
+    "title": "Prepare handoff summary",
+    "subtitle": "Generate a Slack-ready summary so the launch team gets context without opening the tool.",
+    "preview": "Slack preview",
+    "channel": "Channel",
+    "mentionLevel": "Mention level",
+    "mentionOwners": "Owners only",
+    "mentionLeads": "Owners + leads",
+    "mentionFull": "Full team",
+    "includePassed": "Include passed checks summary",
+    "tone": "Tone",
+    "toneNeutral": "Neutral",
+    "toneUrgent": "Urgent",
+    "toneFriendly": "Friendly",
+    "copyBtn": "Copy to clipboard",
+    "exportBtn": "Export as Markdown",
+    "compareBtn": "Compare versions",
+    "emptyTitle": "No report to hand off",
+    "emptySubtitle": "Run a check first to prepare a handoff summary.",
+    "goToIntake": "Open campaign bundle",
+    "copied": "Copied",
+    "botName": "Preflight Bot",
+    "statusNeedsReview": "NEEDS REVIEW",
+    "statusGo": "GO",
+    "statusNoGo": "NO-GO",
+    "blockers": "Blockers",
+    "warnings": "Warnings",
+    "targetLaunch": "Target launch",
+    "openReport": "Open Risk Report"
+  },
+  "saveCampaign": {
+    "button": "Save run",
+    "title": "Save run to Campaigns",
+    "newCampaign": "New campaign",
+    "existingCampaign": "Existing campaign",
+    "campaignName": "Campaign name",
+    "jurisdiction": "Jurisdiction / GEO",
+    "selectCampaign": "Select campaign",
+    "noCampaigns": "No saved campaigns yet. Use \"New campaign\" first.",
+    "selectCampaignError": "Select a campaign",
+    "saved": "Saved",
+    "savedMessage": "Saved as version {version}. View it at {path}",
+    "viewVersionDetail": "View version details"
+  },
+  "palette": {
+    "placeholder": "Search, run, or jump",
+    "go": "Go",
+    "action": "Action",
+    "example": "Example",
+    "check": "Check",
+    "actions": {
+      "run": "Run check",
+      "save": "Save campaign as draft",
+      "exportMd": "Export Risk Report → Markdown",
+      "exportSlack": "Export Risk Report → Slack"
+    },
+    "footer": {
+      "move": "Move",
+      "open": "Open",
+      "stats": "23 rules · 8 check stages · 6 owners"
+    },
+    "noMatches": "No results"
+  },
+  "labels": {
+    "promoTypes": {
+      "welcome": "Welcome",
+      "reload": "Reload",
+      "freebet": "Freebet",
+      "cashback": "Cashback",
+      "tournament": "Tournament",
+      "loyalty": "Loyalty",
+      "reactivation": "Reactivation"
+    },
+    "ownerStatuses": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "blocked": "Blocked",
+      "not_required": "Not required"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e395]
+  - main [ref=e424]:
+    - generic [ref=e425]:
+      - generic [ref=e426]:
+        - generic [ref=e427]: promo preflight
+        - generic "Language" [ref=e428]:
+          - button "EN" [ref=e429] [cursor=pointer]
+          - button "RU" [ref=e430] [cursor=pointer]
+      - generic [ref=e431]:
+        - generic [ref=e396]:
+          - heading "Promo Preflight" [level=1] [ref=e397]:
+            - text: Promo
+            - text: Preflight
+          - paragraph [ref=e398]: Pre-launch checks for regulated promo campaigns
+          - paragraph [ref=e399]: Load a campaign bundle, run the check, review blockers, assign owners, prepare a handoff summary, and compare versions without changing the existing workflow.
+          - generic [ref=e400]:
+            - button "Start 90-second tour" [ref=e401] [cursor=pointer]:
+              - img [ref=e402]
+              - text: Start 90-second tour
+            - link "Open campaign bundle" [ref=e405] [cursor=pointer]:
+              - /url: /app/intake
+              - text: Open campaign bundle
+              - img [ref=e406]
+          - generic [ref=e408]:
+            - img [ref=e409]
+            - text: Portfolio demo workspace.
+        - complementary [ref=e432]:
+          - generic [ref=e433]:
+            - generic [ref=e434]:
+              - paragraph [ref=e435]: Workflow at a glance
+              - heading "From loading a campaign bundle to comparing versions" [level=2] [ref=e436]
+            - img [ref=e438]
+          - generic [ref=e441]:
+            - generic [ref=e442]:
+              - generic [ref=e443]: "01"
+              - generic [ref=e444]:
+                - paragraph [ref=e445]: Load the campaign bundle
+                - paragraph [ref=e446]: Metadata, offer math, T&C text, and channel copy
+              - img [ref=e447]
+            - generic [ref=e452]:
+              - generic [ref=e453]: "02"
+              - generic [ref=e454]:
+                - paragraph [ref=e455]: Run the check
+                - paragraph [ref=e456]: An 8-stage check runs against 23 rules
+              - img [ref=e457]
+            - generic [ref=e464]:
+              - generic [ref=e465]: "03"
+              - generic [ref=e466]:
+                - paragraph [ref=e467]: Review blockers
+                - paragraph [ref=e468]: Risk Report shows what blocks launch and who needs to act
+              - img [ref=e469]
+            - generic [ref=e474]:
+              - generic [ref=e475]: "04"
+              - generic [ref=e476]:
+                - paragraph [ref=e477]: Prepare the handoff summary
+                - paragraph [ref=e478]: Copy a short summary for Markdown or Slack
+              - img [ref=e479]
+            - generic [ref=e482]:
+              - generic [ref=e483]: "05"
+              - generic [ref=e484]:
+                - paragraph [ref=e485]: Compare versions
+                - paragraph [ref=e486]: See what changed between campaign versions
+              - img [ref=e487]
+          - generic [ref=e494]:
+            - generic [ref=e495]:
+              - paragraph [ref=e496]: "08"
+              - paragraph [ref=e497]: check stages
+            - generic [ref=e498]:
+              - paragraph [ref=e499]: "23"
+              - paragraph [ref=e500]: rules
+            - generic [ref=e501]:
+              - paragraph [ref=e502]: "06"
+              - paragraph [ref=e503]: owners
+            - generic [ref=e504]:
+              - paragraph [ref=e505]: "02"
+              - paragraph [ref=e506]: languages

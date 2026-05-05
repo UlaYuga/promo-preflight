@@ -1,0 +1,366 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e118]
+  - generic [ref=e119]:
+    - complementary [ref=e120]:
+      - generic [ref=e121]:
+        - paragraph [ref=e124]: Preflight
+        - paragraph [ref=e125]: Internal ops workspace
+      - navigation "Workspace" [ref=e126]:
+        - button "01 Campaigns G C" [ref=e127] [cursor=pointer]:
+          - generic [ref=e128]: "01"
+          - generic [ref=e129]: Campaigns
+          - generic [ref=e131]: G C
+        - button "02 Intake G I" [ref=e132] [cursor=pointer]:
+          - generic [ref=e133]: "02"
+          - generic [ref=e134]: Intake
+          - generic [ref=e136]: G I
+        - button "03 Risk Report G R" [ref=e138] [cursor=pointer]:
+          - generic [ref=e139]: "03"
+          - generic [ref=e140]: Risk Report
+          - generic [ref=e142]: G R
+        - button "04 Launch Readiness G L" [ref=e143] [cursor=pointer]:
+          - generic [ref=e144]: "04"
+          - generic [ref=e145]: Launch Readiness
+          - generic [ref=e147]: G L
+        - button "05 Rules G U" [ref=e148] [cursor=pointer]:
+          - generic [ref=e149]: "05"
+          - generic [ref=e150]: Rules
+          - generic [ref=e152]: G U
+        - button "06 Owners G O" [ref=e153] [cursor=pointer]:
+          - generic [ref=e154]: "06"
+          - generic [ref=e155]: Owners
+          - generic [ref=e157]: G O
+      - generic [ref=e158]:
+        - button "Search and commands ⌘K" [ref=e159] [cursor=pointer]:
+          - img [ref=e160]
+          - generic [ref=e163]: Search and commands
+          - generic [ref=e164]: ⌘K
+        - generic [ref=e165]:
+          - generic [ref=e166]: M
+          - generic [ref=e167]:
+            - paragraph [ref=e168]: Maya Chen
+            - paragraph [ref=e169]: Product
+    - generic [ref=e170]:
+      - banner [ref=e171]:
+        - generic [ref=e172]:
+          - generic [ref=e175]: Engine unavailable
+          - generic [ref=e176]:
+            - generic "Language" [ref=e177]:
+              - button "EN" [ref=e178] [cursor=pointer]
+              - button "RU" [ref=e179] [cursor=pointer]
+            - button "Search ⌘K" [ref=e180] [cursor=pointer]:
+              - img [ref=e181]
+              - generic [ref=e184]: Search
+              - generic [ref=e185]: ⌘K
+            - button "Run check ↵" [ref=e186] [cursor=pointer]:
+              - img [ref=e187]
+              - text: Run check
+              - generic [ref=e189]: ↵
+      - main [ref=e190]:
+        - generic [ref=e191]:
+          - generic [ref=e192]:
+            - generic [ref=e194]:
+              - generic [ref=e195]:
+                - paragraph [ref=e196]: Campaign bundle
+                - heading "Campaign bundle" [level=2] [ref=e197]
+                - paragraph [ref=e198]: Add campaign facts, channel copy, terms, links, and owner status before running the check.
+              - button "Sample cases" [ref=e199] [cursor=pointer]:
+                - img [ref=e200]
+                - text: Sample cases
+            - generic [ref=e202]:
+              - article [ref=e203]:
+                - heading "Campaign metadata" [level=3] [ref=e205]
+                - generic [ref=e206]:
+                  - generic [ref=e207]:
+                    - generic [ref=e208]:
+                      - generic [ref=e209]: Campaign name
+                      - generic [ref=e210]: "*"
+                    - textbox "Campaign name *" [ref=e211]
+                  - generic [ref=e212]:
+                    - generic [ref=e214]: Operator label
+                    - textbox "Operator label" [ref=e215]:
+                      - /placeholder: Operator A
+                  - generic [ref=e216]:
+                    - generic [ref=e217]:
+                      - generic [ref=e218]: Promo type
+                      - generic [ref=e219]: "*"
+                    - combobox "Promo type *" [ref=e220]:
+                      - option "Select type" [selected]
+                      - option "Welcome"
+                      - option "Reload"
+                      - option "Freebet"
+                      - option "Cashback"
+                      - option "Tournament"
+                      - option "Loyalty"
+                      - option "Reactivation"
+                  - generic [ref=e221]:
+                    - generic [ref=e222]:
+                      - generic [ref=e223]: GEO / jurisdiction
+                      - generic [ref=e224]: "*"
+                    - combobox "GEO / jurisdiction *" [ref=e225]:
+                      - option "Select jurisdiction" [selected]
+                      - option "BR"
+                      - option "EU"
+                      - option "CIS"
+                      - option "Curacao"
+                      - option "Other"
+                  - generic [ref=e226]:
+                    - generic [ref=e227]:
+                      - generic [ref=e228]: Language / locale
+                      - generic [ref=e229]: "*"
+                    - textbox "Language / locale *" [ref=e230]:
+                      - /placeholder: en-GB
+                  - generic [ref=e231]:
+                    - generic [ref=e233]: Currency
+                    - textbox "Currency" [ref=e234]:
+                      - /placeholder: EUR
+                  - generic [ref=e235]:
+                    - generic [ref=e237]: Launch date
+                    - textbox "Launch date" [ref=e238]
+                  - generic [ref=e239]:
+                    - generic [ref=e241]: Channels included
+                    - generic [ref=e242]:
+                      - generic [ref=e243]:
+                        - checkbox "Email" [ref=e244]
+                        - text: Email
+                      - generic [ref=e245]:
+                        - checkbox "Push" [ref=e246]
+                        - text: Push
+                      - generic [ref=e247]:
+                        - checkbox "Onsite" [ref=e248]
+                        - text: Onsite
+                      - generic [ref=e249]:
+                        - checkbox "Landing" [ref=e250]
+                        - text: Landing
+                      - generic [ref=e251]:
+                        - checkbox "SMS" [ref=e252]
+                        - text: SMS
+                      - generic [ref=e253]:
+                        - checkbox "In-app" [ref=e254]
+                        - text: In-app
+              - article [ref=e255]:
+                - heading "Offer basics" [level=3] [ref=e257]
+                - generic [ref=e258]:
+                  - generic [ref=e259]:
+                    - generic [ref=e261]: Min deposit
+                    - spinbutton "Min deposit" [ref=e262]
+                  - generic [ref=e263]:
+                    - generic [ref=e265]: Bonus amount
+                    - spinbutton "Bonus amount" [ref=e266]
+                  - generic [ref=e267]:
+                    - generic [ref=e269]: Bonus percentage
+                    - spinbutton "Bonus percentage" [ref=e270]
+                  - generic [ref=e271]:
+                    - generic [ref=e273]: Max bonus
+                    - spinbutton "Max bonus" [ref=e274]
+                  - generic [ref=e275]:
+                    - generic [ref=e277]: Wagering requirement
+                    - textbox "Wagering requirement" [ref=e278]
+                  - generic [ref=e279]:
+                    - generic [ref=e281]: Max cashout
+                    - spinbutton "Max cashout" [ref=e282]
+                  - generic [ref=e283]:
+                    - generic [ref=e285]: Max bet
+                    - spinbutton "Max bet" [ref=e286]
+                  - generic [ref=e287]:
+                    - generic [ref=e289]: Cooldown
+                    - textbox "Cooldown" [ref=e290]
+                  - generic [ref=e291]:
+                    - generic [ref=e293]: Eligible games
+                    - textbox "Eligible games" [ref=e294]
+                  - generic [ref=e295]:
+                    - generic [ref=e297]: Contribution
+                    - textbox "Contribution" [ref=e298]
+                  - generic [ref=e300]:
+                    - generic [ref=e302]: Eligibility rules
+                    - textbox "Eligibility rules" [ref=e303]
+              - article [ref=e304]:
+                - generic [ref=e305]:
+                  - heading "Copy and assets" [level=3] [ref=e306]
+                  - paragraph [ref=e307]: T&C is required. Add at least one Email, Push, or Onsite copy field.
+                - generic [ref=e308]:
+                  - generic [ref=e310]:
+                    - generic [ref=e311]:
+                      - generic [ref=e312]: T&C text
+                      - generic [ref=e313]: "*"
+                    - textbox "T&C text * 0/50000" [ref=e314]
+                    - generic [ref=e315]: 0/50000
+                  - generic [ref=e316]:
+                    - generic [ref=e318]: Email subject
+                    - textbox "Email subject 0/120" [ref=e319]
+                    - generic [ref=e320]: 0/120
+                  - generic [ref=e321]:
+                    - generic [ref=e323]: Email body
+                    - textbox "Email body 0/4000" [ref=e324]
+                    - generic [ref=e325]: 0/4000
+                  - generic [ref=e326]:
+                    - generic [ref=e328]: Push title
+                    - textbox "Push title 0/80" [ref=e329]
+                    - generic [ref=e330]: 0/80
+                  - generic [ref=e331]:
+                    - generic [ref=e333]: Push body
+                    - textbox "Push body 0/240" [ref=e334]
+                    - generic [ref=e335]: 0/240
+                  - generic [ref=e336]:
+                    - generic [ref=e338]: Onsite banner copy
+                    - textbox "Onsite banner copy 0/500" [ref=e339]
+                    - generic [ref=e340]: 0/500
+                  - generic [ref=e341]:
+                    - generic [ref=e343]: Landing page hero / CTA
+                    - textbox "Landing page hero / CTA 0/1000" [ref=e344]
+                    - generic [ref=e345]: 0/1000
+                  - generic [ref=e346]:
+                    - generic [ref=e348]: SMS copy
+                    - textbox "SMS copy 0/320" [ref=e349]
+                    - generic [ref=e350]: 0/320
+                  - generic [ref=e351]:
+                    - generic [ref=e353]: In-app copy
+                    - textbox "In-app copy 0/1000" [ref=e354]
+                    - generic [ref=e355]: 0/1000
+              - article [ref=e356]:
+                - heading "Links" [level=3] [ref=e358]
+                - generic [ref=e359]:
+                  - generic [ref=e360]:
+                    - paragraph [ref=e361]: Link QA
+                    - paragraph [ref=e362]: CTA URL for Link QA
+                  - generic [ref=e363]:
+                    - checkbox "Enabled" [checked] [ref=e364]
+                    - text: Enabled
+                - generic [ref=e365]:
+                  - generic [ref=e366]:
+                    - generic [ref=e367]:
+                      - generic [ref=e368]: CTA URL
+                      - generic [ref=e369]: "*"
+                    - textbox "CTA URL *" [ref=e370]:
+                      - /placeholder: https://example.internal/offer
+                  - generic [ref=e371]:
+                    - generic [ref=e373]: Landing URL
+                    - textbox "Landing URL" [ref=e374]:
+                      - /placeholder: https://example.internal/landing
+                  - generic [ref=e375]:
+                    - generic [ref=e377]: Deep link
+                    - textbox "Deep link" [ref=e378]:
+                      - /placeholder: app://promo/example
+                  - generic [ref=e379]:
+                    - generic [ref=e381]: UTM parameters
+                    - textbox "UTM parameters" [ref=e382]:
+                      - /placeholder: utm_source=crm&utm_campaign=...
+              - article [ref=e383]:
+                - heading "Owners" [level=3] [ref=e385]
+                - generic [ref=e386]:
+                  - generic [ref=e387]:
+                    - generic [ref=e388]:
+                      - generic [ref=e390]: Product owner
+                      - textbox "Product owner" [ref=e391]:
+                        - /placeholder: Name or team
+                    - generic [ref=e392]:
+                      - generic [ref=e394]: Product owner status
+                      - combobox "Product owner status" [ref=e395]:
+                        - option "Pending" [selected]
+                        - option "Approved"
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic [ref=e396]:
+                    - generic [ref=e397]:
+                      - generic [ref=e399]: CRM owner
+                      - textbox "CRM owner" [ref=e400]:
+                        - /placeholder: Name or team
+                    - generic [ref=e401]:
+                      - generic [ref=e403]: CRM owner status
+                      - combobox "CRM owner status" [ref=e404]:
+                        - option "Pending" [selected]
+                        - option "Approved"
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic [ref=e405]:
+                    - generic [ref=e406]:
+                      - generic [ref=e408]: Legal owner
+                      - textbox "Legal owner" [ref=e409]:
+                        - /placeholder: Name or team
+                    - generic [ref=e410]:
+                      - generic [ref=e412]: Legal owner status
+                      - combobox "Legal owner status" [ref=e413]:
+                        - option "Pending" [selected]
+                        - option "Approved"
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic [ref=e414]:
+                    - generic [ref=e415]:
+                      - generic [ref=e417]: Risk owner
+                      - textbox "Risk owner" [ref=e418]:
+                        - /placeholder: Name or team
+                    - generic [ref=e419]:
+                      - generic [ref=e421]: Risk owner status
+                      - combobox "Risk owner status" [ref=e422]:
+                        - option "Pending" [selected]
+                        - option "Approved"
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic [ref=e423]:
+                    - generic [ref=e424]:
+                      - generic [ref=e426]: Localization owner
+                      - textbox "Localization owner" [ref=e427]:
+                        - /placeholder: Name or team
+                    - generic [ref=e428]:
+                      - generic [ref=e430]: Localization owner status
+                      - combobox "Localization owner status" [ref=e431]:
+                        - option "Pending" [selected]
+                        - option "Approved"
+                        - option "Blocked"
+                        - option "Not required"
+                  - generic [ref=e432]:
+                    - generic [ref=e433]:
+                      - generic [ref=e435]: Analytics owner
+                      - textbox "Analytics owner" [ref=e436]:
+                        - /placeholder: Name or team
+                    - generic [ref=e437]:
+                      - generic [ref=e439]: Analytics owner status
+                      - combobox "Analytics owner status" [ref=e440]:
+                        - option "Pending" [selected]
+                        - option "Approved"
+                        - option "Blocked"
+                        - option "Not required"
+              - article [ref=e441]:
+                - heading "Notes" [level=3] [ref=e443]
+                - generic [ref=e444]:
+                  - generic [ref=e446]: Internal launch notes
+                  - textbox "Internal launch notes 0/5000" [ref=e447]
+                  - generic [ref=e448]: 0/5000
+          - complementary [ref=e449]:
+            - generic [ref=e451]:
+              - img [ref=e453]
+              - generic [ref=e457]:
+                - heading "Save" [level=3] [ref=e458]
+                - paragraph [ref=e459]: No draft yet. Changes are saved automatically.
+            - generic [ref=e460]:
+              - generic [ref=e461]:
+                - heading "Required fields are filled." [level=3] [ref=e462]
+                - generic [ref=e463]: 0/7
+              - generic [ref=e464]:
+                - generic [ref=e465]:
+                  - img [ref=e466]
+                  - generic [ref=e468]: Campaign name
+                - generic [ref=e469]:
+                  - img [ref=e470]
+                  - generic [ref=e472]: Promo type
+                - generic [ref=e473]:
+                  - img [ref=e474]
+                  - generic [ref=e476]: GEO / jurisdiction
+                - generic [ref=e477]:
+                  - img [ref=e478]
+                  - generic [ref=e480]: Language / locale
+                - generic [ref=e481]:
+                  - img [ref=e482]
+                  - generic [ref=e484]: T&C text
+                - generic [ref=e485]:
+                  - img [ref=e486]
+                  - generic [ref=e488]: At least one Email, Push, or Onsite asset
+                - generic [ref=e489]:
+                  - img [ref=e490]
+                  - generic [ref=e492]: CTA URL for Link QA
+            - generic [ref=e493]:
+              - heading "Run check" [level=3] [ref=e494]
+              - paragraph [ref=e495]: Fill in the required fields before running the check.
+              - button "Run check" [disabled] [ref=e496]:
+                - img [ref=e497]
+                - text: Run check

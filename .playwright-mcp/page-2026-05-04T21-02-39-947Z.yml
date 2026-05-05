@@ -1,0 +1,231 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - paragraph [ref=e7]: Preflight
+        - paragraph [ref=e8]: Internal ops workspace
+      - navigation "Workspace" [ref=e9]:
+        - button "01 Campaigns G C" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: "01"
+          - generic [ref=e12]: Campaigns
+          - generic [ref=e14]: G C
+        - button "02 Intake G I" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]: "02"
+          - generic [ref=e17]: Intake
+          - generic [ref=e19]: G I
+        - button "03 Risk Report G R" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: "03"
+          - generic [ref=e22]: Risk Report
+          - generic [ref=e24]: G R
+        - button "04 Launch Readiness G L" [ref=e25] [cursor=pointer]:
+          - generic [ref=e26]: "04"
+          - generic [ref=e27]: Launch Readiness
+          - generic [ref=e29]: G L
+        - button "05 Rules G U" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: "05"
+          - generic [ref=e32]: Rules
+          - generic [ref=e34]: G U
+        - button "06 Owners G O" [ref=e36] [cursor=pointer]:
+          - generic [ref=e37]: "06"
+          - generic [ref=e38]: Owners
+          - generic [ref=e40]: G O
+      - generic [ref=e41]:
+        - button "Search and commands ⌘K" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]
+          - generic [ref=e46]: Search and commands
+          - generic [ref=e47]: ⌘K
+        - generic [ref=e48]:
+          - generic [ref=e49]: M
+          - generic [ref=e50]:
+            - paragraph [ref=e51]: Maya Chen
+            - paragraph [ref=e52]: Product
+    - generic [ref=e53]:
+      - banner [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e58]: Engine unavailable
+          - generic [ref=e59]:
+            - generic "Language" [ref=e60]:
+              - button "EN" [ref=e61] [cursor=pointer]
+              - button "RU" [ref=e62] [cursor=pointer]
+            - button "Search ⌘K" [ref=e63] [cursor=pointer]:
+              - img [ref=e64]
+              - generic [ref=e67]: Search
+              - generic [ref=e68]: ⌘K
+            - button "Run check ↵" [ref=e69] [cursor=pointer]:
+              - img [ref=e70]
+              - text: Run check
+              - generic [ref=e72]: ↵
+      - main [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - paragraph [ref=e76]: 05 / Rules
+            - heading "Fifteen rules, eight checks" [level=1] [ref=e77]:
+              - text: Fifteen rules,
+              - text: eight checks
+            - paragraph [ref=e78]: Versioned, Zod-validated docs that drive every preflight verdict.
+            - generic [ref=e79]:
+              - generic [ref=e80]: v1
+              - generic [ref=e81]: 23 rules
+          - generic [ref=e82]:
+            - generic [ref=e83]:
+              - button "All 23" [ref=e84] [cursor=pointer]
+              - button "Channel consistency" [ref=e85] [cursor=pointer]
+              - button "Terms robustness" [ref=e86] [cursor=pointer]
+              - button "Offer math sanity" [ref=e87] [cursor=pointer]
+              - button "Jurisdictional risk signals" [ref=e88] [cursor=pointer]
+              - button "Localization QA" [ref=e89] [cursor=pointer]
+              - button "Launch ownership" [ref=e90] [cursor=pointer]
+              - button "Link QA" [ref=e91] [cursor=pointer]
+              - button "Format QA" [ref=e92] [cursor=pointer]
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - generic [ref=e95]: channel_consistency
+                - generic [ref=e96]: crm
+                - generic [ref=e97]: Channel consistency
+                - generic [ref=e98]: Compares approved offer basics, terms, and supplied channel assets for conflicting amounts, currencies, percentages, or validity windows.
+                - generic [ref=e99]: HIGH
+              - generic [ref=e100]:
+                - generic [ref=e101]: terms_robustness
+                - generic [ref=e102]: legal
+                - generic [ref=e103]: Terms robustness
+                - generic [ref=e104]: Checks whether terms include critical restrictions and recommended guardrails for the configured promotional mechanics.
+                - generic [ref=e105]: HIGH
+              - generic [ref=e106]:
+                - generic [ref=e107]: offer_math_sanity
+                - generic [ref=e108]: product
+                - generic [ref=e109]: Offer math sanity
+                - generic [ref=e110]: Performs deterministic arithmetic checks on structured offer fields to catch implausible caps, percentages, and wagering values.
+                - generic [ref=e111]: MEDIUM
+              - generic [ref=e112]:
+                - generic [ref=e113]: jurisdictional_risk_signals
+                - generic [ref=e114]: legal
+                - generic [ref=e115]: Jurisdictional risk signals
+                - generic [ref=e116]: Scans supplied copy, terms, and GEO metadata for high-risk certainty claims or missing age and responsible-use signals.
+                - generic [ref=e117]: HIGH
+              - generic [ref=e118]:
+                - generic [ref=e119]: localization_qa
+                - generic [ref=e120]: localization
+                - generic [ref=e121]: Localization QA
+                - generic [ref=e122]: Checks locale, GEO, currency, language hints, and date formats for cross-market consistency.
+                - generic [ref=e123]: MEDIUM
+              - generic [ref=e124]:
+                - generic [ref=e125]: launch_ownership
+                - generic [ref=e126]: product
+                - generic [ref=e127]: Launch ownership
+                - generic [ref=e128]: Verifies launch owner coverage, owner statuses, and follow-up dates for the operational handoff.
+                - generic [ref=e129]: MEDIUM
+              - generic [ref=e130]:
+                - generic [ref=e131]: link_qa
+                - generic [ref=e132]: analytics
+                - generic [ref=e133]: Link QA
+                - generic [ref=e134]: Validates campaign link shape, expected-domain alignment, and required UTM tracking parameters.
+                - generic [ref=e135]: MEDIUM
+              - generic [ref=e136]:
+                - generic [ref=e137]: format_qa
+                - generic [ref=e138]: crm
+                - generic [ref=e139]: Format QA
+                - generic [ref=e140]: Applies deterministic channel and field length limits to supplied campaign assets.
+                - generic [ref=e141]: LOW
+              - generic [ref=e142]:
+                - generic [ref=e143]: risk_free_with_wagering
+                - generic [ref=e144]: legal
+                - generic [ref=e145]: Jurisdictional risk signals
+                - generic [ref=e146]: Flags risk-free or no-risk promotional copy when wagering or playthrough mechanics are present.
+                - generic [ref=e147]: HIGH
+              - generic [ref=e148]:
+                - generic [ref=e149]: bonus_amount_mismatch_across_channels
+                - generic [ref=e150]: crm
+                - generic [ref=e151]: Channel consistency
+                - generic [ref=e152]: Compares structured bonus amount, percentage, and cap fields against channel copy and terms.
+                - generic [ref=e153]: HIGH
+              - generic [ref=e154]:
+                - generic [ref=e155]: wagering_window_shorter_than_bonus_expiry
+                - generic [ref=e156]: legal
+                - generic [ref=e157]: Channel consistency
+                - generic [ref=e158]: Detects mismatched timing when wagering must be completed before the broader bonus expiry window.
+                - generic [ref=e159]: MEDIUM
+              - generic [ref=e160]:
+                - generic [ref=e161]: missing_utm_on_cta
+                - generic [ref=e162]: analytics
+                - generic [ref=e163]: Link QA
+                - generic [ref=e164]: Validates that tracked CTA links include source, medium, and campaign UTM parameters.
+                - generic [ref=e165]: LOW
+              - generic [ref=e166]:
+                - generic [ref=e167]: currency_mismatch_across_channels
+                - generic [ref=e168]: localization
+                - generic [ref=e169]: Localization QA
+                - generic [ref=e170]: Checks that currency mentions in terms and channel assets match campaign metadata and jurisdiction context.
+                - generic [ref=e171]: HIGH
+              - generic [ref=e172]:
+                - generic [ref=e173]: free_spins_without_eligible_games
+                - generic [ref=e174]: legal
+                - generic [ref=e175]: Terms robustness
+                - generic [ref=e176]: Requires eligible or excluded game scope when free-spin style mechanics are used.
+                - generic [ref=e177]: HIGH
+              - generic [ref=e178]:
+                - generic [ref=e179]: br_market_missing_responsible_gaming
+                - generic [ref=e180]: legal
+                - generic [ref=e181]: Jurisdictional risk signals
+                - generic [ref=e182]: Requires responsible-use wording for BR jurisdiction bundles.
+                - generic [ref=e183]: HIGH
+              - generic [ref=e184]:
+                - generic [ref=e185]: eu_market_missing_age_verification_disclaimer
+                - generic [ref=e186]: legal
+                - generic [ref=e187]: Jurisdictional risk signals
+                - generic [ref=e188]: Requires age or adult-only disclaimer signals for EU jurisdiction bundles.
+                - generic [ref=e189]: HIGH
+              - generic [ref=e190]:
+                - generic [ref=e191]: max_bet_during_wagering_undefined
+                - generic [ref=e192]: risk
+                - generic [ref=e193]: Offer math sanity
+                - generic [ref=e194]: Requires max bet to be defined when wagering or playthrough mechanics are configured.
+                - generic [ref=e195]: MEDIUM
+              - generic [ref=e196]:
+                - generic [ref=e197]: vip_eligibility_undefined
+                - generic [ref=e198]: product
+                - generic [ref=e199]: Terms robustness
+                - generic [ref=e200]: Requires explicit eligibility rules when VIP or invite-only mechanics are referenced.
+                - generic [ref=e201]: HIGH
+              - generic [ref=e202]:
+                - generic [ref=e203]: withdrawal_terms_missing
+                - generic [ref=e204]: legal
+                - generic [ref=e205]: Terms robustness
+                - generic [ref=e206]: Requires withdrawal or cashout handling when bonus value, cashback, or max cashout mechanics are present.
+                - generic [ref=e207]: MEDIUM
+              - generic [ref=e208]:
+                - generic [ref=e209]: cashback_percentage_mismatch
+                - generic [ref=e210]: crm
+                - generic [ref=e211]: Channel consistency
+                - generic [ref=e212]: Compares cashback percentage claims across offer basics, terms, and channel assets.
+                - generic [ref=e213]: HIGH
+              - generic [ref=e214]:
+                - generic [ref=e215]: min_deposit_undefined_or_inconsistent
+                - generic [ref=e216]: product
+                - generic [ref=e217]: Offer math sanity
+                - generic [ref=e218]: Checks that minimum deposit is defined for deposit-triggered mechanics and consistent with terms.
+                - generic [ref=e219]: MEDIUM
+              - generic [ref=e220]:
+                - generic [ref=e221]: geo_restriction_missing
+                - generic [ref=e222]: legal
+                - generic [ref=e223]: Jurisdictional risk signals
+                - generic [ref=e224]: Requires supported or restricted geography wording for non-generic jurisdiction bundles.
+                - generic [ref=e225]: HIGH
+              - generic [ref=e226]:
+                - generic [ref=e227]: time_limited_offer_without_end_date
+                - generic [ref=e228]: crm
+                - generic [ref=e229]: Channel consistency
+                - generic [ref=e230]: Requires explicit end date when assets use today-only, limited-time, or urgency wording.
+                - generic [ref=e231]: MEDIUM
+  - generic [ref=e234]:
+    - generic [ref=e237]: Promo Preflight
+    - heading "Choose language" [level=2] [ref=e238]
+    - paragraph [ref=e239]: Choose the language for this demo workspace.
+    - generic [ref=e240]:
+      - button "EN English" [ref=e241] [cursor=pointer]:
+        - generic [ref=e242]: EN
+        - text: English
+      - button "RU Русский" [ref=e243] [cursor=pointer]:
+        - generic [ref=e244]: RU
+        - text: Русский
+    - paragraph [ref=e245]: You can switch languages later from the header.
+  - alert [ref=e246]

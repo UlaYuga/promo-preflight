@@ -1,0 +1,37 @@
+[     149ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[     322ms] [LOG] [Fast Refresh] done in 273ms @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[     424ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[     498ms] [LOG] [Fast Refresh] done in 176ms @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[     501ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/app/campaigns:0
+[     526ms] [ERROR] Refused to execute script from 'http://localhost:3001/_next/static/development/_clientMiddlewareManifest.js' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled. @ http://localhost:3001/app/campaigns:0
+[     548ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/node_modules_react-dom_0bruynb._.js:15305
+[     577ms] Error: ENOENT: no such file or directory, open '/Users/axel/Documents/Preflight/.next/dev/server/app/app/campaigns/page/app-paths-manifest.json'
+    at readFileSync (node:fs:440:20)
+    at readPartialManifestContent (file:///Users/axel/Documents/Preflight/node_modules/next/dist/shared/lib/turbopack/manifest-loader.js:51:33)
+    at TurbopackManifestLoader.loadAppPathsManifest (file:///Users/axel/Documents/Preflight/node_modules/next/dist/shared/lib/turbopack/manifest-loader.js:171:91)
+    at handleRouteType (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/dev/turbopack-utils.js:291:32)
+    at async (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1312:21)
+    at async Span.traceAsyncFn (file:///Users/axel/Documents/Preflight/node_modules/next/dist/trace/trace.js:164:20)
+    at async DevBundlerService.ensurePage (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/lib/dev-bundler-service.js:20:20)
+    at async DevServer.ensurePage (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/dev/next-dev-server.js:684:9)
+    at async Object.ensure (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/dev/next-dev-server.js:174:17)
+    at async DevRouteMatcherManager.matchAll (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/route-matcher-managers/dev-route-matcher-manager.js:90:13)
+    at async DevRouteMatcherManager.match (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/route-matcher-managers/default-route-matcher-manager.js:163:26)
+    at async NextNodeServer.handleCatchallRenderRequest (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/next-server.js:283:31)
+    at async DevServer.handleRequestImpl (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/base-server.js:934:17)
+    at async (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/dev/next-dev-server.js:394:20)
+    at async Span.traceAsyncFn (file:///Users/axel/Documents/Preflight/node_modules/next/dist/trace/trace.js:164:20)
+    at async DevServer.handleRequest (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/dev/next-dev-server.js:390:24)
+    at async invokeRender (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/lib/router-server.js:266:21)
+    at async handleRequest (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/lib/router-server.js:465:24)
+    at async requestHandlerImpl (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/lib/router-server.js:514:13)
+    at async Server.requestListener (file:///Users/axel/Documents/Preflight/node_modules/next/dist/server/lib/start-server.js:225:13)
+[     577ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[     590ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/favicon.ico:0
+[   87723ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_client_0pe1dg-._.js:2342
+[   88725ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_client_0pe1dg-._.js:2342
+[   89727ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_client_0pe1dg-._.js:2342
+[   90729ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_client_0pe1dg-._.js:2342
+[   91731ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_client_0pe1dg-._.js:2342
+[   96732ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_client_0pe1dg-._.js:2342
+[  101734ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/node_modules_next_dist_client_0pe1dg-._.js:2342

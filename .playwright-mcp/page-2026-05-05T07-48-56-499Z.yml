@@ -1,0 +1,217 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - paragraph [ref=e7]: Preflight
+      - navigation "Workspace" [ref=e8]:
+        - button "01 Кампании G C" [ref=e9] [cursor=pointer]:
+          - generic [ref=e10]: "01"
+          - generic [ref=e11]: Кампании
+          - generic [ref=e13]: G C
+        - button "02 Пакет кампании G I" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: "02"
+          - generic [ref=e16]: Пакет кампании
+          - generic [ref=e18]: G I
+        - button "03 Отчёт о рисках G R" [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]: "03"
+          - generic [ref=e21]: Отчёт о рисках
+          - generic [ref=e23]: G R
+        - button "04 Передача в работу G H" [ref=e24] [cursor=pointer]:
+          - generic [ref=e25]: "04"
+          - generic [ref=e26]: Передача в работу
+          - generic [ref=e28]: G H
+        - button "05 Готовность к запуску G L" [ref=e29] [cursor=pointer]:
+          - generic [ref=e30]: "05"
+          - generic [ref=e31]: Готовность к запуску
+          - generic [ref=e33]: G L
+        - button "06 Правила" [ref=e34] [cursor=pointer]:
+          - generic [ref=e36]: "06"
+          - generic [ref=e37]: Правила
+        - button "07 Роли G O" [ref=e38] [cursor=pointer]:
+          - generic [ref=e39]: "07"
+          - generic [ref=e40]: Роли
+          - generic [ref=e42]: G O
+      - generic [ref=e43]:
+        - button "Поиск и команды ⌘K" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]
+          - generic [ref=e48]: Поиск и команды
+          - generic [ref=e49]: ⌘K
+        - generic [ref=e50]:
+          - generic [ref=e51]: M
+          - generic [ref=e52]:
+            - paragraph [ref=e53]: Maya Chen
+            - paragraph [ref=e54]: Product
+    - generic [ref=e55]:
+      - banner [ref=e56]:
+        - generic [ref=e58]:
+          - generic "Язык" [ref=e59]:
+            - button "EN" [ref=e60] [cursor=pointer]
+            - button "RU" [ref=e61] [cursor=pointer]
+          - button "Поиск ⌘K" [ref=e62] [cursor=pointer]:
+            - img [ref=e63]
+            - generic [ref=e66]: Поиск
+            - generic [ref=e67]: ⌘K
+          - button "Запустить проверку" [ref=e68] [cursor=pointer]:
+            - img [ref=e69]
+            - text: Запустить проверку
+      - main [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - paragraph [ref=e74]: 05 / Правила
+            - heading "Пятнадцать правил, семь проверок" [level=1] [ref=e75]:
+              - text: Пятнадцать правил,
+              - text: семь проверок
+            - paragraph [ref=e76]: Версионируемые, валидируемые через Zod документы, которые управляют каждым вердиктом preflight.
+            - generic [ref=e77]:
+              - generic [ref=e78]: v1
+              - generic [ref=e79]: 23 правил
+          - generic [ref=e80]:
+            - generic [ref=e81]:
+              - button "Все 23" [ref=e82] [cursor=pointer]
+              - button "Консистентность по каналам" [ref=e83] [cursor=pointer]
+              - button "Прочность условий" [ref=e84] [cursor=pointer]
+              - button "Проверка математики оффера" [ref=e85] [cursor=pointer]
+              - button "Юрисдикционные риск-сигналы" [ref=e86] [cursor=pointer]
+              - button "QA локализации" [ref=e87] [cursor=pointer]
+              - button "Ответственные за запуск" [ref=e88] [cursor=pointer]
+              - button "QA ссылок" [ref=e89] [cursor=pointer]
+              - button "QA форматов" [ref=e90] [cursor=pointer]
+            - generic [ref=e91]:
+              - generic [ref=e92]:
+                - generic [ref=e93]: channel_consistency
+                - generic [ref=e94]: crm
+                - generic [ref=e95]: Консистентность по каналам
+                - generic [ref=e96]: Сравнивает утвержденные параметры предложения, условия и материалы каналов на расхождения в суммах, валюте, процентах или сроках действия.
+                - generic [ref=e97]: HIGH
+              - generic [ref=e98]:
+                - generic [ref=e99]: terms_robustness
+                - generic [ref=e100]: legal
+                - generic [ref=e101]: Прочность условий
+                - generic [ref=e102]: Проверяет, содержат ли условия критические ограничения и рекомендуемые защитные формулировки для настроенной механики промо.
+                - generic [ref=e103]: HIGH
+              - generic [ref=e104]:
+                - generic [ref=e105]: offer_math_sanity
+                - generic [ref=e106]: product
+                - generic [ref=e107]: Проверка математики оффера
+                - generic [ref=e108]: Выполняет детерминированные арифметические проверки параметров предложения, чтобы найти неправдоподобные лимиты, проценты и вейджерные значения.
+                - generic [ref=e109]: MEDIUM
+              - generic [ref=e110]:
+                - generic [ref=e111]: jurisdictional_risk_signals
+                - generic [ref=e112]: legal
+                - generic [ref=e113]: Юрисдикционные риск-сигналы
+                - generic [ref=e114]: Проверяет предоставленные тексты, условия и GEO-метаданные на рискованные гарантированные утверждения или отсутствие возрастных и ответственных дисклеймеров.
+                - generic [ref=e115]: HIGH
+              - generic [ref=e116]:
+                - generic [ref=e117]: localization_qa
+                - generic [ref=e118]: localization
+                - generic [ref=e119]: QA локализации
+                - generic [ref=e120]: Проверяет локаль, GEO, валюту, языковые признаки и форматы дат на согласованность для разных рынков.
+                - generic [ref=e121]: MEDIUM
+              - generic [ref=e122]:
+                - generic [ref=e123]: launch_ownership
+                - generic [ref=e124]: product
+                - generic [ref=e125]: Ответственные за запуск
+                - generic [ref=e126]: Проверяет покрытие владельцами запуска, статусы согласования и даты последующих действий для операционной передачи.
+                - generic [ref=e127]: MEDIUM
+              - generic [ref=e128]:
+                - generic [ref=e129]: link_qa
+                - generic [ref=e130]: analytics
+                - generic [ref=e131]: QA ссылок
+                - generic [ref=e132]: Проверяет корректность ссылок кампании, соответствие ожидаемому домену и обязательные UTM-параметры.
+                - generic [ref=e133]: MEDIUM
+              - generic [ref=e134]:
+                - generic [ref=e135]: format_qa
+                - generic [ref=e136]: crm
+                - generic [ref=e137]: QA форматов
+                - generic [ref=e138]: Проверяет поля материалов на соответствие символьным лимитам каналов и находит пустые или превышенные поля.
+                - generic [ref=e139]: MEDIUM
+              - generic [ref=e140]:
+                - generic [ref=e141]: risk_free_with_wagering
+                - generic [ref=e142]: legal
+                - generic [ref=e143]: Юрисдикционные риск-сигналы
+                - generic [ref=e144]: Находит формулировки risk-free или no-risk, когда в механике есть wagering или playthrough.
+                - generic [ref=e145]: HIGH
+              - generic [ref=e146]:
+                - generic [ref=e147]: bonus_amount_mismatch_across_channels
+                - generic [ref=e148]: crm
+                - generic [ref=e149]: Консистентность по каналам
+                - generic [ref=e150]: Сравнивает сумму бонуса, процент и лимит из структурных полей с текстами каналов и условиями.
+                - generic [ref=e151]: HIGH
+              - generic [ref=e152]:
+                - generic [ref=e153]: wagering_window_shorter_than_bonus_expiry
+                - generic [ref=e154]: legal
+                - generic [ref=e155]: Консистентность по каналам
+                - generic [ref=e156]: Находит несогласованные сроки, когда wagering должен быть выполнен раньше общего срока действия бонуса.
+                - generic [ref=e157]: MEDIUM
+              - generic [ref=e158]:
+                - generic [ref=e159]: missing_utm_on_cta
+                - generic [ref=e160]: analytics
+                - generic [ref=e161]: QA ссылок
+                - generic [ref=e162]: Проверяет, что CTA-ссылки для трекинга содержат utm_source, utm_medium и utm_campaign.
+                - generic [ref=e163]: LOW
+              - generic [ref=e164]:
+                - generic [ref=e165]: currency_mismatch_across_channels
+                - generic [ref=e166]: localization
+                - generic [ref=e167]: QA локализации
+                - generic [ref=e168]: Проверяет, что валюты в условиях и каналах соответствуют метаданным кампании и GEO-контексту.
+                - generic [ref=e169]: HIGH
+              - generic [ref=e170]:
+                - generic [ref=e171]: free_spins_without_eligible_games
+                - generic [ref=e172]: legal
+                - generic [ref=e173]: Прочность условий
+                - generic [ref=e174]: Требует указания eligible или excluded games для механик типа free spins.
+                - generic [ref=e175]: HIGH
+              - generic [ref=e176]:
+                - generic [ref=e177]: br_market_missing_responsible_gaming
+                - generic [ref=e178]: legal
+                - generic [ref=e179]: Юрисдикционные риск-сигналы
+                - generic [ref=e180]: Требует responsible-use формулировку для пакетов с BR GEO.
+                - generic [ref=e181]: HIGH
+              - generic [ref=e182]:
+                - generic [ref=e183]: eu_market_missing_age_verification_disclaimer
+                - generic [ref=e184]: legal
+                - generic [ref=e185]: Юрисдикционные риск-сигналы
+                - generic [ref=e186]: Требует возрастной дисклеймер или adult-only сигнал для пакетов с EU GEO.
+                - generic [ref=e187]: HIGH
+              - generic [ref=e188]:
+                - generic [ref=e189]: max_bet_during_wagering_undefined
+                - generic [ref=e190]: risk
+                - generic [ref=e191]: Проверка математики оффера
+                - generic [ref=e192]: Требует max bet, если в механике указаны wagering или playthrough условия.
+                - generic [ref=e193]: MEDIUM
+              - generic [ref=e194]:
+                - generic [ref=e195]: vip_eligibility_undefined
+                - generic [ref=e196]: product
+                - generic [ref=e197]: Прочность условий
+                - generic [ref=e198]: Требует явных eligibility rules, если упоминаются VIP или invite-only механики.
+                - generic [ref=e199]: HIGH
+              - generic [ref=e200]:
+                - generic [ref=e201]: withdrawal_terms_missing
+                - generic [ref=e202]: legal
+                - generic [ref=e203]: Прочность условий
+                - generic [ref=e204]: Требует описание withdrawal или cashout условий для бонусной ценности, cashback или max cashout механик.
+                - generic [ref=e205]: MEDIUM
+              - generic [ref=e206]:
+                - generic [ref=e207]: cashback_percentage_mismatch
+                - generic [ref=e208]: crm
+                - generic [ref=e209]: Консистентность по каналам
+                - generic [ref=e210]: Сравнивает cashback percentage в offer basics, условиях и каналах.
+                - generic [ref=e211]: HIGH
+              - generic [ref=e212]:
+                - generic [ref=e213]: min_deposit_undefined_or_inconsistent
+                - generic [ref=e214]: product
+                - generic [ref=e215]: Проверка математики оффера
+                - generic [ref=e216]: Проверяет, что minimum deposit задан для депозитных механик и согласован с условиями.
+                - generic [ref=e217]: MEDIUM
+              - generic [ref=e218]:
+                - generic [ref=e219]: geo_restriction_missing
+                - generic [ref=e220]: legal
+                - generic [ref=e221]: Юрисдикционные риск-сигналы
+                - generic [ref=e222]: Требует формулировку supported или restricted geography для non-generic GEO пакетов.
+                - generic [ref=e223]: HIGH
+              - generic [ref=e224]:
+                - generic [ref=e225]: time_limited_offer_without_end_date
+                - generic [ref=e226]: crm
+                - generic [ref=e227]: Консистентность по каналам
+                - generic [ref=e228]: Требует явную дату окончания, если в каналах используются today-only, limited-time или urgency формулировки.
+                - generic [ref=e229]: MEDIUM
+  - alert [ref=e230]

@@ -1,0 +1,45 @@
+import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
+
+const WINDOW_SECONDS = parseInt(
+  process.env.RATE_LIMIT_WINDOW_SECONDS ?? "60",
+  10
+);
+const MAX_REQUESTS = parseInt(
+  process.env.RATE_LIMIT_MAX_REQUESTS ?? "20",
+  10
+);
+
+export function proxy(request: NextRequest) {
+  if (!request.nextUrl.pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+
+  const result = checkRateLimit(ip, WINDOW_SECONDS, MAX_REQUESTS);
+
+  if (!result.allowed) {
+    return new NextResponse(
+      JSON.stringify({ error: "Too many requests" }),
+      {
+        status: 429,
+        headers: {
+          "Content-Type": "application/json",
+          "Retry-After": String(result.retryAfterSeconds),
+          "X-RateLimit-Limit": String(MAX_REQUESTS),
+          "X-RateLimit-Window": String(WINDOW_SECONDS)
+        }
+      }
+    );
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: "/api/:path*"
+};
