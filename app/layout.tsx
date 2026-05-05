@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Preflight",
+  title: "Promo Preflight",
   description: "AI-assisted launch readiness for regulated promotional campaigns.",
   robots: {
     index: false,
