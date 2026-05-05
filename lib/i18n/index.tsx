@@ -43,7 +43,7 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [language, setLanguageState] = useState<Language>("en");
-  const [languageSelected, setLanguageSelected] = useState(false);
+  const [languageSelected, setLanguageSelected] = useState(true);
 
   useEffect(() => {
     window.setTimeout(() => {
