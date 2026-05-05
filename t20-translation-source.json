@@ -1,9 +1,9 @@
 {
   "meta": {
     "target": "ru",
-    "instruction": "Translate values to Russian. Do not change keys. Preserve placeholders like {campaignName}, {count}, {step}. Keep product name Promo Preflight unchanged.",
+    "instruction": "Translate values to Russian. Do not change keys. Preserve placeholders like {campaignName}, {count}, {step}. Keep product name Preflight unchanged.",
     "keep_english": [
-      "Promo Preflight",
+      "Preflight",
       "Email",
       "Push",
       "Onsite",
@@ -63,7 +63,7 @@
   },
   "welcome": {
     "badge": "Portfolio MVP · Preflight v1",
-    "headline": "Promo Preflight",
+    "headline": "Preflight",
     "subhead": "AI-assisted launch readiness for regulated promotional campaigns.",
     "body": "Review promo bundles before launch across copy, terms, locale, links, owners and launch blockers.",
     "viewSampleReport": "View sample report",
@@ -94,7 +94,7 @@
     "done": "Try your own campaign",
     "steps": [
       {
-        "title": "Promo Preflight in 90 seconds",
+        "title": "Preflight in 90 seconds",
         "description": "This desktop tour uses a regulated promo sample to show intake, checks, readiness, rules, owners, and version history."
       },
       {

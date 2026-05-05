@@ -1,9 +1,9 @@
 {
   "meta": {
     "target": "en",
-    "instruction": "Native English UI copy. Do not change keys. Preserve placeholders like {campaignName}, {count}, {step}, {version}, {path}. Keep product name Promo Preflight unchanged. Avoid technical storage guarantees in user-facing copy.",
+    "instruction": "Native English UI copy. Do not change keys. Preserve placeholders like {campaignName}, {count}, {step}, {version}, {path}. Keep product name Preflight unchanged. Avoid technical storage guarantees in user-facing copy.",
     "keep_english": [
-      "Promo Preflight",
+      "Preflight",
       "Email",
       "Push",
       "Onsite",
@@ -74,7 +74,7 @@
   },
   "welcome": {
     "eyebrow": "Start here · 90-second tour",
-    "headline": "Promo Preflight",
+    "headline": "Preflight",
     "positioning": "Pre-launch checks for regulated promo campaigns",
     "body": "Load a campaign bundle, run the check, review blockers, assign owners, prepare a handoff summary, and compare versions without changing the existing workflow.",
     "openIntake": "Open campaign bundle",
