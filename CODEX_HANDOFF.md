@@ -1,83 +1,56 @@
-# Codex Handoff Report - SPEC-SYNC-5 reconciled state
+# Codex Handoff Report - Current Product State
 
-**Date:** 2026-05-03  
+**Date:** 2026-05-07  
 **Branch:** main  
-**Status:** T0-T10 PASS · T15-FIX-1 PASS · T16 PASS · T17 PASS · T18 PASS · T19 PASS · T20-B PASS · FUNCTIONAL-QA-1 PASS · Next task: `DESIGN-IMPLEMENT-1`
+**Production:** https://promo-preflight-production.up.railway.app/  
+**Status:** Railway production is live. Functional baseline is implemented as an offline/deterministic portfolio workspace.
 
----
+## What Is Implemented
 
-## Summary
+- Next.js 16 App Router product with welcome page, workspace shell, EN/RU UI, and Driver.js guided tour.
+- Campaign intake form with metadata, offer basics, assets, links, terms, owners, worked examples, validation, and browser draft persistence.
+- Offline deterministic check runner with 8 check modules and 23 YAML-backed rules.
+- Risk Report screen with saved/offline report loading, issue table, issue detail, evidence, owner suggestions, export, and save-run panel.
+- Launch Readiness screen with Go/No-Go state, owner matrix, blockers, dependencies, and checklist.
+- Handoff screen with Slack-style preview, markdown export, tone/mention/channel controls, launch date, blockers, and copy action.
+- Campaign workspace with local campaign list, per-campaign versions, owner overrides, and version-to-version blocker diffing.
+- Rules and Owners screens backed by `rules/rules.yaml` and `config/owners.yaml`.
+- PostgreSQL schema/seed files for durable persistence design.
+- Railway/Nixpacks deploy config, `noindex` metadata, and disallow-all `robots.ts`.
 
-Accepted functional baseline:
-- T0-T10 PASS.
-- T15-FIX-1 PASS.
-- T16 PASS.
-- T17 PASS.
-- T18 PASS.
-- T19 PASS.
-- T20-B PASS.
-- FUNCTIONAL-QA-1 PASS.
+## What Is Not Implemented
 
-The next Codex task is `DESIGN-IMPLEMENT-1 - Refero-assisted visual implementation`. Do not start T11 deploy next.
+- No auth, user accounts, billing, SaaS onboarding, or payments.
+- No player-facing gambling journey, operator logos, affiliate funnel, or casino visual positioning.
+- No durable campaign persistence in the running UI; saved reports, campaigns, and versions use `localStorage`.
+- No server CRUD/API layer for campaign data.
+- No live LLM call in the current check path; Anthropic provider wiring exists for future AI-assisted paths.
+- No raw campaign/T&C storage by default.
 
----
+## Current Source Of Truth
 
-## Remaining flow
+- Public-facing project description: `README.md`.
+- Production URL and app metadata: `app/layout.tsx`.
+- Commands and package metadata: `package.json`.
+- Rules artifact: `rules/rules.yaml`.
+- Owner config: `config/owners.yaml`.
+- Database design: `db/schema.sql` and `db/README.md`.
 
-1. `DESIGN-IMPLEMENT-1 - Refero-assisted visual implementation` in Codex: implement the visual pass using Refero MCP for visual reference/research only.
-2. Use `/Users/axel/Downloads/Promo Preflight.html` as a design draft and visual reference only, not product architecture.
-3. Return to Codex for Railway deploy, noindex/robots/rate limits, and final QA package only after design implementation passes.
+## Recommended Verification
 
-T11 Railway deploy is deferred until after `DESIGN-IMPLEMENT-1` passes.
+Run before claiming release readiness:
 
-Codex should not continue the previous external design-pass process. The next design implementation task is owned by Codex and must preserve the accepted functional architecture.
+```bash
+npm run typecheck
+npm run lint
+npm run schema:check
+npm run checks:run
+npm run versioning:check
+npm run rules:check
+npm run owners:check
+npm run i18n:check
+npm run ai:check
+npm run build
+```
 
-Railway + Nixpacks remains the deployment source of truth after design implementation. Vercel is superseded as deployment target and may remain only as UI reference style.
-
----
-
-## Scope and safety constraints
-
-Preserve the existing product constraints:
-- No auth.
-- No payments.
-- No casino positioning.
-- No betting service positioning.
-- No affiliate positioning.
-- No operator logos.
-- No player-facing flow or copy.
-- Do not store raw input permanently.
-- Do not log request bodies.
-- Do not expand product scope during `DESIGN-IMPLEMENT-1`.
-
-`DESIGN-IMPLEMENT-1` should implement only visual changes needed for the start page visual entry, tutorial launcher visuals, tour popover styling, and final/mobile tour states. It should not add product features, deployment config, auth/signup/payments, casino/betting/affiliate/player-facing copy, or any new persistence of raw input.
-
----
-
-## DESIGN-IMPLEMENT-1 expectations
-
-Goal: complete Refero-assisted visual implementation without design-driven rewrites.
-
-Implementation requirements:
-- Use Refero MCP for visual reference/research only.
-- Treat `/Users/axel/Downloads/Promo Preflight.html` as a design draft, not product architecture.
-- Preserve existing Next.js routes.
-- Preserve existing T19 tour behavior and Driver.js flow logic.
-- Preserve existing versioning route structure.
-- Preserve existing EN/RU i18n.
-- Preserve existing checks, rules, owners and export flows.
-- Do not make version diff a top-level nav item.
-- Add/finish start page visual entry, tutorial launcher visuals, tour popover styling, and final/mobile tour states.
-
-Build/typecheck/lint should be run during `DESIGN-IMPLEMENT-1` unless there is a clear task-specific reason to skip. Deployment should remain deferred.
-
----
-
-## Do not start yet
-
-- Do not start T11 deploy.
-- Do not create or change Railway deployment config.
-- Do not start final QA package work.
-- Do not create new future task files.
-
-The next handoff after `DESIGN-IMPLEMENT-1` should state whether visual implementation passed, list changed files and checks, and confirm readiness for deferred Railway/Nixpacks deploy.
+Run `npm run db:check` only when `DATABASE_URL` points to a reachable PostgreSQL database.

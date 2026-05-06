@@ -17,12 +17,26 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Preflight",
-  description: "AI-assisted launch readiness for regulated promotional campaigns.",
+  metadataBase: new URL("https://promo-preflight-production.up.railway.app"),
+  title: {
+    default: "Promo Preflight",
+    template: "%s | Promo Preflight"
+  },
+  description:
+    "AI-assisted launch readiness workspace for regulated promo campaigns.",
+  applicationName: "Promo Preflight",
   robots: {
     index: false,
     follow: false,
     googleBot: { index: false, follow: false }
+  },
+  openGraph: {
+    title: "Promo Preflight",
+    description:
+      "AI-assisted launch readiness workspace for regulated promo campaigns.",
+    url: "https://promo-preflight-production.up.railway.app/",
+    siteName: "Promo Preflight",
+    type: "website"
   }
 };
 
