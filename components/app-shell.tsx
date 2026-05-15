@@ -97,7 +97,7 @@ export function AppShell({
       <BackgroundWave />
 
       {/* Sidebar */}
-      <aside className="w-[228px] shrink-0 hairline-r bg-background flex flex-col sticky top-0 h-screen z-20">
+      <aside className="hidden w-[228px] shrink-0 hairline-r bg-background md:flex flex-col sticky top-0 h-screen z-20">
         <div className="px-6 pt-6 pb-5 hairline-b">
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
             <span className="block h-2 w-2 rounded-full bg-accent neon-pulse shrink-0" />
@@ -137,7 +137,7 @@ export function AppShell({
       <div className="flex-1 min-w-0 flex flex-col">
         {/* TopBar */}
         <header className="sticky top-0 z-20 bg-background/90 backdrop-blur hairline-b">
-          <div className="flex items-center px-10 h-14 gap-6">
+          <div className="flex items-center px-4 sm:px-6 lg:px-10 h-14 gap-6">
 
             <div className="ml-auto flex items-center gap-1.5">
               <LanguageToggle />

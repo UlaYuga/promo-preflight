@@ -29,7 +29,7 @@ export function RulesPageContent({
     <div>
       <section className="px-10 pt-14 pb-10 hairline-b" data-tour="rules-table">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
-          {isRu ? "05 / Правила" : "05 / Rules"}
+          {isRu ? "06 / Правила" : "06 / Rules"}
         </p>
         <h1 className="display mt-6 text-[64px] leading-[1] tracking-tightest">
           {lines[0]}
@@ -56,7 +56,7 @@ export function RulesPageContent({
             </FilterChip>
           ))}
         </div>
-        <div className="hairline-t">
+        <div className="hairline-t overflow-x-auto">
           {filtered.map((r) => {
             const checkDef = CHECK_DEFS.find(
               (c) => c.id === r.source_check_id || c.id === r.id
@@ -64,7 +64,7 @@ export function RulesPageContent({
             return (
               <div
                 key={r.id}
-                className="grid grid-cols-[60px_120px_140px_1fr_90px] gap-6 py-5 hairline-b items-baseline hover:bg-surface/40 transition-colors"
+                className="grid min-w-[860px] grid-cols-[180px_120px_140px_minmax(0,1fr)_90px] gap-6 py-5 hairline-b items-baseline hover:bg-surface/40 transition-colors"
               >
                 <span className="font-mono text-[11px] text-muted">{r.id}</span>
                 <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-subtle">

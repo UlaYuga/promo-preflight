@@ -167,6 +167,9 @@ export function WelcomeScreen() {
                 <BookOpen className="h-[18px] w-[18px] text-subtle" aria-hidden="true" />
               </Link>
             </div>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-subtle">
+              {t("welcome.ctaHint")}
+            </p>
           </div>
 
           <aside className="glass-surface flex flex-col overflow-hidden rounded-lg border border-white/[0.08] shadow-2xl shadow-black/60">

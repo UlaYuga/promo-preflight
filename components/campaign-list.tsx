@@ -116,7 +116,7 @@ export function CampaignList() {
           className="mt-5 inline-flex items-center gap-2 rounded-sm hairline border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm font-medium text-accent transition hover:bg-accent/20"
         >
           <BookOpen className="h-4 w-4" aria-hidden="true" />
-          {t("intake.workedExamples")}
+          {t("campaigns.emptyAction")}
         </Link>
       </div>
     );
@@ -267,6 +267,9 @@ export function CampaignVersionList({
           <h3 className="text-[13px] font-semibold text-foreground">
             {t("campaigns.versionsTitle")}
           </h3>
+          <p className="mt-1 text-xs leading-5 text-subtle">
+            {t("campaigns.versionsSubtitle")}
+          </p>
         </div>
         <table className="w-full border-collapse text-left text-sm">
           <thead className="bg-background">

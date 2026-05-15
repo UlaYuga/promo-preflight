@@ -601,14 +601,19 @@ export function HandoffPage({
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         ) : (
-          <button
-            type="button"
-            disabled
-            className="ml-auto inline-flex items-center gap-2 rounded bg-accent/40 px-4 py-2 text-sm font-semibold text-ink/40 cursor-not-allowed"
-          >
-            {t("handoff.compareBtn")}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+          <div className="ml-auto text-right">
+            <button
+              type="button"
+              disabled
+              className="inline-flex items-center gap-2 rounded bg-accent/40 px-4 py-2 text-sm font-semibold text-ink/40 cursor-not-allowed"
+            >
+              {t("handoff.compareBtn")}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+            <p className="mt-2 text-xs text-muted">
+              {t("handoff.compareHint")}
+            </p>
+          </div>
         )}
       </div>
     </div>
