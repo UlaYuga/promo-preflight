@@ -746,6 +746,7 @@ export function IntakeForm() {
             <button
               type="button"
               onClick={() => setShowExamples(true)}
+              aria-expanded={showExamples}
               className="shrink-0 hairline border rounded px-4 py-2 text-[12px] font-medium text-subtle hover:text-accent hover:border-accent/40 transition-colors"
             >
               {t("welcome.testCases")}
@@ -800,7 +801,7 @@ export function IntakeForm() {
                 ))}
               </div>
               <p className="mt-3 text-xs text-muted/60">
-                {t("intake.runPreflightSubtitle")}
+                {t("intake.examplesNextStep")}
               </p>
             </div>
           ) : null}
@@ -1347,6 +1348,7 @@ export function IntakeForm() {
           {statusMessage ? (
             <p
               data-testid="intake-status"
+              aria-live="polite"
               className="mt-3 rounded border border-white/[0.07] bg-background px-3 py-2 text-sm leading-6 text-foreground/70"
             >
               {statusMessage}

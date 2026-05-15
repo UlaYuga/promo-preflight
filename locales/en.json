@@ -75,34 +75,35 @@
   "welcome": {
     "eyebrow": "Start here · 90-second tour",
     "headline": "Promo Preflight",
-    "positioning": "Pre-launch checks for regulated promo campaigns",
-    "body": "Load a campaign bundle, run the check, review blockers, assign owners, prepare a handoff summary, and compare versions without changing the existing workflow.",
+    "positioning": "Internal promo & CRM ops workspace for pre-launch review",
+    "body": "Start from a sample case or a live campaign bundle, run the check, review blockers, save the run, prepare handoff copy, and compare versions without changing the existing workflow.",
     "openIntake": "Open campaign bundle",
-    "testCases": "Sample cases",
+    "testCases": "Start with Sample Case",
+    "ctaHint": "Use a sample case to follow the demo path from Intake to Risk Report, Campaigns, version diff, and handoff.",
     "workflowTitle": "Workflow at a glance",
     "workflowSubtitle": "From loading a campaign bundle to comparing versions",
     "safetyNote": "Portfolio demo workspace.",
-    "strip": "8-stage check · 23 rules · 6 owners · EN/RU",
+    "strip": "8 checks · 23 rules · 6 owners · EN/RU",
     "workflowPreview": [
       {
-        "label": "Load the campaign bundle",
-        "description": "Metadata, offer math, T&C text, and channel copy"
+        "label": "Load a sample case or campaign bundle",
+        "description": "Start the demo with realistic promo, CRM, and launch-review inputs"
       },
       {
         "label": "Run the check",
-        "description": "A 7-stage check runs against 23 rules"
+        "description": "8 checks review the bundle before the Risk Report opens"
       },
       {
         "label": "Review blockers",
         "description": "Risk Report shows what blocks launch and who needs to act"
       },
       {
-        "label": "Prepare the handoff summary",
-        "description": "Copy a short summary for Markdown or Slack"
+        "label": "Save the run & prepare the handoff",
+        "description": "Store the review in Campaigns, then copy a Slack-ready ops update"
       },
       {
         "label": "Compare versions",
-        "description": "See what changed between campaign versions"
+        "description": "Open Campaigns to compare saved runs and track what changed"
       }
     ],
     "metrics": {
@@ -116,7 +117,7 @@
     "eyebrow": "Guided tour",
     "takeTour": "Start 90-second tour",
     "restartTour": "Restart tour",
-    "continueFromStep": "Continue tour · {step} / 7",
+    "continueFromStep": "Continue tour · {step} / 8",
     "desktopOnly": "Tour works best on desktop.",
     "mobileDisabled": "Tour works best on desktop.",
     "mobileDisabledShort": "Desktop tour",
@@ -126,32 +127,36 @@
     "done": "Done",
     "steps": [
       {
-        "title": "Start with active campaigns",
-        "description": "The workspace lists every saved campaign check with its status, open issues, and the owner responsible for the next step."
+        "title": "Start on the landing screen",
+        "description": "Open the internal Promo Preflight workspace and launch the walkthrough from a synthetic demo flow."
       },
       {
-        "title": "Load a campaign bundle",
-        "description": "All campaign facts in one place: metadata, offer math, terms, channel assets, links, and launch owners."
+        "title": "Load a sample case",
+        "description": "Screen 02 / Campaign bundle opens with sample cases so the walkthrough starts from a realistic synthetic CRM review scenario."
       },
       {
-        "title": "Run the preflight check",
-        "description": "One click runs eight checks across the campaign and maps every finding against the rule set before launch."
+        "title": "Run the check",
+        "description": "From Screen 02, run 8 offline checks across the bundle and move straight into the Risk Report."
       },
       {
-        "title": "Review what blocks launch",
-        "description": "The Risk Report ranks issues by severity so the team sees blockers, warnings, and clean checks at a glance."
+        "title": "Review the Risk Report",
+        "description": "Screen 03 / Risk Report ranks blockers, warnings, and clean checks so the next operational decision is obvious."
       },
       {
-        "title": "Turn findings into action",
-        "description": "Each issue shows the affected field, evidence, suggested fix, and the owner who should resolve it."
+        "title": "Save the review run",
+        "description": "Save the current report as an internal review run before moving into Campaigns, version history, and handoff."
       },
       {
-        "title": "Check launch readiness",
-        "description": "The readiness board collects blockers and owner sign-offs into one go/no-go decision before handoff."
+        "title": "Open Campaigns",
+        "description": "Screen 01 / Campaigns shows saved runs, latest readiness state, and the path into version history for the same campaign."
       },
       {
-        "title": "Keep the process repeatable",
-        "description": "Twenty-three rules backed by eight checks make the workflow auditable: see what was checked, who owns it, and what changed between runs."
+        "title": "Compare versions",
+        "description": "Version detail and diff highlight what was fixed, reopened, or newly introduced between saved review runs."
+      },
+      {
+        "title": "Prepare the handoff update",
+        "description": "Screen 04 / Handoff turns the saved report into a Slack-ready internal Promo/CRM Ops update for launch owners."
       }
     ]
   },
@@ -179,17 +184,18 @@
   "intake": {
     "eyebrow": "02 / Campaign bundle",
     "title": "Campaign bundle",
-    "subtitle": "Add campaign facts, channel copy, terms, links, and owner status before running the check.",
+    "subtitle": "Start with a sample case or enter campaign facts, channel copy, terms, links, and owner status before running the check.",
     "workedExamples": "Sample cases",
-    "workedExamplesSubtitle": "Load a sample case to test a specific rule.",
+    "workedExamplesSubtitle": "Load a sample case, then run the check to see the full demo path.",
     "closeExamples": "Close cases",
     "load": "Load",
     "draftSaved": "Draft saved.",
-    "noSavedDraft": "No draft yet. Changes save automatically.",
+    "noSavedDraft": "No draft yet. Start with a sample case or begin filling the bundle.",
     "draftCleared": "Draft cleared.",
     "runPreflight": "Run check",
-    "runPreflightSubtitle": "Open the Risk Report after the check.",
-    "runPreflightReady": "Required fields are complete.",
+    "runPreflightSubtitle": "Next: the Risk Report opens after the check.",
+    "examplesNextStep": "Next step: load one sample case, then run the check to open the Risk Report.",
+    "runPreflightReady": "Ready to run",
     "runPreflightMissing": "Fill in the required fields before running the check.",
     "unknownRunError": "Something went wrong while running the check.",
     "sections": {
@@ -225,7 +231,7 @@
       "internalNotes": "Internal launch notes"
     },
     "placeholders": {
-      "operatorLabel": "Operator A",
+      "operatorLabel": "Northstar Sandbox",
       "selectType": "Select type",
       "selectJurisdiction": "Select jurisdiction",
       "selectOperator": "Select operator",
@@ -245,17 +251,17 @@
       "cta": "CTA URL for Link QA"
     },
     "exampleDescriptions": {
-      "EX01": "Email subject says 100% / €500 — offer says 50% / €300",
-      "EX02": "Terms are too short; max bet clause missing",
-      "EX03": "Max cashout (€100) lower than max bonus (€200)",
-      "EX04": "UKGC geo — copy says \"guaranteed outcome\" with no responsible gambling wording",
-      "EX05": "pt-BR locale with EUR currency",
-      "EX06": "Only the product owner is assigned — Legal, Risk, and Analytics are missing",
-      "EX07": "CTA URL is missing a scheme (not a valid URL)",
-      "EX08": "Push title is 69 characters; hard limit is 55 (warning threshold 66)",
-      "EX09": "BR welcome offer is missing responsible-gambling wording, GEO terms, and max-bet terms",
-      "EX10": "EU free spins offer is missing eligible games and age wording",
-      "EX11": "CIS VIP cashback is missing eligibility rules and has a percentage mismatch"
+      "EX01": "Welcome bonus audit: email says 100% / €500 while offer basics say 50% / €300",
+      "EX02": "Welcome bonus terms sweep: terms are too short and max-bet wording is missing",
+      "EX03": "Cashback reconciliation: max cashout (€100) is lower than max bonus (€200)",
+      "EX04": "UK freebet copy review: UKGC-like geo with \"guaranteed outcome\" and no responsible-gambling wording",
+      "EX05": "Brazil reactivation: pt-BR locale is paired with EUR and ambiguous dates",
+      "EX06": "VIP reload approval gate: only the product owner is assigned, so approval roles are missing",
+      "EX07": "Weekend tournament QA: CTA URL has no scheme, so the link is invalid",
+      "EX08": "Weekend free spins push: push title exceeds the 55-character hard limit",
+      "EX09": "Brazil welcome audit: missing responsible-gambling wording, GEO terms, and max-bet terms",
+      "EX10": "EU free spins audit: missing eligible games wording and age wording",
+      "EX11": "VIP cashback audit: missing eligibility rules and the percentage claims do not match"
     }
   },
   "riskReport": {
@@ -266,6 +272,11 @@
     "offlineSample": "Sample report",
     "savedReportInvalid": "The saved report cannot be shown because its data is invalid.",
     "useFallback": "Use sample report",
+    "nextStepsTitle": "Next steps",
+    "nextStepsBody": "Save this review run from the top-right, then continue to Launch Readiness, prepare the handoff update, or open Campaigns to review version history and diffs.",
+    "nextStepsReadiness": "Open Launch Readiness",
+    "nextStepsHandoff": "Prepare Handoff",
+    "nextStepsCampaigns": "Open Campaigns",
     "summary": {
       "overallStatus": "Overall status",
       "criticalBlockers": "Critical blockers",
@@ -317,7 +328,7 @@
     }
   },
   "readiness": {
-    "eyebrow": "04 / Launch Readiness",
+    "eyebrow": "05 / Launch Readiness",
     "title": "Owners, blockers, dependencies",
     "subtitle": "Readiness board for {campaignName}, based on the current Risk Report and owner data.",
     "goNoGo": "Go / No-Go",
@@ -386,7 +397,7 @@
     }
   },
   "rules": {
-    "pageEyebrow": "Rules",
+    "pageEyebrow": "06 / Rules",
     "pageTitle": "Rules library",
     "pageSubtitle": "Read-only view of deterministic check stages and domain rules. Runtime behavior stays in TypeScript modules.",
     "artifactTitle": "Documented check stages",
@@ -411,7 +422,7 @@
     }
   },
   "owners": {
-    "pageEyebrow": "Owners",
+    "pageEyebrow": "07 / Owners",
     "pageTitle": "Workspace owner settings",
     "pageSubtitle": "Read-only owner assignments used in readiness and version views. Names come from workspace defaults or campaign overrides.",
     "configBadge": "Workspace defaults",
@@ -440,7 +451,8 @@
     "pageEyebrow": "Versioning",
     "pageTitle": "Campaigns",
     "emptyTitle": "No campaigns saved yet",
-    "emptyDescription": "All your checks with version history will appear here. Start with a ready-made scenario or fill in the campaign bundle manually.",
+    "emptyDescription": "Saved review runs appear here with version history. Start with a sample case, run the check, and save the result from the Risk Report.",
+    "emptyAction": "Open Sample Cases",
     "goToIntake": "Open campaign bundle",
     "columns": {
       "campaign": "Campaign",
@@ -451,6 +463,7 @@
     "detailEyebrow": "Campaign",
     "created": "Created {date} · {count} {versionWord}",
     "versionsTitle": "Versions",
+    "versionsSubtitle": "Open v1 to inspect the saved run. Open v2 and later to compare what changed from the previous review run.",
     "version": "Version",
     "readinessState": "Readiness state",
     "blockers": "Blockers",
@@ -481,9 +494,9 @@
     }
   },
   "handoff": {
-    "eyebrow": "06 / Handoff",
-    "title": "Prepare handoff summary",
-    "subtitle": "Generate a Slack-ready summary so the launch team gets context without opening the tool.",
+    "eyebrow": "04 / Handoff",
+    "title": "Prepare launch handoff",
+    "subtitle": "Generate a Slack-ready internal ops update so launch owners can act without reopening the full workspace.",
     "preview": "Slack preview",
     "channel": "Channel",
     "mentionLevel": "Mention level",
@@ -499,8 +512,8 @@
     "exportBtn": "Export as Markdown",
     "compareBtn": "Compare versions",
     "emptyTitle": "No report to hand off",
-    "emptySubtitle": "Run a check first to prepare a handoff summary.",
-    "goToIntake": "Open campaign bundle",
+    "emptySubtitle": "Run a sample case or campaign check first, then save the run to prepare a handoff update.",
+    "goToIntake": "Open Sample Case",
     "copied": "Copied",
     "botName": "Preflight Bot",
     "statusNeedsReview": "NEEDS REVIEW",
@@ -509,21 +522,25 @@
     "blockers": "Blockers",
     "warnings": "Warnings",
     "targetLaunch": "Target launch",
-    "openReport": "Open Risk Report"
+    "openReport": "Open Risk Report",
+    "compareHint": "Save at least two runs in Campaigns to unlock version comparison."
   },
   "saveCampaign": {
-    "button": "Save run",
-    "title": "Save run to Campaigns",
+    "button": "Save Run",
+    "title": "Save Review Run",
+    "description": "Store this check as a campaign review run so Campaigns and version diff stay in sync.",
     "newCampaign": "New campaign",
     "existingCampaign": "Existing campaign",
     "campaignName": "Campaign name",
     "jurisdiction": "Jurisdiction / GEO",
     "selectCampaign": "Select campaign",
-    "noCampaigns": "No saved campaigns yet. Use \"New campaign\" first.",
+    "noCampaigns": "No saved campaigns yet. Save this report as a new campaign run first.",
     "selectCampaignError": "Select a campaign",
     "saved": "Saved",
     "savedMessage": "Saved as version {version}. View it at {path}",
-    "viewVersionDetail": "View version details"
+    "viewVersionDetail": "View version details",
+    "openCampaigns": "Open Campaigns",
+    "openHandoff": "Open Handoff"
   },
   "palette": {
     "placeholder": "Search, run, or jump",

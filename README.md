@@ -1,14 +1,14 @@
 # Promo Preflight
 
-AI-assisted launch readiness workspace for regulated promo campaigns.
+Internal Promo/CRM Ops workspace for regulated casino promo launches.
 
-Promo Preflight turns a campaign bundle into an operational pre-launch review: structured intake, deterministic risk checks, owner handoff, launch readiness, saved campaign runs, and version-to-version blocker diffing. It is built as a portfolio-grade product study for iGaming promo operations, with the sensitive parts kept deliberately offline and synthetic.
+Promo Preflight turns a campaign bundle into an operational pre-launch review: structured intake, deterministic risk checks, owner handoff, launch readiness, saved campaign runs, and version-to-version blocker diffing. It is built as a portfolio-grade demo workspace for regulated iGaming promo operations, with synthetic data and the sensitive parts kept deliberately offline.
 
 ## Live Demo
 
 [promo-preflight-production.up.railway.app](https://promo-preflight-production.up.railway.app/)
 
-90-second guided tour: [open tour](https://promo-preflight-production.up.railway.app/app/intake?tour=1)
+90-second guided tour: open the landing page and start the tour from the main CTA.
 
 ## What It Does
 
@@ -22,6 +22,32 @@ Promo teams usually review campaign offers, T&C, channel copy, links, localizati
 - Save campaign runs locally and compare versions to see new, reopened, still-open, and resolved blockers.
 - Browse the rules artifact and owner matrix used by the workspace.
 - Switch EN/RU UI copy and run the product tour.
+
+## 3-minute demo script
+
+1. Open the landing page.
+   Show Promo Preflight as an internal Promo/CRM Ops workspace for regulated casino promo launches, not a player-facing casino product.
+2. Start from a sample case.
+   Click `Start with Sample Case` and open the synthetic demo path in `02 / Campaign bundle`.
+3. Run the check.
+   Call out that the workspace runs 8 deterministic/offline checks against a synthetic campaign bundle.
+4. Open `03 / Risk Report`.
+   Show blockers, warnings, issue detail, owner suggestion, and the next-step strip.
+5. Save the run.
+   Use `Save Run` to store the current review as a campaign run for version history.
+6. Open `01 / Campaigns`.
+   Show the saved campaign, open version details, and then open the diff path for the follow-up version.
+7. Open `04 / Handoff`.
+   Show the Slack-ready internal ops update generated from the saved report.
+8. Close with supporting screens.
+   Briefly show `05 / Launch Readiness`, `06 / Rules`, and `07 / Owners` as the operational support surface around the review flow.
+
+Use this framing while demoing:
+
+- All campaign names, copy, and scenarios are synthetic.
+- The product is a demo/portfolio-grade workspace, not a production SaaS product.
+- There is no auth, payments, onboarding funnel, or player-facing gambling flow.
+- The current product flow does not depend on live LLM calls, real casino integrations, or durable backend persistence.
 
 ## Product Surface
 
@@ -139,7 +165,7 @@ Environment defaults are documented in `.env.example`. The app works without `AN
 
 ## Safety Positioning
 
-Promo Preflight is an internal launch-readiness workspace, not a gambling product. It avoids auth, payments, operator branding, affiliate mechanics, player-facing flows, and durable raw-input storage. Production pages are `noindex`/`nofollow`, and `robots.ts` disallows crawling.
+Promo Preflight is an internal launch-readiness workspace for regulated casino promo operations, not a gambling product. It uses synthetic data, avoids real operator branding, and does not include auth, payments, affiliate mechanics, player-facing flows, or durable raw-input storage claims. Production pages are `noindex`/`nofollow`, and `robots.ts` disallows crawling.
 
 ## Author
 

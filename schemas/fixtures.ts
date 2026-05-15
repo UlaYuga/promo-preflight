@@ -2,9 +2,9 @@ import type { CampaignBundleInput, CheckResult } from "./index";
 
 export const sampleCampaignBundle = {
   metadata: {
-    campaignName: "Operator A Reload May",
-    operatorLabel: "Operator A",
-    promoType: "reload",
+    campaignName: "CRM QA - Welcome bonus audit",
+    operatorLabel: "Northstar Sandbox",
+    promoType: "welcome",
     geo: "MGA generic",
     locale: "en-GB",
     currency: "EUR",
@@ -24,12 +24,12 @@ export const sampleCampaignBundle = {
     {
       channel: "email",
       fieldName: "subject",
-      text: "Get 100% up to 500 EUR today"
+      text: "Welcome bonus: 100% up to 500 EUR"
     },
     {
       channel: "push",
       fieldName: "body",
-      text: "Reload now and claim your bonus"
+      text: "Welcome bonus QA copy"
     }
   ],
   links: [

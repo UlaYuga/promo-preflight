@@ -1,4 +1,5 @@
 import type { Alignment, Side } from "driver.js";
+import { seedTourVersionHistory } from "@/lib/tour/sample";
 import type { TourState } from "@/lib/tour/storage";
 
 export type ProductTourStep = {
@@ -12,75 +13,97 @@ export type ProductTourStep = {
 
 export const productTourSteps: ProductTourStep[] = [
   {
-    selector: '[data-tour="workspace-overview"]',
-    route: "/app/campaigns",
-    title: "Start with active campaigns",
+    selector: '[data-tour="welcome-overview"]',
+    route: "/",
+    title: "Start on the landing screen",
     description:
-      "The workspace lists every saved campaign run with its status, open issues, and the owner responsible for the next step.",
+      "Open the internal Promo Preflight workspace, then launch the guided demo from a synthetic sample case.",
     side: "bottom",
     align: "start"
   },
   {
     selector: '[data-tour="intake-sample"]',
-    route: "/app/intake",
-    title: "Load a campaign bundle",
+    route: "/app/intake?examples=1",
+    title: "Load a sample case",
     description:
-      "All campaign facts in one place: metadata, offer math, terms, channel assets, links, and launch owners.",
-    side: "right",
+      "Screen 02 / Campaign bundle opens with sample cases so the walkthrough starts from a realistic synthetic CRM review scenario.",
+    side: "bottom",
     align: "start"
   },
   {
     selector: '[data-tour="run-preflight"]',
     route: "/app/intake",
-    title: "Run the preflight check",
+    title: "Run the check",
     description:
-      "One click runs eight checks across the campaign and maps every finding against the rule set before launch.",
+      "From Screen 02, run 8 offline checks across the bundle and move straight into the Risk Report.",
     side: "left",
     align: "center"
   },
   {
     selector: '[data-tour="risk-summary"]',
     route: "/app/risk-report",
-    title: "Review what blocks launch",
+    title: "Review the Risk Report",
     description:
-      "The Risk Report ranks issues by severity so the team sees blockers, warnings, and clean checks at a glance.",
+      "Screen 03 / Risk Report ranks blockers, warnings, and clean checks so the next operational decision is obvious.",
     side: "bottom",
     align: "start"
   },
   {
-    selector: '[data-tour="issue-detail"]',
+    selector: '[data-tour="save-run"]',
     route: "/app/risk-report",
-    title: "Turn findings into action",
+    title: "Save the review run",
     description:
-      "Each issue shows the affected field, evidence, suggested fix, and the owner who should resolve it.",
+      "Save the current report as an internal review run before moving into Campaigns, version history, and handoff.",
     side: "left",
-    align: "start"
+    align: "center"
   },
   {
-    selector: '[data-tour="readiness-board"]',
-    route: "/app/readiness",
-    title: "Check launch readiness",
+    selector: '[data-tour="campaign-versioning"]',
+    route: "/app/campaigns",
+    title: "Open Campaigns",
     description:
-      "The readiness board collects blockers and owner sign-offs into one go/no-go decision before handoff.",
+      "Screen 01 / Campaigns shows saved runs, latest readiness state, and the path into version history for the same campaign.",
     side: "bottom",
     align: "start"
   },
   {
-    selector: '[data-tour="rules-table"]',
-    route: "/app/rules",
-    title: "Keep the process repeatable",
+    selector: '[data-tour="version-diff"]',
+    route: "/app/campaigns/:campaignId/versions/2",
+    title: "Compare versions",
     description:
-      "Twenty-three rules backed by eight checks make the workflow auditable: see what was checked, who owns it, and what changed between runs.",
+      "Version detail and diff highlight what was fixed, reopened, or newly introduced between saved review runs.",
+    side: "bottom",
+    align: "start"
+  },
+  {
+    selector: '[data-tour="handoff-summary"]',
+    route: "/app/handoff",
+    title: "Prepare the handoff update",
+    description:
+      "Screen 04 / Handoff turns the saved report into a Slack-ready internal Promo/CRM Ops update for launch owners.",
     side: "bottom",
     align: "start"
   }
 ];
 
 export function getTourStepRoute(index: number, state: TourState): string {
-  const route = productTourSteps[index]?.route ?? "/";
+  let nextState = state;
+  const step = productTourSteps[index];
+  const route = step?.route ?? "/";
 
   if (route.includes(":campaignId")) {
-    return route.replace(":campaignId", state.campaignId ?? "");
+    const campaignId =
+      nextState.campaignId ??
+      (typeof window !== "undefined" ? seedTourVersionHistory() : undefined);
+
+    if (campaignId && campaignId !== nextState.campaignId) {
+      nextState = {
+        ...nextState,
+        campaignId
+      };
+    }
+
+    return route.replace(":campaignId", campaignId ?? "");
   }
 
   return route;

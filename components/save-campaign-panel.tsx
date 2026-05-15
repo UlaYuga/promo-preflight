@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { BookmarkPlus, ChevronDown, Save } from "lucide-react";
 import {
@@ -27,6 +28,7 @@ export function SaveCampaignPanel({
   const [selectedCampaignId, setSelectedCampaignId] = useState("");
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
+  const [savedPath, setSavedPath] = useState<string | null>(null);
 
   const campaigns = mode === "open" ? listCampaigns() : [];
 
@@ -34,6 +36,7 @@ export function SaveCampaignPanel({
     setMode("open");
     setStatus("idle");
     setStatusMessage("");
+    setSavedPath(null);
     const existing = listCampaigns();
     if (existing.length > 0 && !selectedCampaignId) {
       setSelectedCampaignId(existing[0].id);
@@ -62,15 +65,18 @@ export function SaveCampaignPanel({
       }
 
       const version = saveVersion(campaignId, report);
+      const nextPath = `/app/campaigns/${campaignId}/versions/${version.n}`;
       setStatus("saved");
+      setSavedPath(nextPath);
       setStatusMessage(
         t("saveCampaign.savedMessage", {
           version: version.n,
-          path: `/app/campaigns/${campaignId}/versions/${version.n}`
+          path: nextPath
         })
       );
     } catch (err) {
       setStatus("error");
+      setSavedPath(null);
       setStatusMessage(err instanceof Error ? err.message : t("common.saveFailed"));
     }
   }
@@ -124,6 +130,10 @@ export function SaveCampaignPanel({
         ))}
       </div>
 
+      <p className="mb-3 text-xs leading-5 text-subtle">
+        {t("saveCampaign.description")}
+      </p>
+
       {tab === "new" ? (
         <div className="space-y-3">
           <label className="block">
@@ -176,18 +186,34 @@ export function SaveCampaignPanel({
       )}
 
       {status === "saved" ? (
-        <div className="mt-3 rounded border border-pass/20 bg-pass/10 px-3 py-2 text-xs text-pass">
+        <div
+          aria-live="polite"
+          className="mt-3 rounded border border-pass/20 bg-pass/10 px-3 py-2 text-xs text-pass"
+        >
           <p className="font-medium">{t("saveCampaign.saved")}</p>
-          {statusMessage.match(/\/app\/campaigns\/\S+/) ? (
-            <a
-              href={statusMessage.match(/\/app\/campaigns\/\S+/)?.[0] ?? "#"}
-              className="mt-1 block underline underline-offset-2 hover:text-pass"
+          <p className="mt-1 text-pass/80">{statusMessage}</p>
+          <div className="mt-2 flex flex-wrap gap-3">
+            {savedPath ? (
+              <Link
+                href={savedPath}
+                className="underline underline-offset-2 hover:text-pass"
+              >
+                {t("saveCampaign.viewVersionDetail")}
+              </Link>
+            ) : null}
+            <Link
+              href="/app/campaigns"
+              className="underline underline-offset-2 hover:text-pass"
             >
-              {t("saveCampaign.viewVersionDetail")}
-            </a>
-          ) : (
-            <p className="mt-0.5 text-pass/70">{statusMessage}</p>
-          )}
+              {t("saveCampaign.openCampaigns")}
+            </Link>
+            <Link
+              href="/app/handoff"
+              className="underline underline-offset-2 hover:text-pass"
+            >
+              {t("saveCampaign.openHandoff")}
+            </Link>
+          </div>
         </div>
       ) : status === "error" ? (
         <p className="mt-3 text-xs text-fail">{statusMessage}</p>

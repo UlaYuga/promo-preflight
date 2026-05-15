@@ -9,12 +9,12 @@ export const workedExamples: Record<
 > = {
   EX01: {
     id: "EX01",
-    publicLabel: "Operator A – Reload bundle mismatch",
+    publicLabel: "Welcome Bonus Audit – bundle mismatch",
     bundle: {
       metadata: {
-        campaignName: "Operator A Reload May",
-        operatorLabel: "Operator A",
-        promoType: "reload",
+        campaignName: "CRM QA - Welcome bonus audit",
+        operatorLabel: "Northstar Sandbox",
+        promoType: "welcome",
         geo: "MGA generic",
         locale: "en-GB",
         currency: "EUR",
@@ -36,7 +36,7 @@ export const workedExamples: Record<
           channel: "email",
           fieldName: "subject",
           // intentionally says 100% / 500 EUR → conflicts with offer 50% / 300 EUR
-          text: "Get 100% up to 500 EUR today"
+          text: "Welcome bonus: 100% up to 500 EUR"
         },
         {
           channel: "push",
@@ -65,11 +65,11 @@ export const workedExamples: Record<
 
   EX02: {
     id: "EX02",
-    publicLabel: "Operator B – Missing max bet",
+    publicLabel: "Welcome Bonus Terms Sweep – missing max bet",
     bundle: {
       metadata: {
-        campaignName: "Operator B Welcome",
-        operatorLabel: "Operator B",
+        campaignName: "CRM QA - Welcome terms sweep",
+        operatorLabel: "Cinder Room Synthetic",
         promoType: "welcome",
         geo: "Curacao generic",
         locale: "en",
@@ -120,11 +120,11 @@ export const workedExamples: Record<
 
   EX03: {
     id: "EX03",
-    publicLabel: "Operator C – Math burden issue",
+    publicLabel: "Cashback Reconciliation – math contradiction",
     bundle: {
       metadata: {
-        campaignName: "Operator C Cashback June",
-        operatorLabel: "Operator C",
+        campaignName: "CRM QA - Cashback reconciliation",
+        operatorLabel: "Harbor Vault Demo",
         promoType: "cashback",
         geo: "generic",
         locale: "en",
@@ -174,11 +174,11 @@ export const workedExamples: Record<
 
   EX04: {
     id: "EX04",
-    publicLabel: "Operator D – Jurisdiction copy risk",
+    publicLabel: "UK Freebet Copy Review – jurisdiction copy risk",
     bundle: {
       metadata: {
-        campaignName: "Operator D Freebet UK",
-        operatorLabel: "Operator D",
+        campaignName: "CRM QA - UK freebet copy review",
+        operatorLabel: "Slate Harbor Sandbox",
         promoType: "freebet",
         geo: "UKGC-like",
         locale: "en-GB",
@@ -228,11 +228,11 @@ export const workedExamples: Record<
 
   EX05: {
     id: "EX05",
-    publicLabel: "Operator E – Localization mismatch",
+    publicLabel: "Brazil Reactivation – locale mismatch",
     bundle: {
       metadata: {
-        campaignName: "Operator E Reactivation Brazil",
-        operatorLabel: "Operator E",
+        campaignName: "CRM QA - Brazil reactivation",
+        operatorLabel: "Aurora Desk Synthetic",
         promoType: "reactivation",
         geo: "Brazil",
         locale: "pt-BR",
@@ -282,12 +282,12 @@ export const workedExamples: Record<
 
   EX06: {
     id: "EX06",
-    publicLabel: "Operator F – Missing owners",
+    publicLabel: "VIP Reload Approval Gate – missing owners",
     bundle: {
       metadata: {
-        campaignName: "Operator F Loyalty June",
-        operatorLabel: "Operator F",
-        promoType: "loyalty",
+        campaignName: "CRM QA - VIP reload approval gate",
+        operatorLabel: "Signal Ridge Demo",
+        promoType: "reload",
         geo: "generic",
         locale: "en",
         currency: "USD",
@@ -295,6 +295,7 @@ export const workedExamples: Record<
         channelsIncluded: ["email", "onsite"]
       },
       offer: {
+        minDeposit: 100,
         bonusPercentage: 25,
         maxBonus: 250,
         wageringRequirement: "25x bonus",
@@ -302,23 +303,23 @@ export const workedExamples: Record<
         maxCashout: 500
       },
       termsText:
-        "25% loyalty bonus up to 250 USD. 25x wagering on bonus. Max bet 10 USD. Max cashout 500 USD. One per household/IP/payment. Eligible users only. Valid until 30 June 2026. 18+. Responsible use.",
+        "25% VIP reload up to 250 USD. Min deposit 100 USD. 25x wagering on bonus. Max bet 10 USD. Max cashout 500 USD. One per household/IP/payment. Eligible VIP users only. Valid until 30 June 2026. 18+. Responsible use.",
       assets: [
         {
           channel: "email",
           fieldName: "subject",
-          text: "Your loyalty reward is ready"
+          text: "VIP reload review: 25% up to 250 USD"
         },
         {
           channel: "onsite",
           fieldName: "banner",
-          text: "25% bonus for loyal players"
+          text: "VIP reload flagged for approval"
         }
       ],
       links: [
         {
           label: "CTA",
-          url: "https://example.com/loyalty?utm_source=email&utm_medium=crm&utm_campaign=loyalty_june",
+          url: "https://example.com/vip-reload?utm_source=email&utm_medium=crm&utm_campaign=vip_reload_review",
           requiresUtm: true
         }
       ],
@@ -331,11 +332,11 @@ export const workedExamples: Record<
 
   EX07: {
     id: "EX07",
-    publicLabel: "Operator G – Link tracking issue",
+    publicLabel: "Weekend Tournament QA – link tracking issue",
     bundle: {
       metadata: {
-        campaignName: "Operator G Tournament May",
-        operatorLabel: "Operator G",
+        campaignName: "CRM QA - Weekend tournament QA",
+        operatorLabel: "Blue Mesa Synthetic",
         promoType: "tournament",
         geo: "MGA generic",
         locale: "en",
@@ -390,11 +391,11 @@ export const workedExamples: Record<
 
   EX08: {
     id: "EX08",
-    publicLabel: "Operator H – Format overflow",
+    publicLabel: "Weekend Free Spins Push – format overflow",
     bundle: {
       metadata: {
-        campaignName: "Operator H Welcome Format",
-        operatorLabel: "Operator H",
+        campaignName: "CRM QA - Weekend free spins push",
+        operatorLabel: "Ember Coast Demo",
         promoType: "welcome",
         geo: "generic",
         locale: "en",
@@ -416,8 +417,8 @@ export const workedExamples: Record<
         {
           channel: "push",
           fieldName: "title",
-          // 69 chars — hard limit 55, 69 > 55*1.2=66 → format_qa FAIL (HIGH blocker)
-          text: "Welcome bonus: claim your 100% up to 200 EUR, double your deposit now"
+          // intentionally exceeds the 55-char hard limit threshold → format_qa FAIL
+          text: "Weekend free spins push: 100% up to 200 EUR, launch window closes at midnight"
         },
         {
           channel: "email",
@@ -446,11 +447,11 @@ export const workedExamples: Record<
 
   EX09: {
     id: "EX09",
-    publicLabel: "Operator X - BR welcome domain rules",
+    publicLabel: "Brazil Welcome Audit - domain rules",
     bundle: {
       metadata: {
-        campaignName: "Operator X BR Welcome",
-        operatorLabel: "Operator X",
+        campaignName: "CRM QA - Brazil welcome audit",
+        operatorLabel: "Lumen Bay Synthetic",
         promoType: "welcome",
         geo: "BR",
         locale: "pt-BR",
@@ -500,11 +501,11 @@ export const workedExamples: Record<
 
   EX10: {
     id: "EX10",
-    publicLabel: "Operator X - EU free-spins domain rules",
+    publicLabel: "EU Free Spins Audit - domain rules",
     bundle: {
       metadata: {
-        campaignName: "Operator X EU Free Spins",
-        operatorLabel: "Operator X",
+        campaignName: "CRM QA - EU free spins audit",
+        operatorLabel: "Granite Field Demo",
         promoType: "welcome",
         geo: "EU",
         locale: "en",
@@ -554,11 +555,11 @@ export const workedExamples: Record<
 
   EX11: {
     id: "EX11",
-    publicLabel: "Operator X - CIS VIP cashback domain rules",
+    publicLabel: "VIP Cashback Audit - domain rules",
     bundle: {
       metadata: {
-        campaignName: "Operator X CIS VIP Cashback",
-        operatorLabel: "Operator X",
+        campaignName: "CRM QA - VIP cashback audit",
+        operatorLabel: "Iron Vale Sandbox",
         promoType: "cashback",
         geo: "CIS",
         locale: "en",
@@ -589,7 +590,7 @@ export const workedExamples: Record<
         {
           channel: "landing",
           fieldName: "hero",
-          text: "Operator X VIP cashback"
+          text: "VIP cashback audit"
         }
       ],
       links: [

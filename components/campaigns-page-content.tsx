@@ -7,7 +7,7 @@ export function CampaignsPageContent() {
   const { language } = useI18n();
   const isRu = language === "ru";
 
-  const eyebrow = isRu ? "01 / Воркспейс" : "01 / Workspace";
+  const eyebrow = isRu ? "01 / Кампании" : "01 / Campaigns";
   const heroTitle = isRu ? "Запущенные\nкампании" : "Campaigns\nin flight";
   const heroLines = heroTitle.split("\n");
   const allRunsLabel = isRu ? "Все запуски" : "All runs";

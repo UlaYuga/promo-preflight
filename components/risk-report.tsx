@@ -226,6 +226,7 @@ export function RiskReport() {
       ) : null}
 
       <RiskSummaryBar readiness={readiness} report={report} />
+      <RiskNextSteps />
 
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
         <IssueTable
@@ -236,6 +237,45 @@ export function RiskReport() {
         <IssueDetailPanel row={selectedIssue} />
       </section>
     </div>
+  );
+}
+
+function RiskNextSteps() {
+  const { t } = useI18n();
+
+  return (
+    <section className="rounded border border-white/[0.07] bg-surface/60 p-4">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="max-w-[64ch]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            {t("riskReport.nextStepsTitle")}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-subtle">
+            {t("riskReport.nextStepsBody")}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/app/readiness"
+            className="inline-flex items-center gap-2 rounded border border-white/[0.07] bg-background px-3 py-2 text-xs font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent"
+          >
+            {t("riskReport.nextStepsReadiness")}
+          </Link>
+          <Link
+            href="/app/handoff"
+            className="inline-flex items-center gap-2 rounded border border-white/[0.07] bg-background px-3 py-2 text-xs font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent"
+          >
+            {t("riskReport.nextStepsHandoff")}
+          </Link>
+          <Link
+            href="/app/campaigns"
+            className="inline-flex items-center gap-2 rounded border border-white/[0.07] bg-background px-3 py-2 text-xs font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent"
+          >
+            {t("riskReport.nextStepsCampaigns")}
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
