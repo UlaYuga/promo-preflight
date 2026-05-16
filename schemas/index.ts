@@ -120,6 +120,13 @@ export const OwnerSchema = z.object({
   notes: z.string().max(1000).optional()
 });
 
+export const TargetJurisdictionSchema = z.enum([
+  'BR', 'MX', 'CO', 'AR', 'IN', 'RU', 'TR', 'UK', 'DE', 'ES', 'IT',
+  'NG', 'ZA', 'KR', 'MY', 'AL', 'SE', 'PL', 'CA-ON'
+]);
+
+export type TargetJurisdiction = z.infer<typeof TargetJurisdictionSchema>;
+
 export const CampaignBundleSchema = z.object({
   metadata: CampaignMetadataSchema,
   offer: OfferBasicsSchema,
@@ -127,7 +134,10 @@ export const CampaignBundleSchema = z.object({
   links: z.array(LinkAssetSchema).default([]),
   owners: z.array(OwnerSchema).default([]),
   termsText: z.string().min(1).max(50000),
-  notes: z.string().max(5000).optional()
+  notes: z.string().max(5000).optional(),
+  // Added in T-013a (required in T-013d)
+  targetJurisdiction: z.array(TargetJurisdictionSchema).min(1).max(3).optional(),
+  paymentMethods: z.array(z.string()).optional()
 });
 
 export const CheckEvidenceSchema = z.object({
