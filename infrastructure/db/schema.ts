@@ -104,6 +104,24 @@ export const idempotencyKeys = pgTable('idempotency_keys', {
 });
 
 // ---------------------------------------------------------------------------
+// outbox — transactional outbox events
+// ---------------------------------------------------------------------------
+export const outbox = pgTable(
+  'outbox',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    eventType: text('event_type').notNull(),
+    payload: jsonb('payload').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    deliveredAt: timestamp('delivered_at', { withTimezone: true }),
+  },
+  (t) => [
+    index('idx_outbox_created_at').on(t.createdAt),
+    index('idx_outbox_delivered_at').on(t.deliveredAt),
+  ]
+);
+
+// ---------------------------------------------------------------------------
 // campaign_assets, campaign_links, campaign_owners — existing tables kept
 // for DB consistency; not used by repositories directly
 // ---------------------------------------------------------------------------

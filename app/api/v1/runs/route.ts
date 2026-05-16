@@ -1,15 +1,18 @@
 import { NextRequest } from 'next/server';
+import { randomUUID } from 'crypto';
 import { z } from 'zod';
 import { getDb } from '../../../../infrastructure/db/client';
 import { RunPersistenceService } from '../../../../infrastructure/persistence/RunPersistenceService';
 import { Bus } from '../../../../application/bus/Bus';
 import { HandlerRegistry } from '../../../../application/bus/HandlerRegistry';
 import { handler as runChecksHandler } from '../../../../infrastructure/handler/checks/RunChecksHandler';
+import type { PreflightEvent } from '../../../../domain/event/PreflightEvent';
 import { CampaignBundleSchema } from '../../../../domain/model/Campaign';
 import { hashBody, countBlockers, errorResponse, badRequest } from '../../../../api/v1/index';
 import type { RunResponse } from '../../../../api/v1/index';
 import type { RunChecksCommand } from '../../../../application/command/RunChecksCommand';
 import type { Run } from '../../../../domain/model/Run';
+import { OutboxEventPublisher } from '../../../../infrastructure/outbox';
 
 export const runtime = 'nodejs';
 
@@ -75,12 +78,14 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   try {
     const persistence = new RunPersistenceService(db);
+    const eventPublisher = new OutboxEventPublisher(db);
     const persisted = await persistence.persistIdempotentRun<RunResponse>({
       idempotencyKey,
       requestHash: bodyHash,
       campaign,
       run,
       readinessState,
+      eventPublisher,
       buildResponse: ({ campaignId, campaignVersion, run: savedRun }) => ({
         runId: savedRun.id,
         campaignId,
@@ -92,6 +97,8 @@ export async function POST(req: NextRequest): Promise<Response> {
         createdAt: savedRun.createdAt,
         completedAt: savedRun.completedAt,
       }),
+      buildEvents: ({ campaignId, campaignVersionId, run: savedRun }) =>
+        buildRunEvents(campaignId, campaignVersionId, savedRun),
     });
 
     return Response.json(persisted.response, { status: 200 });
@@ -101,4 +108,45 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
     throw e;
   }
+}
+
+function buildRunEvents(campaignId: string, versionId: string, run: Run): PreflightEvent[] {
+  const occurredAt = new Date().toISOString();
+  const runCounts = countBlockers(run.blockers);
+
+  const events: PreflightEvent[] = [
+    {
+      id: randomUUID(),
+      type: 'RunStarted',
+      occurredAt,
+      runId: run.id,
+      campaignId,
+      versionId,
+    },
+    ...run.blockers.map(
+      (blocker): PreflightEvent => ({
+        id: randomUUID(),
+        type: 'BlockerRaised',
+        occurredAt,
+        runId: run.id,
+        ruleId: blocker.ruleId,
+        severity: blocker.severity,
+        ownerHint: blocker.ownerHint ?? null,
+      })
+    ),
+    {
+      id: randomUUID(),
+      type: 'RunCompleted',
+      occurredAt: run.completedAt ?? occurredAt,
+      runId: run.id,
+      verdict: run.verdict,
+      counts: {
+        blockers: runCounts.block,
+        warnings: runCounts.warn,
+        passed: 0,
+      },
+    },
+  ];
+
+  return events;
 }

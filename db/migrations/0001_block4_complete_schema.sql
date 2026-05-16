@@ -94,3 +94,20 @@ create table if not exists idempotency_keys (
   created_at        timestamptz not null default now(),
   expires_at        timestamptz
 );
+
+-- ---------------------------------------------------------------------------
+-- outbox — transactional outbox rows written in the same tx as domain writes
+-- ---------------------------------------------------------------------------
+create table if not exists outbox (
+  id           uuid        primary key default gen_random_uuid(),
+  event_type   text        not null,
+  payload      jsonb       not null,
+  created_at   timestamptz not null default now(),
+  delivered_at timestamptz
+);
+
+create index if not exists idx_outbox_created_at
+  on outbox(created_at);
+
+create index if not exists idx_outbox_delivered_at
+  on outbox(delivered_at);
