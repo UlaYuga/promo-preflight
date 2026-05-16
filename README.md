@@ -2,6 +2,8 @@
 
 Internal Promo/CRM Ops workspace for regulated casino promo launches.
 
+[![Tests](https://img.shields.io/badge/tests-passing-green)]()
+
 Promo Preflight turns a campaign bundle into an operational pre-launch review: structured intake, deterministic risk checks, owner handoff, launch readiness, saved campaign runs, and version-to-version blocker diffing. It is built as a portfolio-grade demo workspace for regulated iGaming promo operations, with synthetic data and the sensitive parts kept deliberately offline.
 
 ## Live Demo
