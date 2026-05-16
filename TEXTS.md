@@ -133,17 +133,26 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 ## The problem (T-001)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- Worker: produce 3 bullets each citing a verifiable source from the "Verbatim quotes" block above. Tone: direct, technical, slightly self-aware. Max 350 words for the entire section. -->
 
-```
-TBD by T-001 worker. Use:
-- Bullet 1: Stanislav quote (translated) — local-blocking trend as #1 risk for 2026
-- Bullet 2: Olomoyin quote — wagering requirements must be stated; "Gamble responsibly" footer is not enough
-- Bullet 3: Verified fines table — pick 3 most striking (Perfect Storm €5M, Sky £1.17M, Kindred SEK 100M)
-- Closing paragraph: why existing tooling fails (scattered Notion + Slack + Google Doc + Excel across 8-15 locales)
-- Closing paragraph: what Preflight does differently (deterministic checks per jurisdiction, one canonical bundle, audit-friendly events, drops into your stack via REST + Telegram webhook)
-```
+Every quarter, another regulator updates its rules. Your promo team is still reviewing T&C across eight locales in Google Docs.
+
+- "The key and very underrated trend in 2026, in my view, is not AI or core updates, but the increasing local blockings and regulatory pressure in Latin America and Asia. These began last year and have hit not just products but webmasters too. Infrastructure resilience and tight processes for tracking and reacting to local-operator blocks will be the competitive advantage of this year." — **Stanislav, SEO Product Manager, 01.tech**, *Global iGaming Report 2026*
+
+- "Gamble responsibly as a footer link no longer satisfies several jurisdictions." — **Emmanuel Omoloyin, SEO Content Writer**
+
+- **Perfect Storm B.V.**: €5M fine + 2-year ban, DGOJ Spain (Apr 2026). **Sky Betting & Gaming**: £1.17M, UKGC (2022) — welcome bonus emails sent to self-excluded players. **Kindred (Spooniker)**: SEK 100M, Spelinspektionen (2020) — single-bonus-rule violation. Real money lost when promo compliance fails.
+
+No dedicated tool exists for multi-jurisdiction promo compliance in iGaming. Reviews happen across Slack, Google Docs, Excel, and Notion — one chain per locale, none of it audit-defensible. As Adam Mateja put it: "Promotions in iGaming are one of those things that look simple on paper, and then turn into a lot of manual work."
+
+A mid-size operator runs 20-30 campaigns a month,\* spends an estimated 2-5 person-hours per campaign on compliance review,\* and still pulls or corrects 5-10% of campaigns post-launch.\*
+
+\*Industry estimate per OLD-RESEARCH §2; no public operator metrics published.
+
+Preflight runs 11 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
+
+Built around the regulatory and operational realities described in the [01.tech × G GATE MEDIA Global iGaming Report 2026](link-tbd). Preflight closes the gap that report identifies as 2026's most underrated risk.
 
 ## What this is
 
