@@ -96,7 +96,9 @@ export const runBlockers = pgTable(
 export const idempotencyKeys = pgTable('idempotency_keys', {
   key: text('key').primaryKey(),
   requestHash: text('request_hash').notNull(),
-  responseSnapshot: jsonb('response_snapshot').notNull(),
+  responseSnapshot: jsonb('response_snapshot').notNull().default({}),
+  // 'pending' while the owning transaction is in-flight; 'completed' once committed.
+  status: text('status').notNull().default('pending'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   expiresAt: timestamp('expires_at', { withTimezone: true }),
 });

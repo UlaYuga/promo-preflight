@@ -1,14 +1,11 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { getDb } from '../../../../infrastructure/db/client';
-import { CampaignRepository } from '../../../../infrastructure/persistence/CampaignRepository';
-import { RunRepository } from '../../../../infrastructure/persistence/RunRepository';
-import { IdempotencyRepository } from '../../../../infrastructure/persistence/IdempotencyRepository';
+import { RunPersistenceService } from '../../../../infrastructure/persistence/RunPersistenceService';
 import { Bus } from '../../../../application/bus/Bus';
 import { HandlerRegistry } from '../../../../application/bus/HandlerRegistry';
 import { handler as runChecksHandler } from '../../../../infrastructure/handler/checks/RunChecksHandler';
 import { CampaignBundleSchema } from '../../../../domain/model/Campaign';
-import { IdempotencyConflictException } from '../../../../domain/exception/PreflightException';
 import { hashBody, countBlockers, errorResponse, badRequest } from '../../../../api/v1/index';
 import type { RunResponse } from '../../../../api/v1/index';
 import type { RunChecksCommand } from '../../../../application/command/RunChecksCommand';
@@ -51,22 +48,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const campaign = campaignParse.data;
   const options = outerParse.data.options ?? {};
   const bodyHash = hashBody(rawBody);
-
   const db = getDb();
-  const idempotencyRepo = new IdempotencyRepository(db);
-
-  // T-019: Check existing idempotency record
-  const existingIdempotency = await idempotencyRepo.find(idempotencyKey);
-  if (existingIdempotency) {
-    if (existingIdempotency.requestHash !== bodyHash) {
-      const conflict = new IdempotencyConflictException(
-        'Idempotency-Key reused with different request body'
-      );
-      return errorResponse(conflict);
-    }
-    // Same key + same body → return stored response
-    return Response.json(existingIdempotency.responseSnapshot, { status: 200 });
-  }
 
   // Run checks via Bus
   const registry = new HandlerRegistry();
@@ -87,47 +69,36 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const run = result.value;
 
-  // Persist campaign + version + run
-  const campaignRepo = new CampaignRepository(db);
-  const runRepo = new RunRepository(db);
-
-  const campaignRecord = await campaignRepo.findOrCreate(campaign);
   const verdictStr = run.verdict;
   const readinessState =
     verdictStr === 'BLOCK' ? 'BLOCKED' : verdictStr === 'WARN' ? 'READY_WITH_WARNINGS' : 'READY';
-  const versionN = await campaignRepo.createVersion(
-    campaignRecord.id,
-    run.blockers,
-    readinessState
-  );
 
-  const runWithMeta = {
-    ...run,
-    campaignId: campaignRecord.id,
-    version: versionN,
-  };
+  try {
+    const persistence = new RunPersistenceService(db);
+    const persisted = await persistence.persistIdempotentRun<RunResponse>({
+      idempotencyKey,
+      requestHash: bodyHash,
+      campaign,
+      run,
+      readinessState,
+      buildResponse: ({ campaignId, campaignVersion, run: savedRun }) => ({
+        runId: savedRun.id,
+        campaignId,
+        campaignVersion,
+        verdict: savedRun.verdict,
+        status: savedRun.status,
+        counts: countBlockers(savedRun.blockers),
+        blockers: savedRun.blockers,
+        createdAt: savedRun.createdAt,
+        completedAt: savedRun.completedAt,
+      }),
+    });
 
-  await runRepo.save(runWithMeta);
-
-  const counts = countBlockers(run.blockers);
-  const responseBody: RunResponse = {
-    runId: run.id,
-    campaignId: campaignRecord.id,
-    campaignVersion: versionN,
-    verdict: run.verdict,
-    status: run.status,
-    counts,
-    blockers: run.blockers,
-    createdAt: run.createdAt,
-    completedAt: run.completedAt,
-  };
-
-  // T-019: Persist idempotency record
-  await idempotencyRepo.save({
-    key: idempotencyKey,
-    requestHash: bodyHash,
-    responseSnapshot: responseBody,
-  });
-
-  return Response.json(responseBody, { status: 200 });
+    return Response.json(persisted.response, { status: 200 });
+  } catch (e) {
+    if (e instanceof Error && 'code' in e) {
+      return errorResponse(e as Parameters<typeof errorResponse>[0]);
+    }
+    throw e;
+  }
 }
