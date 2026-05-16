@@ -139,7 +139,7 @@ Every quarter, another regulator updates its rules. Your promo team is still rev
 
 - "The key and very underrated trend in 2026, in my view, is not AI or core updates, but the increasing local blockings and regulatory pressure in Latin America and Asia. These began last year and have hit not just products but webmasters too. Infrastructure resilience and tight processes for tracking and reacting to local-operator blocks will be the competitive advantage of this year." — **Stanislav, SEO Product Manager, 01.tech**, *Global iGaming Report 2026*
 
-- "Gamble responsibly as a footer link no longer satisfies several jurisdictions." — **Emmanuel Omoloyin, SEO Content Writer**
+- "Gamble responsibly as a footer link no longer satisfies several jurisdictions." — **Emmanuel Omoloyin, SEO Content Writer**, *DEEP-RESEARCH §7, citation 169*
 
 - **Perfect Storm B.V.**: €5M fine + 2-year ban, DGOJ Spain (Apr 2026). **Sky Betting & Gaming**: £1.17M, UKGC (2022) — welcome bonus emails sent to self-excluded players. **Kindred (Spooniker)**: SEK 100M, Spelinspektionen (2020) — single-bonus-rule violation. Real money lost when promo compliance fails.
 
@@ -169,13 +169,11 @@ The system accepts one canonical `CampaignBundle` in JSON — one format regardl
 <!-- STATUS: drafted -->
 <!-- Worker: markdown table, 3 rows, columns "You are" and "What this gives you" -->
 
-```
 | You are | What this gives you |
 |---|---|
 | A multi-jurisdiction iGaming operator (lic. EU + LATAM + offshore) | Catch jurisdictional risks before promo launches — Brazilian SPA, Indian UPI ban, Mexican SPEI rules, Algerian crypto prohibition |
 | A platform / white-label engineer at a B2B iGaming infrastructure provider (01.tech, SoftSwiss, BetConstruct, EveryMatrix tier) | Drop-in pre-launch gate your operator customers can add to their CRM / Promo workflow without your platform team owning compliance |
 | A CRM / Promo Ops lead launching campaigns across 8-15 locales every month | Replace the Notion → Slack → Google Doc → Excel review chain with one deterministic check and one Telegram alert with assignable owners |
-```
 
 ## How it works (T-003)
 
@@ -275,7 +273,7 @@ See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment va
 
 ### 2. Drop into your CI (npm package + CLI)
 
-*Shipped in T-033.*
+*Coming in T-033.*
 
 ```bash
 npx preflight-check --bundle campaign.json --jurisdiction BR --exit-on-block
@@ -346,14 +344,12 @@ Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 <!-- STATUS: drafted -->
 <!-- Bullet list of explicit non-goals with rationale -->
 
-```
 - No multi-tenant (org-scoped data) — out of scope for this sprint; can be added without changing core
 - No gRPC — REST + webhooks fit the consumer model (CRM/Promo Ops teams)
 - No live LLM in default checks path — checks must be deterministic and reproducible; AI is an optional augmentation only (see ADR-0003 + ADR-0005 for the planned augmentation roadmap)
 - No auth — out of scope for demo; production deployment expects auth at infra layer
 - No microservices — one process; outbox worker is a separate entrypoint of the same binary
 - No "promo compliance score" magic number — verdicts are GO / WARN / BLOCK based on rule severity, not opaque AI
-```
 
 ## AI augmentation roadmap (T-003 — new sub-section, after "What we deliberately don't do")
 
