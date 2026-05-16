@@ -1,116 +1,109 @@
-import type { RunBlocker } from '../model/Run';
+import { z } from 'zod';
 
 export const PREFLIGHT_EVENT_TYPES = [
   'RunStarted',
-  'RunCompleted',
-  'RunFailed',
   'BlockerRaised',
-  'CampaignVersionCreated',
+  'BlockerResolved',
+  'RunCompleted',
+  'OwnerOverridden',
+  'VersionDiffed',
 ] as const;
 
 export type PreflightEventType = (typeof PREFLIGHT_EVENT_TYPES)[number];
 
-export interface PreflightEventBase<TType extends PreflightEventType> {
-  readonly eventId: string;
-  readonly type: TType;
-  readonly occurredAt: string;
-}
+const BaseEventSchema = z
+  .object({
+    id: z.string(),
+    occurredAt: z.string(),
+  })
+  .strict();
 
-export interface RunStartedEvent extends PreflightEventBase<'RunStarted'> {
-  readonly runId: string;
-  readonly campaignId?: string;
-  readonly campaignVersion?: number;
-}
+const RunCountsSchema = z
+  .object({
+    blockers: z.number().int().nonnegative(),
+    warnings: z.number().int().nonnegative(),
+    passed: z.number().int().nonnegative(),
+  })
+  .strict();
 
-export interface RunCompletedEvent extends PreflightEventBase<'RunCompleted'> {
-  readonly runId: string;
-  readonly campaignId: string;
-  readonly campaignVersion: number;
-  readonly verdict: 'GO' | 'WARN' | 'BLOCK';
-  readonly blockerCount: number;
-  readonly warningCount: number;
-  readonly infoCount: number;
-}
+const VersionDiffCountsSchema = z
+  .object({
+    resolved: z.number().int().nonnegative(),
+    new: z.number().int().nonnegative(),
+    stillOpen: z.number().int().nonnegative(),
+  })
+  .strict();
 
-export interface RunFailedEvent extends PreflightEventBase<'RunFailed'> {
-  readonly runId?: string;
-  readonly campaignId?: string;
-  readonly reason: string;
-}
+export const RunStartedSchema = BaseEventSchema.extend({
+  type: z.literal('RunStarted'),
+  runId: z.string(),
+  campaignId: z.string(),
+  versionId: z.string(),
+}).strict();
 
-export interface BlockerRaisedEvent extends PreflightEventBase<'BlockerRaised'> {
-  readonly runId: string;
-  readonly campaignId: string;
-  readonly campaignVersion: number;
-  readonly ruleId: string;
-  readonly severity: RunBlocker['severity'];
-  readonly evidence: string;
-  readonly suggestion: string;
-  readonly ownerHint?: string;
-}
+export const BlockerRaisedSchema = BaseEventSchema.extend({
+  type: z.literal('BlockerRaised'),
+  runId: z.string(),
+  ruleId: z.string(),
+  severity: z.enum(['block', 'warn', 'info']),
+  ownerHint: z.string().nullable(),
+}).strict();
 
-export interface CampaignVersionCreatedEvent
-  extends PreflightEventBase<'CampaignVersionCreated'> {
-  readonly campaignId: string;
-  readonly campaignVersion: number;
-  readonly runId?: string;
-}
+export const BlockerResolvedSchema = BaseEventSchema.extend({
+  type: z.literal('BlockerResolved'),
+  runId: z.string(),
+  ruleId: z.string(),
+  resolvedBy: z.string().nullable(),
+}).strict();
+
+export const RunCompletedSchema = BaseEventSchema.extend({
+  type: z.literal('RunCompleted'),
+  runId: z.string(),
+  verdict: z.enum(['GO', 'WARN', 'BLOCK']),
+  counts: RunCountsSchema,
+}).strict();
+
+export const OwnerOverriddenSchema = BaseEventSchema.extend({
+  type: z.literal('OwnerOverridden'),
+  runId: z.string(),
+  ruleId: z.string(),
+  fromOwner: z.string().nullable(),
+  toOwner: z.string(),
+}).strict();
+
+export const VersionDiffedSchema = BaseEventSchema.extend({
+  type: z.literal('VersionDiffed'),
+  campaignId: z.string(),
+  fromVersion: z.number().int(),
+  toVersion: z.number().int(),
+  counts: VersionDiffCountsSchema,
+}).strict();
+
+export const PreflightEventSchema = z.discriminatedUnion('type', [
+  RunStartedSchema,
+  BlockerRaisedSchema,
+  BlockerResolvedSchema,
+  RunCompletedSchema,
+  OwnerOverriddenSchema,
+  VersionDiffedSchema,
+]);
+
+export type RunStarted = z.infer<typeof RunStartedSchema>;
+export type BlockerRaised = z.infer<typeof BlockerRaisedSchema>;
+export type BlockerResolved = z.infer<typeof BlockerResolvedSchema>;
+export type RunCompleted = z.infer<typeof RunCompletedSchema>;
+export type OwnerOverridden = z.infer<typeof OwnerOverriddenSchema>;
+export type VersionDiffed = z.infer<typeof VersionDiffedSchema>;
 
 export type PreflightEvent =
-  | RunStartedEvent
-  | RunCompletedEvent
-  | RunFailedEvent
-  | BlockerRaisedEvent
-  | CampaignVersionCreatedEvent;
+  | RunStarted
+  | BlockerRaised
+  | BlockerResolved
+  | RunCompleted
+  | OwnerOverridden
+  | VersionDiffed;
 
-export type RunStartedEventInput = Omit<RunStartedEvent, 'type'>;
-export type RunCompletedEventInput = Omit<RunCompletedEvent, 'type'>;
-export type RunFailedEventInput = Omit<RunFailedEvent, 'type'>;
-export type BlockerRaisedEventInput = Omit<BlockerRaisedEvent, 'type'>;
-export type CampaignVersionCreatedEventInput = Omit<
-  CampaignVersionCreatedEvent,
-  'type'
->;
-
-export function createRunStartedEvent(
-  input: RunStartedEventInput
-): RunStartedEvent {
-  return {
-    type: 'RunStarted',
-    ...input,
-  };
-}
-
-export function createRunCompletedEvent(
-  input: RunCompletedEventInput
-): RunCompletedEvent {
-  return {
-    type: 'RunCompleted',
-    ...input,
-  };
-}
-
-export function createRunFailedEvent(input: RunFailedEventInput): RunFailedEvent {
-  return {
-    type: 'RunFailed',
-    ...input,
-  };
-}
-
-export function createBlockerRaisedEvent(
-  input: BlockerRaisedEventInput
-): BlockerRaisedEvent {
-  return {
-    type: 'BlockerRaised',
-    ...input,
-  };
-}
-
-export function createCampaignVersionCreatedEvent(
-  input: CampaignVersionCreatedEventInput
-): CampaignVersionCreatedEvent {
-  return {
-    type: 'CampaignVersionCreated',
-    ...input,
-  };
+export function assertExhaustive(event: never): never {
+  void event;
+  throw new Error('Non-exhaustive PreflightEvent handling');
 }
