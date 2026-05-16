@@ -39,8 +39,10 @@
     "mcp:refero": "node refero-proxy.js",
     "demo:bus": "tsx scripts/demo-bus.ts",
     "demo:events": "tsx scripts/event-demo.ts",
+    "worker": "tsx bin/preflight-worker.ts",
     "smoke:outbox": "tsx scripts/smoke-outbox.ts",
     "smoke:audit": "tsx scripts/smoke-audit.ts",
+    "smoke:worker": "tsx scripts/smoke-worker.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

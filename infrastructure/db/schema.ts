@@ -114,10 +114,13 @@ export const outbox = pgTable(
     payload: jsonb('payload').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     deliveredAt: timestamp('delivered_at', { withTimezone: true }),
+    attempts: integer('attempts').notNull().default(0),
+    lastError: text('last_error'),
   },
   (t) => [
     index('idx_outbox_created_at').on(t.createdAt),
     index('idx_outbox_delivered_at').on(t.deliveredAt),
+    index('idx_outbox_attempts').on(t.attempts),
   ]
 );
 

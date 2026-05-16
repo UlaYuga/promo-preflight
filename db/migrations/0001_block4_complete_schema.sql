@@ -103,7 +103,9 @@ create table if not exists outbox (
   event_type   text        not null,
   payload      jsonb       not null,
   created_at   timestamptz not null default now(),
-  delivered_at timestamptz
+  delivered_at timestamptz,
+  attempts     integer     not null default 0,
+  last_error   text
 );
 
 create index if not exists idx_outbox_created_at
@@ -111,6 +113,9 @@ create index if not exists idx_outbox_created_at
 
 create index if not exists idx_outbox_delivered_at
   on outbox(delivered_at);
+
+create index if not exists idx_outbox_attempts
+  on outbox(attempts);
 
 -- ---------------------------------------------------------------------------
 -- audit_log — append-only log for delivered domain events
