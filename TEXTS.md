@@ -155,16 +155,18 @@ Built around the regulatory and operational realities described in the [01.tech 
 
 ## What this is
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- Worker T-003: 2-3 paragraphs. Reference 11 jurisdictional checks. Mention the Before/After collage from VISUALS §2. -->
 
-```
-TBD by T-003. After this paragraph, insert HTML <table> with VISUALS §2 before/after collage.
-```
+Promo Preflight runs 11 deterministic compliance checks against a campaign bundle before it goes live. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
+
+The system accepts one canonical `CampaignBundle` in JSON — one format regardless of whether you're launching in Brazil, India, Mexico, or the UK — and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every run is persisted and logged; the audit trail holds up to regulatory review.
+
+<!-- Before/after collage: see VISUALS §2 — "Before" shows the current Notion/Slack/Google Docs manual chain; "After" shows a Preflight run result with labeled blockers. Owner inserts the image table below. -->
 
 ## Who this is for (T-003)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- Worker: markdown table, 3 rows, columns "You are" and "What this gives you" -->
 
 ```
@@ -177,8 +179,10 @@ TBD by T-003. After this paragraph, insert HTML <table> with VISUALS §2 before/
 
 ## How it works (T-003)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- Worker: insert mermaid sequence below + paragraph + Telegram screenshot reference (VISUALS §6) -->
+
+Each run follows a synchronous request path — validate, dispatch, check, persist, respond — with side effects (Telegram notifications, audit events) handled asynchronously via the outbox pattern.
 
 ### Mermaid: data flow sequence
 
@@ -209,6 +213,8 @@ sequenceDiagram
         Worker->>Audit: append(events)
     end
 ```
+
+Preflight slots into the existing compliance workflow as the final pre-launch gate. The upstream process stays owned by the promo and compliance team; Preflight replaces the manual final check with one deterministic API call.
 
 ### Mermaid: Preflight in your workflow
 
@@ -247,41 +253,97 @@ sequenceDiagram
 
 ## Three paths to use (T-003)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- Three numbered sub-sections -->
 
-```
 ### 1. Self-host via docker-compose
-TBD: minimum commands. git clone, docker-compose up -d, curl POST.
+
+The fastest path to a production-ready instance:
+
+```bash
+git clone https://github.com/UlaYuga/promo-preflight.git
+cd promo-preflight
+cp .env.example .env   # fill DATABASE_URL, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+docker-compose up -d
+curl -X POST http://localhost:3000/api/v1/runs \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -d @schemas/sample-bundle.json | jq
+```
+
+See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment variable reference.
 
 ### 2. Drop into your CI (npm package + CLI)
-TBD: bin/preflight-check usage. Exit codes. JSON output. Mark "coming with T-033".
+
+*Shipped in T-033.*
+
+```bash
+npx preflight-check --bundle campaign.json --jurisdiction BR --exit-on-block
+```
+
+Exits `0` on GO, `1` on WARN, `2` on BLOCK. JSON to stdout. Use as a build gate in any CI pipeline.
 
 ### 3. Managed SaaS
-TBD: "Coming soon. Email <link> for early access."
-```
+
+Coming soon. [Email for early access](mailto:alex@marlerino.group).
 
 ## Tech stack (T-003)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- markdown table of stack with one-line rationale per dep -->
 
-```
-TBD: Next.js 16, React 19, TypeScript strict, Drizzle ORM, Postgres, vitest, Zod, @anthropic-ai/sdk (optional), yaml, Telegram Bot API.
-```
+| Package | Why |
+|---|---|
+| `next` 16 | App Router + React Server Components — single process hosts both API and UI |
+| `react` 19 | Server Components; concurrent rendering for the run result view |
+| `typescript` 6 | Strict mode; all types derived from Zod schemas via `z.infer<>` |
+| `tailwindcss` 3.4 | Custom design token palette; no standard Tailwind color classes in UI code |
+| `drizzle-orm` + `postgres` | Type-safe SQL with zero-overhead query builder; migrations via Drizzle Kit |
+| `zod` | Runtime validation at all system boundaries |
+| `vitest` | Fast unit + integration tests; ESM-native, TypeScript path alias support |
+| `@anthropic-ai/sdk` | Optional AI augmentation layer; stubbed when `USE_MOCK_AI=true` |
+| `yaml` | Parses jurisdiction rule artifacts (`rules/*.yaml`) at boot |
+| Telegram Bot API | Outbound compliance alerts to the team channel via the outbox worker |
 
 ## Architecture (T-003)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- ASCII tree of domain/application/infrastructure/api layout -->
 
 ```
-TBD: copy from EXPLAINER section + ARCHITECTURE.md doc.
+domain/
+  model/         # Campaign, Run, Blocker, Owner
+  vo/            # Amount, Url, Locale, Severity (branded types)
+  service/       # ReadinessCalculator, BlockerDiff (pure functions)
+  event/         # PreflightEvent (sealed discriminated union)
+  exception/     # PreflightException hierarchy
+application/
+  command/       # RunChecksCommand, ...
+  query/         # FindRunQuery, CampaignDiffQuery, ...
+  usecase/       # RunChecksUseCase, VersionDiff, ...
+  port/          # IRunRepository, IEventPublisher, IHandoffAdapter, ...
+  bus/           # Bus, HandlerRegistry
+infrastructure/
+  persistence/   # PgRunRepository (Drizzle + Postgres)
+  telegram/      # TelegramAdapter
+  outbox/        # OutboxEventPublisher, OutboxWorker
+  ai/            # Anthropic adapter (optional)
+  handler/       # Command/query handler implementations
+  registry/      # DI registry, Bus factory
+api/
+  v1/            # Next.js route handlers (thin — all through Bus)
+lib/             # LEGACY — migrating to domain/application in v2.1; do not extend
+rules/           # YAML rule artifacts (versioned, human-authored)
+schemas/         # Zod contracts (re-exported from domain/)
 ```
+
+Layer rule: `domain/` → zero dependencies outside itself. `application/` → declares ports, never implements them. `infrastructure/` → implements ports, may import any external library. `api/` → translates HTTP into Bus dispatches, contains no business logic.
+
+Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 ## What we deliberately don't do (T-003)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 <!-- Bullet list of explicit non-goals with rationale -->
 
 ```
@@ -312,6 +374,8 @@ Five augmentations are scoped for v1.x:
 See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for full reasoning. None of these ship in v1.0; the deterministic kernel does. AI lands incrementally in v1.x.
 
 ## Contributing / License / Author (T-003)
+
+<!-- STATUS: drafted -->
 
 ```
 Issues and PRs welcome. Apache 2.0.
