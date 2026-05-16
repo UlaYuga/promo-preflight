@@ -44,9 +44,16 @@ describe('db/migrations/0001_block4_complete_schema.sql', () => {
     expect(sql).toContain('idx_campaign_versions_campaign_id');
   });
 
-  it('indexes outbox by created_at and delivered_at', () => {
+  it('indexes outbox by created_at, delivered_at, and attempts', () => {
     expect(sql).toContain('idx_outbox_created_at');
     expect(sql).toContain('idx_outbox_delivered_at');
+    expect(sql).toContain('idx_outbox_attempts');
+  });
+
+  it('outbox has retry columns', () => {
+    expect(sql).toContain('attempts');
+    expect(sql).toContain('default 0');
+    expect(sql).toContain('last_error');
   });
 
   it('indexes audit_log by created_at and event_type+created_at', () => {
