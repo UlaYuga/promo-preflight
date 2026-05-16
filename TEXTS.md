@@ -753,34 +753,244 @@ All error responses share this shape:
 
 # docs/CONFIGURATION.md (T-008)
 
-<!-- STATUS: empty -->
-<!-- Required env vars, optional env vars, .env example, per-environment notes -->
+<!-- STATUS: drafted -->
 
+# Promo Preflight — Configuration
+
+## Required environment variables
+
+| Variable | Description | Example |
+|---|---|---|
+| `DATABASE_URL` | Postgres connection string | `postgresql://preflight:secret@localhost:5432/preflight` |
+| `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather | `<telegram-bot-token>` |
+| `TELEGRAM_CHAT_ID` | Target channel or chat ID (negative for channels) | `-1001234567890` |
+
+## Optional environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | — | Enables AI augmentation features. Without it, AI calls fall back to deterministic-only mode. |
+| `USE_MOCK_AI` | `false` | Set `true` to short-circuit the Anthropic provider with deterministic stubs. Useful in CI and local dev without a key. |
+| `HTTP_PORT` | `3000` | Port the Next.js server listens on. |
+| `LOG_LEVEL` | `info` | Log verbosity: `debug` / `info` / `warn` / `error`. |
+| `PREFLIGHT_MODE` | `localStorage` | `localStorage` — client-side demo mode (no backend required). `server` — uses the Postgres-backed API. |
+| `OUTBOX_POLL_INTERVAL_MS` | `1000` | How often the outbox worker polls for undelivered events (milliseconds). |
+
+## Example .env
+
+```env
+# Required
+DATABASE_URL=postgresql://preflight:secret@localhost:5432/preflight
+TELEGRAM_BOT_TOKEN=<telegram-bot-token>
+TELEGRAM_CHAT_ID=-1001234567890
+
+# Optional
+ANTHROPIC_API_KEY=sk-ant-api03-...
+USE_MOCK_AI=false
+HTTP_PORT=3000
+LOG_LEVEL=info
+PREFLIGHT_MODE=server
+OUTBOX_POLL_INTERVAL_MS=1000
 ```
-TBD by T-008.
-```
+
+Copy `.env.example` (provided in the repo) and fill in the required values.
+
+## Per-environment notes
+
+**Local development**
+- Use `PREFLIGHT_MODE=localStorage` to skip the database entirely and run the UI demo.
+- To test the full API flow locally, run `docker-compose up -d` to start Postgres, then set `PREFLIGHT_MODE=server` and `DATABASE_URL` pointing to the container.
+- Set `USE_MOCK_AI=true` to avoid Anthropic API calls during development.
+
+**docker-compose**
+- `DATABASE_URL` is injected automatically via `docker-compose.yml` environment block — no manual edit needed for local docker runs.
+- The `worker` service reads the same `DATABASE_URL` and `TELEGRAM_*` vars from the shared `env_file`.
+
+**Production**
+- Never commit `.env` to version control. Use your platform's secret manager (Railway environment variables, Render secret files, Kubernetes secrets, etc.).
+- `OUTBOX_POLL_INTERVAL_MS` can be raised to `5000` in production to reduce DB load; lower to `500` for near-real-time Telegram alerts.
+- `LOG_LEVEL=warn` is recommended in production to reduce log volume.
 
 ---
 
 # docs/ERRORS.md (T-008)
 
-<!-- STATUS: empty -->
-<!-- PreflightException hierarchy, how to throw, rules, adding new exceptions -->
+<!-- STATUS: drafted -->
+
+# Promo Preflight — Error Handling
+
+## Exception hierarchy
 
 ```
-TBD by T-008.
+PreflightException (abstract)
+├── BadRequestException
+│   ├── InvalidCampaignException       # Zod validation failure on input
+│   └── UnprocessableEntityException   # Domain rule violation (valid shape, invalid state)
+├── NotFoundException
+│   ├── CampaignNotFoundException
+│   └── RunNotFoundException
+├── ConflictException
+│   └── IdempotencyConflictException   # Same key, different body
+├── ForbiddenException                 # Used when auth is added in a later sprint
+└── SystemException
+    └── NotReadyException              # DB unreachable or migrations not applied
 ```
+
+Each exception carries an HTTP status code as a class constant. The global error handler in the API middleware maps `PreflightException` subclasses to HTTP responses automatically — see [docs/API.md — Error model](./API.md#error-model).
+
+## How to throw
+
+Use `domainRequire` for guard-style assertions inside domain and use-case code:
+
+```ts
+import { domainRequire } from '@domain/exception';
+
+domainRequire(
+  offer.wageringRequirement >= 1,
+  () => new UnprocessableEntityException(
+    'INVALID_WAGERING_REQUIREMENT',
+    `wageringRequirement must be ≥ 1, got ${offer.wageringRequirement}`
+  )
+);
+```
+
+For explicit throws (e.g. in repository adapters when a row is missing):
+
+```ts
+throw new CampaignNotFoundException(campaignId);
+```
+
+## Rules
+
+- Never throw raw `Error` or `TypeError` for business rule violations — always a `PreflightException` subclass.
+- The **domain layer** throws only `PreflightException` subclasses and pure value errors (`domainRequire`).
+- **Infrastructure adapters** may receive errors from external libraries (pg driver, Anthropic SDK, Telegram API). Wrap these at the adapter boundary into `SystemException` before re-throwing — never let external error types leak into the application layer.
+- The **API layer** never catches `PreflightException` explicitly. The global middleware catches all `PreflightException` instances and serialises them to the standard error body shape.
+- Zod parse errors from request validation are wrapped into `InvalidCampaignException` by the API route handler before reaching the bus.
+
+## Adding a new exception
+
+1. Create a class in `domain/exception/` that extends the appropriate parent:
+   ```ts
+   export class MyNewException extends BadRequestException {
+     static readonly CODE = 'MY_NEW_ERROR';
+     constructor(detail: string) {
+       super(MyNewException.CODE, detail);
+     }
+   }
+   ```
+2. Export it from `domain/exception/index.ts`.
+3. Add an entry to the error model table in [docs/API.md](./API.md#error-model) with the HTTP status and the condition that triggers it.
 
 ---
 
 # docs/INTEGRATIONS.md (T-008 + expanded in T-024)
 
-<!-- STATUS: empty -->
-<!-- Currently supported: Telegram (full step-by-step). Roadmap: Slack, Jira, Linear, Discord. Build your own adapter guide. -->
+<!-- STATUS: drafted -->
+
+# Promo Preflight — Integrations
+
+## Currently supported
+
+### Telegram bot
+
+Promo Preflight sends a formatted message to a Telegram channel or group chat on every completed run. The message format depends on the verdict (`GO` / `WARN` / `BLOCK`) and includes the top blockers and assignable owners.
+
+**Step-by-step setup**
+
+**Step 1 — Create a bot**
+
+Open Telegram and start a chat with [@BotFather](https://t.me/BotFather). Send `/newbot`, follow the prompts, and copy the token it gives you. It looks like `<telegram-bot-token>`.
+
+```bash
+# Verify the token works
+curl https://api.telegram.org/bot<YOUR_TOKEN>/getMe
+# Expected: {"ok":true,"result":{"id":...,"username":"YourBotName",...}}
+```
+
+**Step 2 — Create a private channel (or group)**
+
+Create a new Telegram channel (e.g. `#promo-preflight-alerts`). Set it to private.
+
+**Step 3 — Add the bot as admin**
+
+Go to the channel settings → Administrators → Add Administrator. Search for your bot's username and add it. It needs the **Post Messages** permission.
+
+**Step 4 — Get the chat ID**
+
+Send any message to the channel, then call:
+
+```bash
+curl https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates | jq '.result[].message.chat.id'
+```
+
+For a channel (not a group), the ID is negative (e.g. `-1001234567890`). If `getUpdates` returns nothing, forward a message from the channel to your bot first to trigger an update.
+
+**Step 5 — Add to .env**
+
+```env
+TELEGRAM_BOT_TOKEN=<telegram-bot-token>
+TELEGRAM_CHAT_ID=-1001234567890
+```
+
+**Step 6 — Restart Preflight**
+
+```bash
+docker-compose restart app
+# or if running locally:
+npm run dev
+```
+
+**Step 7 — Verify**
+
+Trigger a test run via the UI or API:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/runs \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -d @./schemas/fixtures.ts.json
+```
+
+Within ~1 second (one outbox poll interval), a message should appear in your channel. A `BLOCK` verdict looks like:
 
 ```
-TBD by T-008 / T-024.
+🚨 Run abc-123 BLOCKED (3 blockers, 2 warnings)
+Campaign: BR Welcome Q2 2026 (BR)
+Owners to notify: legal, compliance, payments
+Top blockers:
+• [BLOCK] BR-SPA-LICENSE-REQUIRED — T&C for BR must include the SPA/MF license number
+• [BLOCK] BR-FORBIDDEN-PHRASE-GARANTIDO — 'bônus garantido' prohibited by CONAR 2024
+• [BLOCK] IN-UPI-GAMING-BLOCKED — UPI blocked for gaming by NPCI since Q3 2022
+View: http://localhost:3000/runs/abc-123
 ```
+
+## Roadmap
+
+The following adapters are scoped for future sprints. Each implements the `IHandoffAdapter` port from `application/port/handoff.ts`.
+
+| Adapter | What it does | Port | Config |
+|---|---|---|---|
+| **Slack incoming webhook** | Posts the same verdict message to a Slack channel | `ISlackHandoffAdapter` | `SLACK_WEBHOOK_URL` |
+| **Jira issue creator** | Opens a Jira ticket for each `BLOCK` verdict with blockers as sub-tasks | `IJiraHandoffAdapter` | `JIRA_BASE_URL`, `JIRA_API_TOKEN`, `JIRA_PROJECT_KEY` |
+| **Linear issue creator** | Creates a Linear issue in a configured team/project | `ILinearHandoffAdapter` | `LINEAR_API_KEY`, `LINEAR_TEAM_ID` |
+| **Discord webhook** | Sends embed messages to a Discord channel | `IDiscordHandoffAdapter` | `DISCORD_WEBHOOK_URL` |
+| **Generic webhook** | POSTs the raw run JSON to any URL | `IGenericWebhookAdapter` | `WEBHOOK_URL`, `WEBHOOK_SECRET` |
+
+## Building your own adapter
+
+1. Implement `IHandoffAdapter` from [`application/port/handoff.ts`](../application/port/handoff.ts):
+   ```ts
+   export interface IHandoffAdapter {
+     notify(event: RunCompletedEvent): Promise<void>;
+   }
+   ```
+2. Create your implementation in `infrastructure/` (e.g. `infrastructure/slack/SlackAdapter.ts`).
+3. Register it in the DI registry at `infrastructure/registry/index.ts` under a new adapter key.
+4. Set `HANDOFF_ADAPTER=your-adapter-name` in `.env`.
+5. No changes to core domain or application code are needed.
+
+See [docs/ARCHITECTURE.md](./ARCHITECTURE.md) for a full explanation of the port/adapter pattern used throughout Preflight.
 
 ---
 
