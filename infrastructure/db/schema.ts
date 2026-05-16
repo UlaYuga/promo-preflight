@@ -122,6 +122,24 @@ export const outbox = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// audit_log — append-only audit trail of delivered events
+// ---------------------------------------------------------------------------
+export const auditLog = pgTable(
+  'audit_log',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    eventType: text('event_type').notNull(),
+    payload: jsonb('payload').notNull(),
+    actor: text('actor').default('system'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('idx_audit_log_created_at').on(t.createdAt),
+    index('idx_audit_log_event_type_created_at').on(t.eventType, t.createdAt),
+  ]
+);
+
+// ---------------------------------------------------------------------------
 // campaign_assets, campaign_links, campaign_owners — existing tables kept
 // for DB consistency; not used by repositories directly
 // ---------------------------------------------------------------------------

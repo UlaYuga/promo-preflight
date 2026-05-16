@@ -15,6 +15,7 @@ describe('db/migrations/0001_block4_complete_schema.sql', () => {
     'run_blockers',
     'idempotency_keys',
     'outbox',
+    'audit_log',
   ];
 
   for (const table of requiredTables) {
@@ -46,6 +47,11 @@ describe('db/migrations/0001_block4_complete_schema.sql', () => {
   it('indexes outbox by created_at and delivered_at', () => {
     expect(sql).toContain('idx_outbox_created_at');
     expect(sql).toContain('idx_outbox_delivered_at');
+  });
+
+  it('indexes audit_log by created_at and event_type+created_at', () => {
+    expect(sql).toContain('idx_audit_log_created_at');
+    expect(sql).toContain('idx_audit_log_event_type_created_at');
   });
 
   it('idempotency_keys has status column', () => {

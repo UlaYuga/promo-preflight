@@ -111,3 +111,20 @@ create index if not exists idx_outbox_created_at
 
 create index if not exists idx_outbox_delivered_at
   on outbox(delivered_at);
+
+-- ---------------------------------------------------------------------------
+-- audit_log — append-only log for delivered domain events
+-- ---------------------------------------------------------------------------
+create table if not exists audit_log (
+  id         uuid        primary key default gen_random_uuid(),
+  event_type text        not null,
+  payload    jsonb       not null,
+  actor      text        default 'system',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_audit_log_created_at
+  on audit_log(created_at);
+
+create index if not exists idx_audit_log_event_type_created_at
+  on audit_log(event_type, created_at);

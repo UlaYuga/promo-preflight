@@ -40,6 +40,7 @@
     "demo:bus": "tsx scripts/demo-bus.ts",
     "demo:events": "tsx scripts/event-demo.ts",
     "smoke:outbox": "tsx scripts/smoke-outbox.ts",
+    "smoke:audit": "tsx scripts/smoke-audit.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
