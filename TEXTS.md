@@ -1008,41 +1008,187 @@ TBD by T-035. Source: DEEP-RESEARCH.md §8 + verified fines table above + Stanis
 
 # docs/adr/0001-postgres-over-localstorage.md (T-009)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 
-```
-TBD by T-009 worker. Format: Michael Nygard's ADR. Context, Decision, Consequences (positive + negative + neutral). 200-350 words.
-```
+# ADR-0001 — Persist runs in Postgres instead of browser localStorage
+
+**Status**: Accepted
+**Date**: 2026-05-16
+
+## Context
+
+Promo Preflight v1 stored everything — campaigns, runs, blockers — in browser `localStorage`. This was enough for a single-user demo: no infrastructure, instant startup, zero ops cost.
+
+As the project evolved toward a real operator use case, four requirements broke the localStorage model:
+
+1. **Cross-user sharing** — a compliance officer and a promo manager must both see the same run result without copy-pasting JSON.
+2. **Audit log** — regulators expect a durable, tamper-evident record of "we checked this campaign before launch." localStorage is cleared by users and not court-admissible.
+3. **Version history** — campaigns are edited iteratively; operators need to diff v1 vs v3 of a campaign bundle to see which blockers were resolved.
+4. **API consumption** — CI/CD pipelines, CRM platforms, and the Telegram outbox worker all need a backend API backed by persistent storage, not a browser tab.
+
+## Decision
+
+Move all runs, campaigns, campaign versions, blockers, outbox events, and the audit log to Postgres. Use Drizzle ORM for type-safe queries and Drizzle Kit for migrations.
+
+Keep `localStorage` as a parallel mode controlled by the `PREFLIGHT_MODE=localStorage` environment variable. When this mode is active, the UI works entirely client-side — no API calls, no database — preserving the demo experience without infrastructure.
+
+## Consequences
+
+**Positive**
+- Durable history that survives browser clears and multi-user sessions.
+- Queryable audit log per jurisdiction, per campaign, per run — suitable for showing to a regulator.
+- Foundation for multi-tenant isolation (adding `org_id` + Row-Level Security later requires no domain changes).
+- Enables the outbox pattern: events written to the same DB transaction as the run, delivered atomically.
+
+**Negative**
+- Adds an infrastructure dependency: operators must run or provision a Postgres instance.
+- Local setup requires `docker-compose up` rather than just `npm run dev`.
+- Migrations must be applied before the API starts; the readiness probe (`GET /api/ready`) enforces this.
+
+**Neutral**
+- The UI now has two code paths (`localStorage` mode and `server` mode) and must handle both during the v1/v2 transition period.
 
 ---
 
 # docs/adr/0002-cqrs-lite-bus.md (T-009)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 
-```
-TBD by T-009.
-```
+# ADR-0002 — CQRS-lite with a tiny in-process bus
+
+**Status**: Accepted
+**Date**: 2026-05-16
+
+## Context
+
+With 11 check modules, 8 API endpoints, and an event-driven side-effect layer (Telegram, audit log), request handling was becoming entangled inside Next.js route handlers. Each handler was importing repositories, calling domain services, and triggering side effects directly — making individual handlers hard to test and impossible to reason about in isolation.
+
+A full CQRS framework (Axon, NestJS CQRS module) would have been overkill for a single-developer project. We needed a pattern that gave us the separation benefits without the framework weight.
+
+## Decision
+
+Implement a minimal in-process `Bus` with a `HandlerRegistry`. Rules:
+
+- **Commands** represent write intent (e.g. `RunChecksCommand`). Handlers return `Result<T, PreflightException>` — never throw directly.
+- **Queries** represent read intent (e.g. `FindRunQuery`). Handlers return `T` directly or throw `NotFoundException`.
+- Each handler lives in exactly one file in `infrastructure/handler/`.
+- Handlers are discovered via `import.meta.glob` at boot — no manual registration list to maintain.
+- API route handlers call only `bus.dispatch(command)` or `bus.query(query)` — they have no direct dependency on repositories or domain services.
+
+This is *not* a full CQRS read/write model split. The same domain models serve both sides. The bus is purely an in-process dispatch mechanism, not a message broker.
+
+## Consequences
+
+**Positive**
+- Adding a new operation is one file plus one line in the handler index.
+- API routes are trivially testable: mock the bus, assert the dispatched command.
+- Handler test suites are isolated: inject mock ports, assert the result.
+- No circular dependencies between layers — every import flows in one direction.
+
+**Negative**
+- Slight learning curve for contributors unfamiliar with CQRS terminology: commands, queries, handlers.
+- Handler discovery via `import.meta.glob` is one fragile point — if a handler file is named incorrectly, it will be silently skipped at boot (no registration error).
+
+**Neutral**
+- This is not event sourcing. The bus does not persist commands or events. The outbox pattern (ADR-0004) handles durable event delivery separately.
 
 ---
 
 # docs/adr/0003-deterministic-first-ai-second.md (T-009)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 
-```
-TBD by T-009.
-```
+# ADR-0003 — Deterministic checks run first; AI is augmentation only
+
+**Status**: Accepted
+**Date**: 2026-05-16
+
+## Context
+
+Promo compliance checks must be reproducible and auditable. A regulator asking "why was this campaign flagged?" cannot accept "the language model assessed it." Three additional constraints reinforce this:
+
+1. **Cost and latency** — Anthropic API calls add ~1-3 seconds and non-trivial cost per run. At 20-30 campaigns a month across 8-15 locales, this compounds quickly.
+2. **Rate limits** — API rate limits make AI a poor fit for the synchronous hot path.
+3. **Hallucination risk** — LLMs can misclassify regulatory terms or invent rule citations. A false negative (flagging a compliant campaign) has operational cost; a false positive (clearing a non-compliant one) has legal cost.
+
+An Anthropic SDK wrapper already exists at `lib/ai/` (now `infrastructure/ai/`) — so AI integration is technically available, just not wired into the checks path.
+
+## Decision
+
+All 11 compliance checks run deterministically against YAML rule artifacts (`rules/*.yaml`). The rule artifacts are human-authored and version-controlled. The same input always produces the same verdict.
+
+AI is an optional augmentation layer on top of the deterministic core:
+- AI may help *extract* structured campaign data from unstructured input (PDF T&C, free-text brief).
+- AI may generate *human-readable explanations* of blockers after the deterministic verdict is set.
+- AI may suggest *fix drafts* per blocker in the target locale.
+- AI never decides or overrides a verdict.
+
+The augmentation layer is activated by `ANTHROPIC_API_KEY` and bypassed completely by `USE_MOCK_AI=true`. See [ADR-0005](./0005-ai-augmentation-roadmap.md) for the full planned roadmap.
+
+## Consequences
+
+**Positive**
+- Every run is reproducible: given the same campaign bundle and rule artifact version, the output is identical.
+- Audit-friendly: a compliance log entry can cite the specific `ruleId` and `rule artifact version` that triggered each blocker.
+- Runs are fast (~12ms for 11 checks) and cheap — no API calls in the default path.
+- Works offline and in air-gapped environments.
+
+**Negative**
+- Rule maintenance is fully manual: adding a new jurisdiction requires a human to author YAML rules.
+- The system cannot adapt to regulatory changes it has not been explicitly updated for.
+- AI UX improvements (plain-language explanations, fix suggestions) are deferred to v1.x.
+
+**Neutral**
+- `USE_MOCK_AI=true` lets local development and CI run without an Anthropic API key. Mock responses are deterministic stubs, not real AI output.
 
 ---
 
 # docs/adr/0004-outbox-pattern-for-events.md (T-009)
 
-<!-- STATUS: empty -->
+<!-- STATUS: drafted -->
 
-```
-TBD by T-009.
-```
+# ADR-0004 — Outbox pattern for at-least-once event delivery
+
+**Status**: Accepted
+**Date**: 2026-05-16
+
+## Context
+
+When a run completes, Preflight publishes `PreflightEvent`s (`RunCompleted`, `BlockerRaised`, etc.) to subscribers: Telegram notifications, the audit log, and future adapters (Slack, Jira, Linear). Two naive approaches both have fatal failure modes:
+
+**Publish before DB commit** — if the DB commit subsequently fails, subscribers receive events for a run that never persisted. These are phantom events.
+
+**Publish after DB commit (in the same request handler)** — if the publish fails (network error, Telegram API down, broker outage), the run is persisted but the events are silently lost. Operators get no Telegram alert.
+
+Either failure mode produces a compliance process gap: operators assume events are delivered reliably, and build workflows (Telegram-based owner assignment, audit entries) on that assumption.
+
+## Decision
+
+Use the transactional outbox pattern:
+
+1. During the run, the use case writes `PreflightEvent` rows to an `outbox` table inside the **same database transaction** as the run insert. If the transaction rolls back, events are rolled back too — no phantom events.
+2. A background `OutboxWorker` polls the `outbox` table for rows with `delivered_at IS NULL`.
+3. For each undelivered row, the worker calls each registered `IHandoffAdapter` (Telegram, audit log, etc.) and marks the row `delivered_at = now()` on success.
+4. If a subscriber call fails, the row is retried on the next poll cycle. Delivery is at-least-once.
+5. Subscribers must be idempotent, keyed on `event_id`.
+
+Poll interval is configurable via `OUTBOX_POLL_INTERVAL_MS` (default 1000ms).
+
+## Consequences
+
+**Positive**
+- No phantom events: event rows only exist if the run exists in the same DB transaction.
+- No lost events: undelivered rows are retried until they succeed.
+- Audit-friendly: the outbox table is a durable event log, queryable per run or per jurisdiction.
+- Decoupled: adding a new subscriber (Slack, Jira) requires no changes to the run use case — only a new `IHandoffAdapter` implementation.
+
+**Negative**
+- Small delivery delay: events are delivered after the next poll cycle, not within the same request (default ~1 second lag).
+- The outbox table grows unboundedly — periodic cleanup (`DELETE WHERE delivered_at < now() - interval '30 days'`) is required in production.
+- The outbox worker is a separate process entrypoint (`npm run worker`) that must be kept alive.
+
+**Neutral**
+- Subscribers must be idempotent by design. The Telegram adapter checks `event_id` before sending to avoid duplicate messages on retries.
 
 ---
 
