@@ -526,7 +526,7 @@ The `campaign` field matches [`CampaignBundleSchema`](../schemas/index.ts) exact
     }>
     termsText: string               // full T&C text, max 50 000 chars (required)
     notes?: string
-    // v2 planned fields (not yet in schema, include when adding jurisdiction-aware checks):
+    // Jurisdiction-aware fields added by Block 3:
     targetJurisdiction?: string[]   // e.g. ["UK", "BR"] — use "UK", not "GB"
     paymentMethods?: string[]       // e.g. ["PIX", "VISA", "USDT"]
   }
