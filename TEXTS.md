@@ -164,6 +164,13 @@ The system accepts one canonical `CampaignBundle` in JSON — one format regardl
 
 <!-- Before/after collage: see VISUALS §2 — "Before" shows the current Notion/Slack/Google Docs manual chain; "After" shows a Preflight run result with labeled blockers. Owner inserts the image table below. -->
 
+<table>
+<tr>
+<td><strong>Before</strong><br>4 tabs, 8 chats, 0 versioning.<br><img src="./docs/assets/before.png" /></td>
+<td><strong>After</strong><br>One workspace. Verdict in 12 seconds.<br><img src="./docs/assets/after.png" /></td>
+</tr>
+</table>
+
 ## Who this is for (T-003)
 
 <!-- STATUS: drafted -->
