@@ -6,7 +6,7 @@ import { RunChecksUseCase } from '../../../application/usecase/RunChecksUseCase'
 
 export const handler: CommandHandler<RunChecksCommand, Run> = {
   commandType: 'RunChecks',
-  async execute(command: RunChecksCommand, _ctx: HandlerContext): Promise<Result<Run, PreflightException>> {
+  async execute(command: RunChecksCommand, _ctx: HandlerContext): Promise<Result<Run, PreflightException>> { // eslint-disable-line @typescript-eslint/no-unused-vars
     const useCase = new RunChecksUseCase();
     return useCase.run(command.campaign, command.options);
   },

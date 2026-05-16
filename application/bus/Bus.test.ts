@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { Bus } from './Bus';
 import { HandlerRegistry } from './HandlerRegistry';
 import { ok } from './types';
-import type { Command, CommandHandler, HandlerContext, Query, QueryHandler, Result } from './types';
+import type { Command, CommandHandler, Query, QueryHandler, Result } from './types';
 import type { PreflightException } from '../../domain/exception/PreflightException';
 
 // --- Fake command for AddNumbers ---
@@ -27,7 +27,7 @@ interface GetStringQuery extends Query<string> {
 
 const getStringHandler: QueryHandler<GetStringQuery, string> = {
   queryType: 'GetString',
-  async execute(q: GetStringQuery, _ctx: HandlerContext): Promise<string> {
+  async execute(q: GetStringQuery): Promise<string> {
     return q.value.toUpperCase();
   },
 };

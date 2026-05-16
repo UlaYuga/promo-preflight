@@ -14,6 +14,7 @@ export type Result<T, E = PreflightException> =
   | { ok: true; value: T }
   | { ok: false; error: E };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HandlerContext {
   // injected per-request: db client, logger, idempotency key — extended in T-014
 }
