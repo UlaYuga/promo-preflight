@@ -287,21 +287,21 @@ TBD: copy from EXPLAINER section + ARCHITECTURE.md doc.
 
 ## AI augmentation roadmap (T-003 — new sub-section, after "What we deliberately don't do")
 
-<!-- STATUS: empty -->
-<!-- Short ~150-word section between "What we don't do" and "Contributing". Frames the AI roadmap. References ADR-0005. -->
+<!-- STATUS: drafted -->
 
-```
-TBD by T-003 worker. Include:
-- Opening line: "Preflight ships a deterministic-first compliance core. AI is the planned augmentation layer on top — never the decision-maker."
-- 5 bullets matching ADR-0005's five augmentations:
-  1. PDF / text extraction — drop a T&C PDF, get a campaign bundle
-  2. Fix-suggestion per blocker — 3 locale-aware replacement variants
-  3. Cultural localization audit — catches culture mismatches regex misses
-  4. Plain-language explanation per blocker — why, which regulator, which article
-  5. Compliance Q&A grounded in the rule artifacts
-- Closing: "See ADR-0005 for full reasoning. None of these ship in v1.0; the deterministic kernel does. AI lands incrementally in v1.x."
-- Quote Romanov from G GATE Ch.4: "AI is becoming the base tool of the industry — not as a replacement but as a multiplier of effectiveness."
-```
+Preflight ships a deterministic-first compliance core. AI is the planned augmentation layer on top — never the decision-maker.
+
+Five augmentations are scoped for v1.x:
+
+- **PDF / text extraction** — drop a T&C PDF or a free-text campaign brief; AI extracts a structured `CampaignBundle`; the deterministic checks run as normal.
+- **Fix suggestion per blocker** — for each `BLOCK`, AI generates 3 locale-aware replacement copy variants that preserve marketing intent.
+- **Cultural localization audit** — catches culture-specific mismatches that regex rules miss: alcohol references in Malaysia, religious imagery in MENA, gender-coded financial promises.
+- **Plain-language explanation per blocker** — why this was flagged, which regulator, which article, in the marketer's language rather than the lawyer's.
+- **Compliance Q&A** — ask "can I say 'risk-free' in UK copy?" and get an answer grounded in the rule artifacts.
+
+> "Ecosystem solutions that unify traffic, product, analytics, payments, and infrastructure into a single growth model gain the most value." — **Alexander Romanov, Head of White Label, 01.tech**, *Global iGaming Report 2026*
+
+See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for full reasoning. None of these ship in v1.0; the deterministic kernel does. AI lands incrementally in v1.x.
 
 ## Contributing / License / Author (T-003)
 
@@ -1194,33 +1194,57 @@ Poll interval is configurable via `OUTBOX_POLL_INTERVAL_MS` (default 1000ms).
 
 # docs/adr/0005-ai-augmentation-roadmap.md (T-009b)
 
-<!-- STATUS: empty -->
-<!-- Worker: this ADR is "Accepted, deferred" — documents that AI features are planned but intentionally not built in v1. -->
+<!-- STATUS: drafted -->
 
-```
-TBD by T-009b worker. Michael Nygard format. Key points:
+# ADR-0005 — AI augmentation roadmap (planned, deferred from v1)
 
-Context:
-- The 11 deterministic checks form a defensible compliance core (per ADR-0003).
-- Anthropic SDK wrapper already exists at lib/ai/ but is not wired into the main flow.
-- AI offers a clear multiplier on UX (per the 01.tech G GATE Report Ch.4, Romanov: "AI is becoming the base tool of the industry — not as a replacement but as a multiplier of effectiveness").
-- A set of high-leverage AI augmentations have been scoped but not built in v1.
+**Status**: Accepted, deferred
+**Date**: 2026-05-16
 
-Decision:
-Document AI augmentation as a planned v1.x roadmap, not v1. Five specific augmentations are scoped:
-1. PDF/text extraction — operator drops 5-page T&C → AI extracts structured fields → deterministic flow continues.
-2. Fix suggestion per blocker — for each block, AI generates 3 replacement variants in the target locale preserving marketing intent.
-3. Cultural localization audit — AI catches culture-specific mismatches regex misses (alcohol in Malaysia, religious imagery, gender-coded references).
-4. Plain-language explanation per blocker — why this is bad, which regulator, which article, in marketer's language not lawyer's.
-5. Compliance Q&A — operator asks "can I say X in Brazil?" → AI answers grounded in DEEP-RESEARCH knowledge base.
+## Context
 
-All five remain "AI on top of deterministic core" — AI never decides verdicts.
+The 11 deterministic checks form a defensible compliance core (see ADR-0003): same input, same verdict, audit-friendly, reproducible. This is the contract Preflight makes with operators.
 
-Consequences:
-- Positive: clear separation between defensible compliance kernel and UX-multiplier layer. Future v1.x work can ship one augmentation at a time without disturbing the kernel. Owner sets clear expectation: deterministic is the contract, AI is the experience.
-- Negative: Until v1.x ships, marketer still reads raw rule_id strings and has to manually rephrase blocked copy. Some operators expecting "AI-powered" branding may underestimate the value of deterministic-first.
-- Neutral: When AI augmentation lands, it requires its own ADRs (cost budget, model selection, prompt cache strategy, evaluation harness).
-```
+At the same time, an Anthropic SDK wrapper already exists at `infrastructure/ai/` but is not wired into the main flow. AI offers a genuine UX multiplier on top of the deterministic core — not as a decision-maker, but as the layer that helps marketers understand, act on, and fix what the deterministic engine flagged.
+
+The 01.tech Global iGaming Report 2026 puts this plainly:
+
+> "Ecosystem solutions that unify traffic, product, analytics, payments, and infrastructure into a single growth model gain the most value." — **Alexander Romanov, Head of White Label, 01.tech**
+
+Five high-leverage AI augmentations have been scoped, prototyped conceptually, and explicitly *not* built in v1. They are documented here so contributors understand the roadmap and do not inadvertently block it.
+
+## Decision
+
+Document AI augmentation as a planned v1.x roadmap. AI is the planned augmentation layer on top — never the decision-maker. Five augmentations are scoped for v1.x, in priority order:
+
+1. **PDF / text extraction** — Operator drops a 5-page T&C PDF or pastes a free-text campaign brief. AI extracts structured `CampaignBundle` fields. The deterministic check flow then runs as normal. This eliminates the manual data-entry step that currently precedes every run.
+
+2. **Fix suggestion per blocker** — For each `BLOCK` or `WARN` verdict, AI generates 3 locale-aware replacement copy variants that preserve marketing intent while removing the offending phrase or missing clause. Operator picks one, edits, re-runs.
+
+3. **Cultural localization audit** — AI detects culture-specific mismatches that regex rules cannot catch: alcohol references in Malaysia (dual-age-gate market), religious imagery in MENA, gender-coded financial promises in markets where these are considered predatory. Supplements, never replaces, the YAML rule artifacts.
+
+4. **Plain-language explanation per blocker** — Each blocker currently surfaces a `ruleId` and a technical message. AI rewrites this as a marketer-facing explanation: *why* this matters, which regulator, which article, what the practical consequence is. Reduces the compliance-to-marketing translation round-trip.
+
+5. **Compliance Q&A** — Operator asks "Can I say 'risk-free' in the UK copy?" or "What does Brazil require in the T&C for a welcome bonus?" AI answers grounded in the `rules/*.yaml` artifacts and `DEEP-RESEARCH.md` knowledge base. Reduces dependency on legal counsel for routine questions.
+
+All five remain "AI on top of deterministic core." The deterministic verdict is always computed first. AI never overrides or bypasses it.
+
+## Consequences
+
+**Positive**
+- Clear architectural separation between the defensible compliance kernel (v1, ships now) and the UX-multiplier layer (v1.x, ships incrementally).
+- Each augmentation can be shipped independently without touching the domain layer or the deterministic check engine.
+- The `ANTHROPIC_API_KEY` / `USE_MOCK_AI` toggle is already in place; augmentations activate behind this gate.
+- Operators get a clear roadmap: deterministic is the contract, AI is the experience layer on top.
+
+**Negative**
+- Until v1.x ships, marketers read raw `ruleId` strings and must manually rephrase blocked copy — no guided fix suggestions yet.
+- Some operators evaluating "AI-powered compliance" tools may undervalue the deterministic-first approach without seeing the AI layer.
+- PDF extraction (augmentation #1) requires careful prompt engineering to avoid hallucinated structured fields — needs an evaluation harness before production use.
+
+**Neutral**
+- When each AI augmentation lands, it warrants its own ADR covering: model selection, cost budget per run, prompt caching strategy (Anthropic prompt cache has 5-min TTL), and evaluation harness.
+- The existing `infrastructure/ai/` adapter is the correct extension point for all five augmentations. No new infrastructure layer is needed.
 
 ---
 
