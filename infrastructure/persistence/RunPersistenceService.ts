@@ -6,12 +6,12 @@ import {
   IdempotencyConflictException,
   SystemException,
 } from '../../domain/exception/PreflightException';
+import type { IEventPublisher } from '../../application/port/IEventPublisher';
+import type { PreflightEvent } from '../../domain/event/PreflightEvent';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { Run } from '../../domain/model/Run';
 import { decideIdempotency } from './idempotencyDecision';
-
-// The tx type matches what drizzle passes to the transaction callback.
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
+import type { Transaction } from './types';
 
 export interface PersistRunInput<TResponse> {
   idempotencyKey: string;
@@ -19,7 +19,14 @@ export interface PersistRunInput<TResponse> {
   campaign: CampaignBundle;
   run: Run;
   readinessState: string;
+  eventPublisher?: IEventPublisher;
   buildResponse(input: { campaignId: string; campaignVersion: number; run: Run }): TResponse;
+  buildEvents?(input: {
+    campaignId: string;
+    campaignVersion: number;
+    campaignVersionId: string;
+    run: Run;
+  }): PreflightEvent[];
 }
 
 export interface PersistRunResult<TResponse> {
@@ -95,7 +102,7 @@ export class RunPersistenceService {
 
       // We own the slot — all writes are inside this transaction.
       const campaignRecord = await this.findOrCreateCampaign(tx, input.campaign);
-      const campaignVersion = await this.createVersion(
+      const campaignVersionRecord = await this.createVersion(
         tx,
         campaignRecord.id,
         input.run.blockers,
@@ -104,15 +111,25 @@ export class RunPersistenceService {
       const runWithMeta: Run = {
         ...input.run,
         campaignId: campaignRecord.id,
-        version: campaignVersion,
+        version: campaignVersionRecord.n,
       };
       await this.saveRun(tx, runWithMeta);
 
       const response = input.buildResponse({
         campaignId: campaignRecord.id,
-        campaignVersion,
+        campaignVersion: campaignVersionRecord.n,
         run: runWithMeta,
       });
+
+      if (input.eventPublisher && input.buildEvents) {
+        const events = input.buildEvents({
+          campaignId: campaignRecord.id,
+          campaignVersion: campaignVersionRecord.n,
+          campaignVersionId: campaignVersionRecord.id,
+          run: runWithMeta,
+        });
+        await input.eventPublisher.publishAll(events, tx);
+      }
 
       // Step 6: mark completed with the real response snapshot.
       await tx
@@ -128,7 +145,10 @@ export class RunPersistenceService {
   // Private helpers — all operate on the transaction client (Tx ≈ Db).
   // ---------------------------------------------------------------------------
 
-  private async findOrCreateCampaign(tx: Tx, bundle: CampaignBundle): Promise<{ id: string }> {
+  private async findOrCreateCampaign(
+    tx: Transaction,
+    bundle: CampaignBundle
+  ): Promise<{ id: string }> {
     const { campaignName, operatorLabel } = bundle.metadata;
 
     const existing = await tx
@@ -166,11 +186,11 @@ export class RunPersistenceService {
   }
 
   private async createVersion(
-    tx: Tx,
+    tx: Transaction,
     campaignId: string,
     blockers: Run['blockers'],
     readinessState: string
-  ): Promise<number> {
+  ): Promise<{ id: string; n: number }> {
     const existing = await tx
       .select({ n: campaignVersions.n })
       .from(campaignVersions)
@@ -180,18 +200,26 @@ export class RunPersistenceService {
 
     const n = existing.length > 0 ? existing[0].n + 1 : 1;
 
-    await tx.insert(campaignVersions).values({
-      campaignId,
-      n,
-      extractedFactsJson: {},
-      blockersJson: blockers,
-      readinessState,
-    });
+    const inserted = await tx
+      .insert(campaignVersions)
+      .values({
+        campaignId,
+        n,
+        extractedFactsJson: {},
+        blockersJson: blockers,
+        readinessState,
+      })
+      .returning({ id: campaignVersions.id, n: campaignVersions.n });
 
-    return n;
+    const row = inserted[0];
+    if (!row) {
+      throw new SystemException('Failed to create campaign version row');
+    }
+
+    return row;
   }
 
-  private async saveRun(tx: Tx, run: Run): Promise<void> {
+  private async saveRun(tx: Transaction, run: Run): Promise<void> {
     await tx.insert(runs).values({
       id: run.id,
       campaignId: run.campaignId ?? null,

@@ -1,0 +1,1 @@
+export { OutboxEventPublisher } from './OutboxEventPublisher';

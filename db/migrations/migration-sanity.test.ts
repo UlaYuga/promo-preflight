@@ -14,6 +14,7 @@ describe('db/migrations/0001_block4_complete_schema.sql', () => {
     'runs',
     'run_blockers',
     'idempotency_keys',
+    'outbox',
   ];
 
   for (const table of requiredTables) {
@@ -40,6 +41,11 @@ describe('db/migrations/0001_block4_complete_schema.sql', () => {
 
   it('indexes campaign_versions by campaign_id', () => {
     expect(sql).toContain('idx_campaign_versions_campaign_id');
+  });
+
+  it('indexes outbox by created_at and delivered_at', () => {
+    expect(sql).toContain('idx_outbox_created_at');
+    expect(sql).toContain('idx_outbox_delivered_at');
   });
 
   it('idempotency_keys has status column', () => {
