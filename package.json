@@ -34,7 +34,8 @@
     "i18n:check": "node lib/i18n/check.mjs",
     "ai:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/ai/ai-smoke.mjs",
     "db:check": "node db/check.mjs",
-    "mcp:refero": "node refero-proxy.js"
+    "mcp:refero": "node refero-proxy.js",
+    "demo:bus": "tsx scripts/demo-bus.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
@@ -62,6 +63,7 @@
     "eslint-config-next": "^16.2.4",
     "postcss": "^8.5.13",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.22.0",
     "typescript": "^6.0.3",
     "typescript-language-server": "^5.1.3",
     "vitest": "^4.1.6",
