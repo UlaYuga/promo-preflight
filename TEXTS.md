@@ -334,7 +334,7 @@ flowchart TD
   application --> domain
 ```
 
-`api/` never imports `infrastructure/` directly. `domain/` has no outgoing dependencies on any other layer. `infrastructure/` implements interfaces (ports) declared in `application/port/`.
+[`api/`](../api/) never imports [`infrastructure/`](../infrastructure/) directly. [`domain/`](../domain/) has no outgoing dependencies on any other layer. [`infrastructure/`](../infrastructure/) implements interfaces (ports) declared in [`application/port/`](../application/port/).
 
 ## Source layout
 
@@ -362,13 +362,13 @@ api/
   v1/            # Next.js API route handlers — thin, all through Bus
 ```
 
-**domain/** owns business concepts and rules. It has no knowledge of databases, HTTP, or external services.
+**[domain/](../domain/)** owns business concepts and rules. It has no knowledge of databases, HTTP, or external services.
 
-**application/** orchestrates domain operations and declares *what it needs* via ports. It does not know *how* those ports are implemented.
+**[application/](../application/)** orchestrates domain operations and declares *what it needs* via ports. It does not know *how* those ports are implemented.
 
-**infrastructure/** implements every port and may import any external library. It never calls use cases directly.
+**[infrastructure/](../infrastructure/)** implements every port and may import any external library. It never calls use cases directly.
 
-**api/** translates HTTP requests into Commands/Queries, dispatches them through the Bus, and returns HTTP responses. It contains no business logic.
+**[api/](../api/)** translates HTTP requests into Commands/Queries, dispatches them through the Bus, and returns HTTP responses. It contains no business logic.
 
 ## Data flow
 
@@ -407,13 +407,13 @@ sequenceDiagram
 
 ## Key invariants
 
-- `domain/` has zero runtime dependencies on anything outside `domain/`.
-- Ports are owned by `application/port/`; implementations live in `infrastructure/`.
+- [`domain/`](../domain/) has zero runtime dependencies on anything outside `domain/`.
+- Ports are owned by [`application/port/`](../application/port/); implementations live in [`infrastructure/`](../infrastructure/).
 - Commands return `Result<T, PreflightException>`; queries return `T` or throw `NotFoundException`.
-- All write paths go through repositories — no direct SQL outside `infrastructure/persistence/`.
+- All write paths go through repositories — no direct SQL outside [`infrastructure/persistence/`](../infrastructure/persistence/).
 - Events are published after DB commit (outbox pattern) — no phantom events on rollback.
 - `Idempotency-Key` is required on `POST /api/v1/runs`; the same key always returns the same `runId`.
-- All API input is validated by Zod schemas owned by `application/`.
+- All API input is validated by Zod schemas owned by [`application/`](../application/).
 - Domain throws only `PreflightException` subclasses, never raw `Error`.
 
 ## Dependencies
@@ -464,7 +464,7 @@ All endpoints are prefixed `/api`. The versioned path is `/api/v1/...`.
 
 ## 1. POST /api/v1/runs
 
-Runs all enabled checks against a campaign bundle for the specified target jurisdiction. Idempotent — submitting the same `Idempotency-Key` twice returns the same result.
+Runs all enabled checks against a campaign bundle. Idempotent — submitting the same `Idempotency-Key` twice returns the same result.
 
 **Headers**
 
@@ -473,42 +473,65 @@ Runs all enabled checks against a campaign bundle for the specified target juris
 | `Content-Type` | yes | `application/json` |
 | `Idempotency-Key` | yes | Client-generated UUID. Same key + same body → same `runId`. Same key + different body → 409. |
 
-**Request body**
+**Request body** — `{ campaign: CampaignBundle, options?: RunOptions }`
+
+The `campaign` field matches [`CampaignBundleSchema`](../schemas/index.ts) exactly:
 
 ```ts
 {
   campaign: {
-    id?: string                   // existing campaignId to attach run to (optional)
-    name: string
-    targetJurisdiction: string    // ISO 3166-1 alpha-2, e.g. "BR", "IN", "GB"
+    metadata: {
+      campaignName: string          // max 120 chars
+      operatorLabel?: string        // max 80 chars
+      promoType: "welcome" | "reload" | "freebet" | "cashback"
+                | "tournament" | "loyalty" | "reactivation"
+      geo: string                   // e.g. "MGA generic", "Brazil SPA/MF"
+      locale: string                // e.g. "pt-BR", "en-GB"
+      currency: string              // ISO 4217, e.g. "BRL", "EUR"
+      launchDate?: string           // ISO 8601 date
+      channelsIncluded: Array<"email" | "push" | "onsite" | "landing" | "sms" | "in_app">
+    }
     offer: {
-      bonusAmount: number
-      bonusCurrency: string       // ISO 4217
-      wageringRequirement: number // multiplier, e.g. 35
+      minDeposit?: number
+      bonusAmount?: number
+      bonusPercentage?: number
+      maxBonus?: number
+      wageringRequirement?: string  // e.g. "35x bonus" (string, not a multiplier number)
       maxCashout?: number
-      expiryDays?: number
+      maxBet?: number
+      eligibleGames?: string
+      contribution?: string
+      cooldown?: string
+      eligibilityRules?: string
     }
-    channels: {
-      email?: string
-      sms?: string
-      push?: string
-      banner?: string
-    }
-    termsAndConditions: {
-      [locale: string]: string    // e.g. { "pt-BR": "...", "en": "..." }
-    }
-    paymentMethods?: string[]     // e.g. ["PIX", "VISA", "USDT"]
-    links?: {
-      termsUrl?: string
-      promoUrl?: string
-      utmParams?: Record<string, string>
-    }
-    owners?: {
-      [ownerHint: string]: string // e.g. { "compliance": "ana@operator.com" }
-    }
+    assets: Array<{
+      channel: "email" | "push" | "onsite" | "landing" | "sms" | "in_app"
+      fieldName: string             // e.g. "subject", "body", "headline"
+      text: string                  // max 20 000 chars
+      softLimit?: number
+      hardLimit?: number
+    }>
+    links: Array<{
+      label: string                 // e.g. "CTA", "T&C"
+      url: string
+      expectedDomain?: string
+      requiresUtm?: boolean         // default true
+    }>
+    owners: Array<{
+      role: "product" | "crm" | "legal" | "risk" | "localization" | "analytics"
+      name?: string
+      status?: "pending" | "approved" | "blocked" | "not_required"  // default "pending"
+      dueDate?: string
+      notes?: string
+    }>
+    termsText: string               // full T&C text, max 50 000 chars (required)
+    notes?: string
+    // v2 planned fields (not yet in schema, include when adding jurisdiction-aware checks):
+    targetJurisdiction?: string[]   // e.g. ["UK", "BR"] — use "UK", not "GB"
+    paymentMethods?: string[]       // e.g. ["PIX", "VISA", "USDT"]
   }
   options?: {
-    skipChecks?: string[]         // check IDs to skip, e.g. ["mobile-first-format"]
+    skipChecks?: string[]           // check IDs to skip, e.g. ["mobile-first-format"]
   }
 }
 ```
@@ -539,10 +562,35 @@ Runs all enabled checks against a campaign bundle for the specified target juris
 **curl example**
 
 ```bash
+# Export the sample bundle from schemas/fixtures.ts to JSON first, then POST it:
 curl -X POST http://localhost:3000/api/v1/runs \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
-  -d @./schemas/fixtures.ts.json | jq
+  -d '{
+    "campaign": {
+      "metadata": {
+        "campaignName": "BR Welcome Q2 2026",
+        "promoType": "welcome",
+        "geo": "Brazil SPA/MF",
+        "locale": "pt-BR",
+        "currency": "BRL",
+        "channelsIncluded": ["email", "push"]
+      },
+      "offer": {
+        "bonusPercentage": 100,
+        "maxBonus": 500,
+        "wageringRequirement": "35x bonus",
+        "maxBet": 5
+      },
+      "assets": [
+        { "channel": "email", "fieldName": "subject", "text": "Bônus de boas-vindas: 100% até R$500" }
+      ],
+      "links": [{ "label": "CTA", "url": "https://example.com/promo?utm_source=email", "requiresUtm": true }],
+      "owners": [{ "role": "legal", "status": "pending" }],
+      "termsText": "Wagering: 35x. Max cashout: R$1000. Max bet durante bônus: R$5.",
+      "targetJurisdiction": ["BR"]
+    }
+  }' | jq
 ```
 
 **Example response**
@@ -612,7 +660,8 @@ Lists campaigns, newest first. Paginated.
   items: Array<{
     id: string
     name: string
-    targetJurisdiction: string
+    geo: string
+    targetJurisdiction: string[]       // v2 planned; empty array until v2 field is wired
     latestVerdict: "GO" | "WARN" | "BLOCK" | null
     updatedAt: string
   }>
@@ -1072,7 +1121,7 @@ Implement a minimal in-process `Bus` with a `HandlerRegistry`. Rules:
 - **Commands** represent write intent (e.g. `RunChecksCommand`). Handlers return `Result<T, PreflightException>` — never throw directly.
 - **Queries** represent read intent (e.g. `FindRunQuery`). Handlers return `T` directly or throw `NotFoundException`.
 - Each handler lives in exactly one file in `infrastructure/handler/`.
-- Handlers are discovered via `import.meta.glob` at boot — no manual registration list to maintain.
+- `HandlerRegistry` supports glob-based registration via a `fromGlob(...)` factory; production boot wiring lives in `infrastructure/registry/` and can use `import.meta.glob` where the runtime supports it. Handlers are not self-registering — the registry must be initialised explicitly at startup.
 - API route handlers call only `bus.dispatch(command)` or `bus.query(query)` — they have no direct dependency on repositories or domain services.
 
 This is *not* a full CQRS read/write model split. The same domain models serve both sides. The bus is purely an in-process dispatch mechanism, not a message broker.
@@ -1080,14 +1129,14 @@ This is *not* a full CQRS read/write model split. The same domain models serve b
 ## Consequences
 
 **Positive**
-- Adding a new operation is one file plus one line in the handler index.
+- Adding a new operation is one file plus one registration call in the boot registry.
 - API routes are trivially testable: mock the bus, assert the dispatched command.
 - Handler test suites are isolated: inject mock ports, assert the result.
 - No circular dependencies between layers — every import flows in one direction.
 
 **Negative**
 - Slight learning curve for contributors unfamiliar with CQRS terminology: commands, queries, handlers.
-- Handler discovery via `import.meta.glob` is one fragile point — if a handler file is named incorrectly, it will be silently skipped at boot (no registration error).
+- If a handler is not registered in `infrastructure/registry/`, it silently does not exist — there is no compile-time enforcement that every command or query has a handler wired up.
 
 **Neutral**
 - This is not event sourcing. The bus does not persist commands or events. The outbox pattern (ADR-0004) handles durable event delivery separately.
