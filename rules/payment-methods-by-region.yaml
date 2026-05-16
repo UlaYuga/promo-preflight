@@ -1,0 +1,148 @@
+version: 1
+# Payment method compatibility rules by target jurisdiction.
+# Sources: DEEP-RESEARCH.md §3, RESEARCH-NOTES.md §8, 01.tech G GATE Media Report 2026 Ch.3
+regions:
+  BR:
+    allowed: [pix, boleto, credit_card, debit_card, visa, mastercard]
+    grey: [usdt_trc20, btc, eth, usdt_erc20]
+    forbidden: []
+    rule_refs:
+      - "Banco Central do Brasil anti-money-laundering rules for Pix (2024)"
+      - "Lei 14.790/2023 — Brazilian sports betting regulatory framework"
+      - "Portaria SPA/MF #1231/2024 — operator licensing and payment rules"
+    notes: "Crypto not explicitly forbidden but not approved — highly restricted under ongoing regulation"
+
+  MX:
+    allowed: [credit_card, debit_card, oxxo, paynet, spei]
+    grey: [usdt_trc20, btc]
+    forbidden: [instant_spei_gaming]
+    rule_refs:
+      - "Circular 1/2025 Banco de México — bans instant SPEI transfers to gaming merchant accounts"
+      - "LFPDPPP — personal data processing disclosure required"
+    notes: "SPEI transfers to gaming accounts must not be advertised as instant (Circular 1/2025)"
+
+  CO:
+    allowed: [credit_card, debit_card, nequi, daviplata, pse]
+    grey: [usdt_trc20, btc]
+    forbidden: []
+    rule_refs:
+      - "Coljuegos Resolución #20250022644 — operator licensing"
+      - "Colombia temporary 19% deposit tax (2024)"
+
+  AR:
+    allowed: [credit_card, debit_card, mercadopago, prosa, banelco]
+    grey: [uala]
+    forbidden: []
+    rule_refs:
+      - "Postanowienie AFIP — 18% tax on gambling winnings"
+      - "Provincial fragmented regulation (Córdoba Res.13510, Misiones DGR 23/2025)"
+
+  IN:
+    allowed: [imps, neft, rupay, rtgs]
+    grey: []
+    forbidden: [upi, upi_collect, usdt_trc20, btc, eth, ltc, any_crypto]
+    rule_refs:
+      - "NPCI directive — UPI Collect disabled for online real-money gaming merchants (2022)"
+      - "RBI guidelines — crypto tokens not recognised as legal tender"
+      - "Ministry of Finance: 30% TDS on gambling winnings (sec.115BBJ IT Act)"
+    notes: "UPI blocked by NPCI for gaming category; crypto banned by RBI"
+
+  RU:
+    allowed: [usdt_trc20, usdt_erc20, btc, ltc, eth, trx, sbp, yoomoney]
+    grey: [credit_card_visa, credit_card_mastercard]
+    forbidden: []
+    rule_refs:
+      - "01.tech G GATE Media Global iGaming Report 2026, Ch.3 — 100% operator crypto adoption documented"
+      - "ФЗ-244 — gambling operator licensing, mandatory 18+ and ФНС license number"
+    notes: "Visa/Mastercard in grey zone due to international sanctions; crypto is the de-facto operator standard"
+
+  TR:
+    allowed: [credit_card, debit_card, bank_transfer, papara]
+    grey: [usdt_trc20, btc, eth]
+    forbidden: []
+    rule_refs:
+      - "Turkish Banking Regulation and Supervision Agency (BDDK) guidelines"
+      - "01.tech G GATE Media Report 2026 — crypto at ~50% of grey-market operators"
+
+  UK:
+    allowed: [credit_card_debit, debit_card, bank_transfer, paypal, skrill, neteller, sepa]
+    grey: []
+    forbidden: [credit_card, any_crypto]
+    rule_refs:
+      - "UKGC LCCP — credit card gambling ban effective April 2020"
+      - "UK Gambling Act 2005 — crypto not an approved payment method for licensed operators"
+    notes: "Credit cards banned by UKGC for gambling deposits (not debit cards)"
+
+  DE:
+    allowed: [sepa, credit_card, debit_card, paypal, sofort]
+    grey: [usdt_trc20, btc]
+    forbidden: []
+    rule_refs:
+      - "Glücksspiel-StV 2021 — max €1 stake during bonus play; mandatory LUGAS limit enforcement"
+      - "Germany GGL — bonuses only at sign-up, strict AML via BaFin"
+
+  ES:
+    allowed: [credit_card, debit_card, paypal, sepa, skrill, neteller]
+    grey: []
+    forbidden: []
+    rule_refs:
+      - "DGOJ Real Decreto 958/2020 — operator advertising and payment rules"
+      - "Spain AML law (SEPBLAC)"
+
+  IT:
+    allowed: [credit_card, debit_card, sepa, satispay, paypal]
+    grey: []
+    forbidden: [any_crypto]
+    rule_refs:
+      - "ADM (Agenzia delle Dogane e dei Monopoli) — licensed operator payment rules"
+      - "Italian AML — crypto not accepted under Monopoli licensing"
+
+  NG:
+    allowed: [bank_transfer, mobile_money_mtn, mobile_money_airtel, flutterwave, paystack]
+    grey: [usdt_trc20, btc]
+    forbidden: []
+    rule_refs:
+      - "NLRC (National Lottery Regulatory Commission) — licensed operator guidelines"
+      - "CBN eNaira and FX restrictions"
+
+  ZA:
+    allowed: [eft_zar, credit_card, debit_card, ozow, peach_payments]
+    grey: [usdt_trc20, btc]
+    forbidden: []
+    rule_refs:
+      - "South African National Gambling Board — licensed operator payment requirements"
+      - "SARB crypto guidance"
+
+  AL:
+    allowed: []
+    grey: []
+    forbidden: [usdt_trc20, usdt_erc20, btc, ltc, eth, trx, any_crypto, stablecoin]
+    rule_refs:
+      - "Algeria Loi 18-13 — all virtual currency operations prohibited"
+      - "01.tech G GATE Media Report 2026 — Algeria confirmed: all crypto illegal"
+    notes: "Any mention of crypto in AL-targeted campaigns is a hard block"
+
+  SE:
+    allowed: [credit_card, debit_card, trustly, bank_transfer, swish]
+    grey: []
+    forbidden: []
+    rule_refs:
+      - "Spelinspektionen — single-bonus rule, licensed operator payment standards"
+      - "Swedish Payment Services Act"
+
+  KR:
+    allowed: [bank_transfer_krw, credit_card_kr, kakao_pay]
+    grey: []
+    forbidden: [any_crypto, anonymous_wallet, foreign_ewallet]
+    rule_refs:
+      - "Korea FATF Travel Rule — VASP licensing required; anonymous wallets banned"
+      - "NTS 20% TDS on gambling winnings"
+    notes: "19+ minimum age; anonymous payment channels strictly prohibited"
+
+  MY:
+    allowed: [fpx, credit_card, debit_card, touch_n_go, grabpay]
+    grey: [usdt_trc20, btc]
+    forbidden: []
+    rule_refs:
+      - "Bank Negara Malaysia — gambling payment restrictions, licensed channels only"
+      - "21+ for sports betting specifically (Common Gaming Houses Act)"
