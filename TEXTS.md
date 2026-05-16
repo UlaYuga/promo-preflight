@@ -109,10 +109,9 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 # README — full content
 
-<!-- STATUS: empty -->
-
 ## Hero block (T-002)
 
+<!-- STATUS: drafted -->
 <!-- Owner: this is the first thing Nina sees. Polish ruthlessly. -->
 
 ```
@@ -122,7 +121,7 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 *Built around the regulatory realities described in the [01.tech × G GATE MEDIA Global iGaming Report 2026](link-tbd).*
 
-[![License](badge-tbd)] [![Next.js](badge-tbd)] [![TypeScript](badge-tbd)] [![Tests](badge-tbd)] [![CI](badge-tbd)]
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)]() [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)]() [![Tests](https://img.shields.io/badge/tests-placeholder-yellow)]() [![CI](https://img.shields.io/badge/ci-placeholder-yellow)]()
 
 <!-- TODO: insert hero from VISUALS §1 -->
 
