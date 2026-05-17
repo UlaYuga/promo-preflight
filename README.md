@@ -1,174 +1,246 @@
 # Promo Preflight
 
-Internal Promo/CRM Ops workspace for regulated casino promo launches.
+*Pre-launch readiness checks for iGaming operators expanding into emerging markets. Built by a PM over a weekend with Claude Code.*
 
-Promo Preflight turns a campaign bundle into an operational pre-launch review: structured intake, deterministic risk checks, owner handoff, launch readiness, saved campaign runs, and version-to-version blocker diffing. It is built as a portfolio-grade demo workspace for regulated iGaming promo operations, with synthetic data and the sensitive parts kept deliberately offline.
+*Built around the regulatory realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026.*
 
-## Live Demo
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)](https://www.typescriptlang.org/) [![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/UlaYuga/promo-preflight/actions) [![CI](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml/badge.svg)](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml)
 
-[promo-preflight-production.up.railway.app](https://promo-preflight-production.up.railway.app/)
+<p align="center">
+  <img src="./docs/assets/hero.png" alt="Preflight in action" width="800" />
+</p>
 
-90-second guided tour: open the landing page and start the tour from the main CTA.
+[Live demo](https://promo-preflight-production.up.railway.app/) · [Docs](./docs) · [Case study](./docs/CASE-STUDY.md)
 
-## What It Does
+---
 
-Promo teams usually review campaign offers, T&C, channel copy, links, localization, risk wording, and owner approvals across scattered docs and chats. Promo Preflight packages that review into a single workspace:
+## The problem
 
-- Load or draft a campaign bundle with offer math, terms, channel assets, links, owners, GEO, locale, and currency.
-- Run 8 offline check modules against 23 versioned rules.
-- Surface blockers, warnings, evidence snippets, suggested fixes, owner suggestions, and confidence.
-- Generate a Go/No-Go readiness board with blockers, owner matrix, dependencies, and checklist state.
-- Prepare a Slack-ready handoff summary with mention level, tone, launch date, blockers, and next actions.
-- Save campaign runs locally and compare versions to see new, reopened, still-open, and resolved blockers.
-- Browse the rules artifact and owner matrix used by the workspace.
-- Switch EN/RU UI copy and run the product tour.
+Every quarter, another regulator updates its rules. Your promo team is still reviewing T&C across eight locales in Google Docs.
 
-## 3-minute demo script
+- "The key and very underrated trend in 2026, in my view, is not AI or core updates, but the increasing local blockings and regulatory pressure in Latin America and Asia. These began last year and have hit not just products but webmasters too. Infrastructure resilience and tight processes for tracking and reacting to local-operator blocks will be the competitive advantage of this year." — **Stanislav, SEO Product Manager, 01.tech**, *Global iGaming Report 2026*
 
-1. Open the landing page.
-   Show Promo Preflight as an internal Promo/CRM Ops workspace for regulated casino promo launches, not a player-facing casino product.
-2. Start from a sample case.
-   Click `Start with Sample Case` and open the synthetic demo path in `02 / Campaign bundle`.
-3. Run the check.
-   Call out that the workspace runs 8 deterministic/offline checks against a synthetic campaign bundle.
-4. Open `03 / Risk Report`.
-   Show blockers, warnings, issue detail, owner suggestion, and the next-step strip.
-5. Save the run.
-   Use `Save Run` to store the current review as a campaign run for version history.
-6. Open `01 / Campaigns`.
-   Show the saved campaign, open version details, and then open the diff path for the follow-up version.
-7. Open `04 / Handoff`.
-   Show the Slack-ready internal ops update generated from the saved report.
-8. Close with supporting screens.
-   Briefly show `05 / Launch Readiness`, `06 / Rules`, and `07 / Owners` as the operational support surface around the review flow.
+- "Gamble responsibly as a footer link no longer satisfies several jurisdictions." — **Emmanuel Omoloyin, SEO Content Writer**, *DEEP-RESEARCH §7, citation 169*
 
-Use this framing while demoing:
+- **Perfect Storm B.V.**: €5M fine + 2-year ban, DGOJ Spain (Apr 2026). **Sky Betting & Gaming**: £1.17M, UKGC (2022) — welcome bonus emails sent to self-excluded players. **Kindred (Spooniker)**: SEK 100M, Spelinspektionen (2020) — single-bonus-rule violation. Real money lost when promo compliance fails.
 
-- All campaign names, copy, and scenarios are synthetic.
-- The product is a demo/portfolio-grade workspace, not a production SaaS product.
-- There is no auth, payments, onboarding funnel, or player-facing gambling flow.
-- The current product flow does not depend on live LLM calls, real casino integrations, or durable backend persistence.
+No dedicated tool exists for multi-jurisdiction promo compliance in iGaming. Reviews happen across Slack, Google Docs, Excel, and Notion — one chain per locale, none of it audit-defensible. As Adam Mateja put it: "Promotions in iGaming are one of those things that look simple on paper, and then turn into a lot of manual work."
 
-## Product Surface
+A mid-size operator runs 20-30 campaigns a month,\* spends an estimated 2-5 person-hours per campaign on compliance review,\* and still pulls or corrects 5-10% of campaigns post-launch.\*
 
-| Area | Implemented |
+\*Industry estimate per OLD-RESEARCH §2; no public operator metrics published.
+
+Preflight runs 11 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
+
+Built around the regulatory and operational realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026. Preflight closes the gap that report identifies as 2026's most underrated risk.
+
+## What this is
+
+Promo Preflight runs 11 deterministic compliance checks against a campaign bundle before it goes live. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
+
+The system accepts one canonical `CampaignBundle` in JSON — one format regardless of whether you're launching in Brazil, India, Mexico, or the UK — and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every run is persisted and logged; the audit trail holds up to regulatory review.
+
+<table>
+<tr>
+<td><strong>Before</strong><br>4 tabs, 8 chats, 0 versioning.<br><img src="./docs/assets/before.png" /></td>
+<td><strong>After</strong><br>One workspace. Verdict in 12 seconds.<br><img src="./docs/assets/after.png" /></td>
+</tr>
+</table>
+
+## Who this is for
+
+| You are | What this gives you |
 |---|---|
-| Welcome | Product entry, EN/RU toggle, metrics, workflow preview, tour launcher |
-| Intake | Campaign metadata, offer fields, terms, assets, links, owners, worked examples, draft persistence |
-| Risk Report | Saved/offline report loading, sorted issue table, issue detail panel, export actions, save run panel |
-| Readiness | Go/No-Go banner, owner matrix, blockers, launch checklist, dependencies |
-| Handoff | Slack-style preview, markdown export, mention/tone/channel controls, copy action |
-| Campaigns | Local campaign list, version history, owner overrides |
-| Version Diff | vN vs vN-1 blocker diff with resolved/new/reopened/still-open states |
-| Rules | YAML-backed 23-rule artifact viewer |
-| Owners | YAML-backed owner matrix |
-| Tour | Driver.js desktop product tour and sample-data setup |
-| Deployment | Railway/Nixpacks production deployment with noindex/robots |
+| A multi-jurisdiction iGaming operator (lic. EU + LATAM + offshore) | Catch jurisdictional risks before promo launches — Brazilian SPA, Indian UPI ban, Mexican SPEI rules, Algerian crypto prohibition |
+| A platform / white-label engineer at a B2B iGaming infrastructure provider (01.tech, SoftSwiss, BetConstruct, EveryMatrix tier) | Drop-in pre-launch gate your operator customers can add to their CRM / Promo workflow without your platform team owning compliance |
+| A CRM / Promo Ops lead launching campaigns across 8-15 locales every month | Replace the Notion → Slack → Google Doc → Excel review chain with one deterministic check and one Telegram alert with assignable owners |
 
-## Implementation Status
+## How it works
 
-Implemented in code:
+Each run follows a synchronous request path — validate, dispatch, check, persist, respond — with side effects (Telegram notifications, audit events) handled asynchronously via the outbox pattern.
 
-- Next.js 16 App Router with React 19 and TypeScript strict mode.
-- Zod contracts for campaign bundles, check results, readiness, rules, owners, and versioning.
-- Eight deterministic/offline check modules: channel consistency, terms robustness, offer math sanity, jurisdictional risk signals, localization QA, launch ownership, link QA, and format QA.
-- `rules/rules.yaml` with 23 validated EN/RU rules.
-- `config/owners.yaml` with workspace owner overrides.
-- Browser `localStorage` persistence for drafts, saved reports, campaigns, and versions.
-- Markdown and Slack-ready export formatting.
-- PostgreSQL schema and seed files for a Railway-ready durable model.
-- Optional Anthropic provider wrapper and prompts for future AI-assisted extraction/review.
-- Regression/smoke scripts for schemas, rules, owners, i18n, AI provider wiring, DB schema, checks, and versioning.
+### Mermaid: data flow sequence
 
-Not implemented by design:
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Promo as Promo team
+    participant API as POST /v1/runs
+    participant Bus as Bus + Handlers
+    participant Run as RunChecksUseCase
+    participant Repo as PgRunRepository
+    participant Outbox as outbox (Postgres)
+    participant Worker as OutboxWorker
+    participant TG as Telegram bot
+    participant Audit as audit_log
 
-- No auth, billing, SaaS onboarding, or account model.
-- No player-facing gambling flow, operator logos, affiliate flow, or casino visual positioning.
-- No durable production persistence in the UI path; demo data stays in the browser.
-- No live LLM calls in the current product flow; the running checks are deterministic/offline.
-- No server API layer for campaign CRUD; the database schema is present but not wired into the app UI.
-- No raw campaign/T&C storage by default.
+    Promo->>API: POST campaign bundle + Idempotency-Key
+    API->>Bus: dispatch(RunChecksCommand)
+    Bus->>Run: execute
+    Run->>Run: 11 deterministic checks per targetJurisdiction
+    Run->>Repo: save Run + Blockers (transaction)
+    Run->>Outbox: write events (same transaction)
+    Run-->>API: { runId, verdict, counts, blockers }
+    API-->>Promo: 200 OK
+    par async
+        Worker->>Outbox: poll undelivered
+        Worker->>TG: notify(RunCompleted)
+        Worker->>Audit: append(events)
+    end
+```
+
+Preflight slots into the existing compliance workflow as the final pre-launch gate. The upstream process stays owned by the promo and compliance team; Preflight replaces the manual final check with one deterministic API call.
+
+### Mermaid: Preflight in your workflow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CRM as CRM marketer
+    participant Promo as Promo manager
+    participant Compl as Compliance officer
+    participant Legal as Legal counsel
+    participant Loc as Localization
+    participant Aff as Affiliate manager
+    participant Design as Creative / brand
+    participant Pay as Payments team
+    participant Pre as 🎯 Promo Preflight
+    participant Launch as Launch owner
+
+    CRM->>Promo: draft campaign concept
+    Promo->>Compl: send for compliance review
+    Compl->>Legal: T&C clauses to verify
+    Legal-->>Compl: approved T&C structure
+    Compl->>Loc: localization brief (8-15 locales)
+    Loc-->>Compl: translated bundles
+    Compl->>Aff: UTM / tracking spec
+    Compl->>Pay: payment-method availability per region
+    Compl->>Design: creative spec
+    Note over Pre: Existing manual workflow ends here. Below — what Preflight automates.
+    Compl->>Pre: campaign bundle (one canonical JSON)
+    Pre-->>Compl: 11 deterministic checks per targetJurisdiction
+    Pre-->>Launch: assigned blockers with ownerHint
+    Launch->>Launch: review verdict (GO / WARN / BLOCK)
+    Launch->>Launch: launch only when GO
+```
+
+Here's what the Telegram notification looks like in production:
+
+<img src="./docs/assets/telegram-screenshot.png" width="500" />
+
+## Three paths to use
+
+### 1. Self-host via docker-compose
+
+The fastest path to a production-ready instance:
+
+```bash
+git clone https://github.com/UlaYuga/promo-preflight.git
+cd promo-preflight
+cp .env.example .env   # fill TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID if needed
+docker compose up -d
+node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  -e "import { workedExamples } from './schemas/worked-examples.ts'; console.log(JSON.stringify({ campaign: workedExamples.EX08.bundle }, null, 2));" \
+  > /tmp/preflight-ex08.json
+curl -X POST http://localhost:3000/api/v1/runs \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -d @/tmp/preflight-ex08.json | jq
+```
+
+See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment variable reference.
+
+### 2. Drop into your CI (npm package + CLI)
+
+```bash
+cat campaign.json | npm run check
+npm run check -- --file ./campaign.json
+npm run check -- --file ./campaign.json --format human
+```
+
+Exit codes: `0` on GO, `1` on WARN, `2` on BLOCK, `3` on invalid JSON/schema, `4` on internal failure. Use as a build gate in any CI pipeline.
+
+### 3. Managed SaaS
+
+Coming soon. [Email for early access](mailto:alex@marlerino.group).
+
+## Tech stack
+
+| Package | Why |
+|---|---|
+| `next` 16 | App Router + React Server Components — single process hosts both API and UI |
+| `react` 19 | Server Components; concurrent rendering for the run result view |
+| `typescript` 6 | Strict mode; all types derived from Zod schemas via `z.infer<>` |
+| `tailwindcss` 3.4 | Custom design token palette; no standard Tailwind color classes in UI code |
+| `drizzle-orm` + `postgres` | Type-safe SQL with zero-overhead query builder; migrations via Drizzle Kit |
+| `zod` | Runtime validation at all system boundaries |
+| `vitest` | Fast unit + integration tests; ESM-native, TypeScript path alias support |
+| `@anthropic-ai/sdk` | Optional AI augmentation layer; stubbed when `USE_MOCK_AI=true` |
+| `yaml` | Parses jurisdiction rule artifacts (`rules/*.yaml`) at boot |
+| Telegram Bot API | Outbound compliance alerts to the team channel via the outbox worker |
 
 ## Architecture
 
-```txt
-app/                  Next.js App Router pages
-components/           Product screens and shared UI
-lib/checks/           Offline deterministic check engine
-lib/ai/               Optional Anthropic provider and prompt contracts
-lib/rules/            YAML rules loader and validator
-lib/owners/           Owner config loader and resolver
-lib/i18n/             EN/RU translation provider and checker
-lib/readiness.ts      Go/No-Go readiness generation
-lib/versioning.ts     Local campaign/version persistence and diffing
-schemas/              Zod contracts for all product data
-rules/rules.yaml      Versioned 23-rule artifact
-config/owners.yaml    Workspace owner matrix
-db/                   PostgreSQL schema, seed, and smoke check
-locales/              English and Russian UI copy
+```
+domain/
+  model/         # Campaign, Run, Blocker, Owner
+  vo/            # Amount, Url, Locale, Severity (branded types)
+  service/       # ReadinessCalculator, BlockerDiff (pure functions)
+  event/         # PreflightEvent (sealed discriminated union)
+  exception/     # PreflightException hierarchy
+application/
+  command/       # RunChecksCommand, ...
+  query/         # FindRunQuery, CampaignDiffQuery, ...
+  usecase/       # RunChecksUseCase, VersionDiff, ...
+  port/          # IRunRepository, IEventPublisher, IHandoffAdapter, ...
+  bus/           # Bus, HandlerRegistry
+infrastructure/
+  persistence/   # PgRunRepository (Drizzle + Postgres)
+  telegram/      # TelegramAdapter
+  outbox/        # OutboxEventPublisher, OutboxWorker
+  ai/            # Anthropic adapter (optional)
+  handler/       # Command/query handler implementations
+  registry/      # DI registry, Bus factory
+api/
+  v1/            # Next.js route handlers (thin — all through Bus)
+lib/             # LEGACY — migrating to domain/application in v2.1; do not extend
+rules/           # YAML rule artifacts (versioned, human-authored)
+schemas/         # Zod contracts (re-exported from domain/)
 ```
 
-## Check System
+Layer rule: `domain/` → zero dependencies outside itself. `application/` → declares ports, never implements them. `infrastructure/` → implements ports, may import any external library. `api/` → translates HTTP into Bus dispatches, contains no business logic.
 
-| Stage | Route | What it catches |
-|---|---|---|
-| Channel consistency | Core | Offer/copy/terms mismatches across channels |
-| Terms robustness | Core | Missing wagering, max bet, cashout, eligibility, withdrawal clauses |
-| Offer math sanity | Deterministic | Implausible caps, percentages, deposit math, cashback contradictions |
-| Jurisdictional risk signals | Core | Risk-free claims, missing responsible-use or adult-only language |
-| Localization QA | Core | GEO, locale, currency, language, and date-format inconsistencies |
-| Launch ownership | Core | Missing/blocked owners and follow-up gaps |
-| Link QA | Fast | Invalid URLs, domain mismatch, missing UTM parameters |
-| Format QA | Fast | Empty or over-limit channel assets |
+Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
-## Tech Stack
+## What we deliberately don't do
 
-- Next.js 16, React 19, TypeScript 6
-- Tailwind CSS 3.4 with custom dark operations palette
-- Zod for runtime validation at product boundaries
-- YAML for rules and owner config artifacts
-- Lucide React icons
-- driver.js product tour
-- PostgreSQL schema for future durable persistence
-- Anthropic SDK provider wrapper for optional AI-assisted paths
-- Railway deployment via Nixpacks
+- No multi-tenant (org-scoped data) — out of scope for this sprint; can be added without changing core
+- No gRPC — REST + webhooks fit the consumer model (CRM/Promo Ops teams)
+- No live LLM in default checks path — checks must be deterministic and reproducible; AI is an optional augmentation only (see ADR-0003 + ADR-0005 for the planned augmentation roadmap)
+- No auth — out of scope for demo; production deployment expects auth at infra layer
+- No microservices — one process; outbox worker is a separate entrypoint of the same binary
+- No "promo compliance score" magic number — verdicts are GO / WARN / BLOCK based on rule severity, not opaque AI
 
-## Local Setup
+## AI augmentation roadmap
 
-```bash
-npm install
-npm run dev
-```
+Preflight ships a deterministic-first compliance core. AI is the planned augmentation layer on top — never the decision-maker.
 
-Open [http://localhost:3000](http://localhost:3000).
+Five augmentations are scoped for v1.x:
 
-Environment defaults are documented in `.env.example`. The app works without `ANTHROPIC_API_KEY` because the current check runner is offline/deterministic.
+- **PDF / text extraction** — drop a T&C PDF or a free-text campaign brief; AI extracts a structured `CampaignBundle`; the deterministic checks run as normal.
+- **Fix suggestion per blocker** — for each `BLOCK`, AI generates 3 locale-aware replacement copy variants that preserve marketing intent.
+- **Cultural localization audit** — catches culture-specific mismatches that regex rules miss: alcohol references in Malaysia, religious imagery in MENA, gender-coded financial promises.
+- **Plain-language explanation per blocker** — why this was flagged, which regulator, which article, in the marketer's language rather than the lawyer's.
+- **Compliance Q&A** — ask "can I say 'risk-free' in UK copy?" and get an answer grounded in the rule artifacts.
 
-## Commands
+> "Ecosystem solutions that unify traffic, product, analytics, payments, and infrastructure into a single growth model gain the most value." — **Alexander Romanov, Head of White Label, 01.tech**, *Global iGaming Report 2026*
 
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Start the local Next.js dev server |
-| `npm run build` | Production build plus Railway output fix |
-| `npm run start` | Start the production build |
-| `npm run typecheck` | TypeScript strict check |
-| `npm run lint` | ESLint |
-| `npm run schema:check` | Zod schema smoke check |
-| `npm run checks:mock` | Mock/offline check smoke |
-| `npm run checks:run` | Full regression across EX01-EX11 plus offline cases |
-| `npm run versioning:check` | Campaign version diff smoke |
-| `npm run rules:check` | Validate `rules/rules.yaml` |
-| `npm run owners:check` | Validate `config/owners.yaml` |
-| `npm run i18n:check` | Validate EN/RU translation parity |
-| `npm run ai:check` | Validate AI provider wiring without requiring a live key |
-| `npm run db:check` | Validate PostgreSQL schema/seed against `DATABASE_URL` |
+See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for full reasoning. None of these ship in v1.0; the deterministic kernel does. AI lands incrementally in v1.x.
 
-## Safety Positioning
+## Contributing / License / Author
 
-Promo Preflight is an internal launch-readiness workspace for regulated casino promo operations, not a gambling product. It uses synthetic data, avoids real operator branding, and does not include auth, payments, affiliate mechanics, player-facing flows, or durable raw-input storage claims. Production pages are `noindex`/`nofollow`, and `robots.ts` disallows crawling.
+Issues and PRs welcome. Apache 2.0.
 
-## Author
-
-Alexander Ulanov - PM with 6+ years in digital production, e-commerce, and TV.
-
+Built by Alexander Ulanov — PM with 6+ years in digital production, e-commerce, and TV.
 [github.com/UlaYuga](https://github.com/UlaYuga)
