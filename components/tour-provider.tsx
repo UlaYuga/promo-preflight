@@ -6,7 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import type { Driver, DriveStep } from "driver.js";
 import {
   clearTourSampleData,
-  loadTourSample
+  loadTourSample,
+  seedTourVersionHistory
 } from "@/lib/tour/sample";
 import {
   getTourStepRoute,
@@ -98,6 +99,19 @@ export function TourProvider() {
       }
 
       const nextIndex = activeIndex + 1;
+
+      // The Campaigns / version-diff steps need a saved campaign with
+      // version history to exist before the step renders, otherwise the
+      // tour target never mounts and the tour stalls. Seed it once when
+      // advancing into the first campaigns step and reuse that campaign id.
+      if (productTourSteps[nextIndex]?.route.startsWith("/app/campaigns")) {
+        const campaignId = seedTourVersionHistory(nextState.campaignId);
+        nextState = {
+          ...nextState,
+          campaignId
+        };
+      }
+
       nextState = writeTourState(
         {
           ...nextState,
