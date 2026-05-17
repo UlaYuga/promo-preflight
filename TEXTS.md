@@ -123,7 +123,9 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 [![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)]() [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)]() [![Tests](https://img.shields.io/badge/tests-placeholder-yellow)]() [![CI](https://img.shields.io/badge/ci-placeholder-yellow)]()
 
-<!-- TODO: insert hero from VISUALS §1 -->
+<p align="center">
+  <img src="./docs/assets/hero.png" alt="Preflight in action" width="800" />
+</p>
 
 [Live demo](https://promo-preflight-production.up.railway.app/) · [Docs](./docs) · [Case study](./docs/CASE-STUDY.md)
 
