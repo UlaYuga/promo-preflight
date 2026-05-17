@@ -218,7 +218,8 @@ async function runDemo(): Promise<void> {
   const db = getDb();
   const auditRepository = new PgAuditRepository(db);
   const auditSubscriber = createAuditSubscriber(auditRepository, 'demo:e2e');
-  const worker = new OutboxWorker(db, [telegramSubscriber, auditSubscriber], {
+  // Audit before Telegram — see instrumentation.ts / preflight-worker.ts.
+  const worker = new OutboxWorker(db, [auditSubscriber, telegramSubscriber], {
     pollIntervalMs: 200,
     maxAttempts: 5,
   });
