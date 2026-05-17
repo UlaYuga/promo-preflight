@@ -21,7 +21,7 @@ Use the transactional outbox pattern:
 2. A background `OutboxWorker` polls the `outbox` table for rows with `delivered_at IS NULL`.
 3. For each undelivered row, the worker calls each registered `IHandoffAdapter` (Telegram, audit log, etc.) and marks the row `delivered_at = now()` on success.
 4. If a subscriber call fails, the row is retried on the next poll cycle. Delivery is at-least-once.
-5. Subscribers must be idempotent, keyed on `event_id`.
+5. The durable sink (audit log) is idempotent on `event_id`: `PgAuditRepository.append` skips an event whose id already exists, so a redelivery never produces a duplicate audit row. Telegram is a best-effort notifier — a duplicate message on the rare redelivery path is acceptable and is not deduplicated.
 
 Poll interval is configurable via `OUTBOX_POLL_INTERVAL_MS` (default 1000ms).
 
@@ -39,4 +39,4 @@ Poll interval is configurable via `OUTBOX_POLL_INTERVAL_MS` (default 1000ms).
 - The outbox worker is a separate process entrypoint (`npm run worker`) that must be kept alive.
 
 **Neutral**
-- Subscribers must be idempotent by design. The Telegram adapter checks `event_id` before sending to avoid duplicate messages on retries.
+- Idempotency lives at the sink, not the worker: the audit repository deduplicates on `event_id` so the durable record is exactly-once even though delivery is at-least-once. The Telegram notifier intentionally does not deduplicate — a rare repeated alert is preferable to the added state a cross-restart dedupe would require.

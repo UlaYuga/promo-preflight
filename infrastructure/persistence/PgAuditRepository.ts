@@ -1,4 +1,4 @@
-import { and, desc, eq, lt, or } from 'drizzle-orm';
+import { and, desc, eq, lt, or, sql } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import type {
   IAuditRepository,
@@ -18,7 +18,23 @@ const DEFAULT_LIMIT = 50;
 export class PgAuditRepository implements IAuditRepository {
   constructor(private readonly db: Db) {}
 
+  // Idempotent on event id, per ADR-0004: outbox delivery is at-least-once,
+  // so a worker crash or redeploy between this insert and the outbox row's
+  // delivered_at update would otherwise leave a duplicate audit row. The
+  // OutboxWorker claims each row with FOR UPDATE SKIP LOCKED, so the only
+  // duplicate source is sequential redelivery of the same event id — a
+  // select-then-insert guard closes it without a schema migration.
   async append(event: AuditEntry['payload'], actor?: string): Promise<void> {
+    const existing = await this.db
+      .select({ id: auditLog.id })
+      .from(auditLog)
+      .where(sql`${auditLog.payload}->>'id' = ${event.id}`)
+      .limit(1);
+
+    if (existing.length > 0) {
+      return;
+    }
+
     await this.db.insert(auditLog).values({
       eventType: event.type,
       payload: event as unknown as Record<string, unknown>,
