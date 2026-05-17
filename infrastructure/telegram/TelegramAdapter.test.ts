@@ -119,7 +119,7 @@ describe('TelegramAdapter', () => {
 
     const body = parseFetchBody(fetchMock);
     expect(body.text).toBe(
-      '🚨 Run *run\\-7* BLOCKED (2 blockers, 1 warnings)\n' +
+      '🚨 Run *run\\-7* BLOCKED \\(2 blockers, 1 warnings\\)\n' +
         '• 2 blockers require review in the run details\n' +
         'View: https://preflight\\.example\\.com/runs/run\\-7'
     );
@@ -142,7 +142,7 @@ describe('TelegramAdapter', () => {
 
     const body = parseFetchBody(fetchMock);
     expect(body.text).toContain(
-      'Run *run\\_\\*\\[\\]\\(\\)\\~\\`\\>\\#\\+\\-\\=\\|\\{\\}\\.\\!\\\\* BLOCKED'
+      'Run *run\\_\\*\\[\\]\\(\\)\\~\\`\\>\\#\\+\\-\\=\\|\\{\\}\\.\\!\\\\* BLOCKED \\('
     );
     expect(body.text).toContain('• owner\\[legal\\] \\-\\> fix\\_now\\!');
     expect(body.text).toContain(
