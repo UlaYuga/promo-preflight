@@ -47,7 +47,22 @@ export class RunChecksUseCase {
       );
       const newStyleBlockers: RunBlocker[] = newStyleResults.flat();
 
-      const allBlockers = [...legacyBlockers, ...newStyleBlockers];
+      // The legacy lib runner and the new-style ICheck wrappers can execute
+      // the same underlying rule module (e.g. format_qa), so an identical
+      // finding may be emitted twice. Collapse byte-identical blockers — a
+      // duplicate (same rule, severity, evidence, suggestion, owner) is never
+      // a distinct finding. Keeps the first occurrence and preserves order.
+      const seen = new Set<string>();
+      const allBlockers = [...legacyBlockers, ...newStyleBlockers].filter(
+        (b) => {
+          const key = `${b.ruleId}|${b.severity}|${b.evidence}|${b.suggestion}|${b.ownerHint ?? ''}`;
+          if (seen.has(key)) {
+            return false;
+          }
+          seen.add(key);
+          return true;
+        }
+      );
 
       const verdict: Run['verdict'] =
         allBlockers.some((b) => b.severity === 'block')
