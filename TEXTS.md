@@ -254,7 +254,9 @@ sequenceDiagram
     Launch->>Launch: launch only when GO
 ```
 
-<!-- TODO: under the second diagram, insert VISUALS §6 Telegram screenshot -->
+Here's what the Telegram notification looks like in production:
+
+<img src="./docs/assets/telegram-screenshot.png" width="500" />
 
 ## Three paths to use (T-003)
 
@@ -1040,34 +1042,46 @@ Create a new Telegram channel (e.g. `#promo-preflight-alerts`). Set it to privat
 
 Go to the channel settings → Administrators → Add Administrator. Search for your bot's username and add it. It needs the **Post Messages** permission.
 
-**Step 4 — Get the chat ID**
+**Step 4 — Get the channel chat_id**
 
-Send any message to the channel, then call:
+Post any message in the private channel, then run:
 
 ```bash
-curl https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates | jq '.result[].message.chat.id'
+curl -s https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates | jq '.result[] | {message: .message.chat.id, channel_post: .channel_post.chat.id}'
 ```
 
-For a channel (not a group), the ID is negative (e.g. `-1001234567890`). If `getUpdates` returns nothing, forward a message from the channel to your bot first to trigger an update.
+For a private channel, `chat_id` is negative and typically starts with `-100` (example: `-1001234567890`). If `getUpdates` is empty, post one more message in the channel and re-run the command.
 
-**Step 5 — Add to .env**
+**Step 5 — Save `.env.local` values**
 
 ```env
 TELEGRAM_BOT_TOKEN=7412345678:AAHxxxxxxx
 TELEGRAM_CHAT_ID=-1001234567890
 ```
 
-**Step 6 — Restart Preflight**
+**Step 6 — Test the bot with `sendMessage`**
 
 ```bash
-docker-compose restart app
-# or if running locally:
-npm run dev
+curl -X POST https://api.telegram.org/bot<YOUR_TOKEN>/sendMessage \
+  -H "Content-Type: application/json" \
+  -d '{"chat_id":"-1001234567890","text":"Preflight Telegram adapter test","parse_mode":"MarkdownV2"}'
 ```
 
-**Step 7 — Verify**
+Expected response includes `"ok": true` and the message appears in your private channel.
 
-Trigger a test run via the UI or API:
+**Step 7 — Restart the worker**
+
+```bash
+# local
+npm run worker
+
+# or docker-compose
+docker compose restart worker
+```
+
+**Step 8 — Trigger a BLOCK run and confirm delivery**
+
+Trigger a run via API using a fixture that produces blockers:
 
 ```bash
 curl -X POST http://localhost:3000/api/v1/runs \
@@ -1076,7 +1090,7 @@ curl -X POST http://localhost:3000/api/v1/runs \
   -d @./schemas/fixtures.ts.json
 ```
 
-Within ~1 second (one outbox poll interval), a message should appear in your channel. A `BLOCK` verdict looks like:
+Confirm the run returns `verdict: "BLOCK"` and, within ~1 outbox poll interval, a Telegram message appears in the channel. A `BLOCK` verdict message looks like:
 
 ```
 🚨 Run abc-123 BLOCKED (3 blockers, 2 warnings)
