@@ -25,7 +25,11 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "@domain/*": ["./domain/*"],
+      "@app/*": ["./application/*"],
+      "@infra/*": ["./infrastructure/*"],
+      "@api/*": ["./api/*"]
     }
   },
   "include": [
