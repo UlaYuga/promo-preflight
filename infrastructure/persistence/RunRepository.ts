@@ -3,6 +3,7 @@ import type { Db } from '../db/client';
 import { runs, runBlockers } from '../db/schema';
 import type { IRunRepository } from '../../application/port/IRunRepository';
 import type { Run, RunBlocker } from '../../domain/model/Run';
+import { isUuid } from './uuid';
 
 export class RunRepository implements IRunRepository {
   constructor(private readonly db: Db) {}
@@ -35,6 +36,7 @@ export class RunRepository implements IRunRepository {
   }
 
   async findById(id: string): Promise<Run | null> {
+    if (!isUuid(id)) return null;
     const runRows = await this.db
       .select()
       .from(runs)

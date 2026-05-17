@@ -310,7 +310,7 @@ Readiness probe. Returns `200` only when the database is reachable **and** all m
 
 ```json
 {
-  "status": "not_ready",
+  "status": "not-ready",
   "checks": {
     "db": "error",
     "migrations": "pending"
