@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "AI-assisted launch readiness workspace for regulated promo campaigns.",
   "private": true,
+  "bin": {
+    "preflight-check": "bin/preflight-check.ts"
+  },
   "homepage": "https://promo-preflight-production.up.railway.app/",
   "repository": {
     "type": "git",
@@ -33,14 +36,29 @@
     "owners:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/owners/check.mjs",
     "i18n:check": "node lib/i18n/check.mjs",
     "ai:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --import ./lib/checks/ts-loader-register.mjs lib/ai/ai-smoke.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "db:check": "node db/check.mjs",
-    "mcp:refero": "node refero-proxy.js"
+    "mcp:refero": "node refero-proxy.js",
+    "demo:bus": "tsx scripts/demo-bus.ts",
+    "demo:events": "tsx scripts/event-demo.ts",
+    "worker": "tsx bin/preflight-worker.ts",
+    "smoke:outbox": "tsx scripts/smoke-outbox.ts",
+    "smoke:audit": "tsx scripts/smoke-audit.ts",
+    "smoke:worker": "tsx scripts/smoke-worker.ts",
+    "demo:e2e": "tsx scripts/demo-e2e.ts",
+    "check": "tsx bin/preflight-check.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "driver.js": "^1.4.0",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.14.0",
     "next": "^16.2.4",
     "pg": "^8.20.0",
@@ -57,13 +75,16 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitest/ui": "^4.1.6",
     "autoprefixer": "^10.5.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.4",
     "postcss": "^8.5.13",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.22.0",
     "typescript": "^6.0.3",
     "typescript-language-server": "^5.1.3",
+    "vitest": "^4.1.6",
     "yaml-language-server": "^1.22.0"
   },
   "overrides": {

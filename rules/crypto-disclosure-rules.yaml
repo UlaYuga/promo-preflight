@@ -1,0 +1,68 @@
+version: 1
+# Crypto disclosure requirements by target jurisdiction.
+# Sources: DEEP-RESEARCH.md §3, RESEARCH-NOTES.md §8, 01.tech G GATE Media Report 2026 Ch.3
+regions:
+  AL:
+    status: forbidden
+    rule_refs:
+      - "Algeria Loi 18-13 — all virtual currency operations prohibited"
+    notes: "Any crypto mention in AL-targeted copy is a hard block"
+
+  IN:
+    status: forbidden
+    rule_refs:
+      - "RBI guidelines — crypto tokens not recognised as legal tender in India"
+      - "Ministry of Finance: 30% TDS; online real-money gaming total restrictions"
+    notes: "Crypto banned by RBI; do not mention in IN-targeted campaigns"
+
+  BR:
+    status: forbidden
+    rule_refs:
+      - "Decreto 615/2024 — Brazilian gaming operators prohibited from accepting crypto payments"
+      - "Lei 15.358/2025 — licensing framework; only approved payment channels allowed"
+    notes: "Crypto effectively forbidden for licensed gaming operators in Brazil"
+
+  MX:
+    status: restricted
+    required_disclaimer: "El uso de criptomonedas está sujeto a restricciones regulatorias locales"
+    rule_refs:
+      - "Ley Fintech (LRITF) — crypto assets are virtual assets under CNBV supervision"
+      - "Circular 1/2025 Banco de México — SPEI payment restrictions for gaming"
+    notes: "Crypto not officially banned but heavily restricted; disclaimer mandatory"
+
+  CO:
+    status: restricted
+    required_disclaimer: "Las criptomonedas no están reguladas como moneda de curso legal en Colombia"
+    rule_refs:
+      - "Circular Externa 029/2014 Banco de la República — crypto not legal tender"
+      - "Coljuegos — approved payment channels for licensed operators"
+
+  RU:
+    status: permitted_with_disclosure
+    # Note: A volatility disclaimer is not formally mandated by Russian ЦБ regulation.
+    # 244-ФЗ requires: "18+", ФНС license number, RNG disclosure.
+    # The volatility disclaimer below is industry best practice (cf. UK FCA crypto risk warnings)
+    # and is widely adopted by Russian operators as a risk mitigation measure.
+    required_disclaimer: "цена криптовалюты колеблется"
+    rule_refs:
+      - "ФЗ-244 — mandatory: 18+, ФНС license number, RNG disclosure"
+      - "Industry practice (cf. UK FCA crypto risk warnings) — volatility disclosure"
+    notes: "Volatility disclaimer is industry practice, not a formal Russian legal requirement"
+
+  UK:
+    status: forbidden
+    rule_refs:
+      - "UK Gambling Act 2005 — crypto not approved payment method for UKGC-licensed operators"
+      - "UKGC LCCP — only approved payment methods may be advertised"
+
+  DE:
+    status: restricted
+    required_disclaimer: "Kryptowährungen unterliegen starken Kursschwankungen"
+    rule_refs:
+      - "BaFin — crypto assets regulated under German Banking Act (KWG §1 Abs. 11)"
+      - "GGL Glücksspielstaatsvertrag 2021"
+
+  SE:
+    status: restricted
+    rule_refs:
+      - "Spelinspektionen — only licensed payment channels; crypto not formally approved"
