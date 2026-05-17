@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "AI-assisted launch readiness workspace for regulated promo campaigns.",
   "private": true,
+  "bin": {
+    "preflight-check": "bin/preflight-check.ts"
+  },
   "homepage": "https://promo-preflight-production.up.railway.app/",
   "repository": {
     "type": "git",
@@ -44,6 +47,7 @@
     "smoke:audit": "tsx scripts/smoke-audit.ts",
     "smoke:worker": "tsx scripts/smoke-worker.ts",
     "demo:e2e": "tsx scripts/demo-e2e.ts",
+    "check": "tsx bin/preflight-check.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui"
