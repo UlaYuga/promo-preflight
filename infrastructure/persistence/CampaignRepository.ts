@@ -5,6 +5,7 @@ import { campaigns, campaignVersions } from '../db/schema';
 import type { ICampaignRepository, CampaignRecord, CampaignVersionRecord } from '../../application/port/ICampaignRepository';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { RunBlocker } from '../../domain/model/Run';
+import { isUuid } from './uuid';
 
 export class CampaignRepository implements ICampaignRepository {
   constructor(private readonly db: Db) {}
@@ -49,6 +50,7 @@ export class CampaignRepository implements ICampaignRepository {
   }
 
   async findById(id: string): Promise<CampaignRecord | null> {
+    if (!isUuid(id)) return null;
     const rows = await this.db
       .select()
       .from(campaigns)

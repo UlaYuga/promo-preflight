@@ -73,7 +73,17 @@ async function main(argv: string[]): Promise<number> {
     return EXIT_CODE.INVALID_INPUT;
   }
 
-  const campaignParse = CampaignBundleSchema.safeParse(parsedJson);
+  // Accept both the bare CampaignBundle and the { "campaign": {...} }
+  // envelope the REST API and the README's quickstart use, so the same
+  // payload file works for `curl /api/v1/runs` and `npm run check`.
+  const candidate =
+    parsedJson !== null &&
+    typeof parsedJson === 'object' &&
+    'campaign' in parsedJson
+      ? (parsedJson as { campaign: unknown }).campaign
+      : parsedJson;
+
+  const campaignParse = CampaignBundleSchema.safeParse(candidate);
   if (!campaignParse.success) {
     writeStderr(`Invalid campaign schema: ${campaignParse.error.message}`);
     return EXIT_CODE.INVALID_INPUT;
