@@ -103,7 +103,7 @@ describe('TelegramAdapter', () => {
     const body = parseFetchBody(fetchMock);
     expect(body.text).toBe(
       '⚠️ Run *run\\.\\(42\\)*: 3 warnings, 0 blockers — review before launch.\n' +
-        'View: https://preflight\\.example\\.com/a\\.b/runs/run\\.\\(42\\)'
+        'View: https://preflight\\.example\\.com/a\\.b/app/runs/run\\.\\(42\\)'
     );
   });
 
@@ -121,7 +121,7 @@ describe('TelegramAdapter', () => {
     expect(body.text).toBe(
       '🚨 Run *run\\-7* BLOCKED \\(2 blockers, 1 warnings\\)\n' +
         '• 2 blockers require review in the run details\n' +
-        'View: https://preflight\\.example\\.com/runs/run\\-7'
+        'View: https://preflight\\.example\\.com/app/runs/run\\-7'
     );
   });
 
@@ -146,7 +146,7 @@ describe('TelegramAdapter', () => {
     );
     expect(body.text).toContain('• owner\\[legal\\] \\-\\> fix\\_now\\!');
     expect(body.text).toContain(
-      'View: https://pf\\.example\\.com/runs/run\\_\\*%5B%5D\\(\\)\\~%60%3E%23%2B\\-%3D%7C%7B%7D\\.\\!%5C'
+      'View: https://pf\\.example\\.com/app/runs/run\\_\\*%5B%5D\\(\\)\\~%60%3E%23%2B\\-%3D%7C%7B%7D\\.\\!%5C'
     );
   });
 
