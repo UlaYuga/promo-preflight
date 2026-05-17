@@ -30,7 +30,7 @@ The augmentation layer is activated by `ANTHROPIC_API_KEY` and bypassed complete
 **Positive**
 - Every run is reproducible: given the same campaign bundle and rule artifact version, the output is identical.
 - Audit-friendly: a compliance log entry can cite the specific `ruleId` and `rule artifact version` that triggered each blocker.
-- Runs are fast (~12ms for 11 checks) and cheap — no API calls in the default path.
+- Runs are fast (~12ms for 8 checks) and cheap — no API calls in the default path.
 - Works offline and in air-gapped environments.
 
 **Negative**

@@ -20,7 +20,7 @@ Every quarter, another regulator updates its rules. Your promo team is still rev
 
 - "The key and very underrated trend in 2026, in my view, is not AI or core updates, but the increasing local blockings and regulatory pressure in Latin America and Asia. These began last year and have hit not just products but webmasters too. Infrastructure resilience and tight processes for tracking and reacting to local-operator blocks will be the competitive advantage of this year." — **Stanislav, SEO Product Manager, 01.tech**, *Global iGaming Report 2026*
 
-- "Gamble responsibly as a footer link no longer satisfies several jurisdictions." — **Emmanuel Omoloyin, SEO Content Writer**, *DEEP-RESEARCH §7, citation 169*
+- "Gamble responsibly as a footer link no longer satisfies several jurisdictions." — **Emmanuel Omoloyin, SEO Content Writer**
 
 - **Perfect Storm B.V.**: €5M fine + 2-year ban, DGOJ Spain (Apr 2026). **Sky Betting & Gaming**: £1.17M, UKGC (2022) — welcome bonus emails sent to self-excluded players. **Kindred (Spooniker)**: SEK 100M, Spelinspektionen (2020) — single-bonus-rule violation. Real money lost when promo compliance fails.
 
@@ -28,15 +28,15 @@ No dedicated tool exists for multi-jurisdiction promo compliance in iGaming. Rev
 
 A mid-size operator runs 20-30 campaigns a month,\* spends an estimated 2-5 person-hours per campaign on compliance review,\* and still pulls or corrects 5-10% of campaigns post-launch.\*
 
-\*Industry estimate per OLD-RESEARCH §2; no public operator metrics published.
+\*Illustrative industry estimate; no public operator metrics are published.
 
-Preflight runs 11 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
+Preflight runs 8 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
 
 Built around the regulatory and operational realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026. Preflight closes the gap that report identifies as 2026's most underrated risk.
 
 ## What this is
 
-Promo Preflight runs 11 deterministic compliance checks against a campaign bundle before it goes live. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
+Promo Preflight runs 8 deterministic compliance checks against a campaign bundle before it goes live. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
 
 The system accepts one canonical `CampaignBundle` in JSON — one format regardless of whether you're launching in Brazil, India, Mexico, or the UK — and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every run is persisted and logged; the audit trail holds up to regulatory review.
 
@@ -77,7 +77,7 @@ sequenceDiagram
     Promo->>API: POST campaign bundle + Idempotency-Key
     API->>Bus: dispatch(RunChecksCommand)
     Bus->>Run: execute
-    Run->>Run: 11 deterministic checks per targetJurisdiction
+    Run->>Run: 8 deterministic checks per targetJurisdiction
     Run->>Repo: save Run + Blockers (transaction)
     Run->>Outbox: write events (same transaction)
     Run-->>API: { runId, verdict, counts, blockers }
@@ -118,7 +118,7 @@ sequenceDiagram
     Compl->>Design: creative spec
     Note over Pre: Existing manual workflow ends here. Below — what Preflight automates.
     Compl->>Pre: campaign bundle (one canonical JSON)
-    Pre-->>Compl: 11 deterministic checks per targetJurisdiction
+    Pre-->>Compl: 8 deterministic checks per targetJurisdiction
     Pre-->>Launch: assigned blockers with ownerHint
     Launch->>Launch: review verdict (GO / WARN / BLOCK)
     Launch->>Launch: launch only when GO

@@ -6,7 +6,7 @@ Acme Casino, a mid-size operator running on the 01.tech White Label platform, de
 
 The launch had to comply with a stack of overlapping requirements: SPA/MF #3 (promo and bonus restrictions), SPA/MF #1.885/2025, MESP #31, the Conar advertising code, Banco Central do Brasil Pix rules under Lei 15.358/2025, the cryptocurrency disclosure framework under PL 4173/2023, and the overarching Lei 14.790/2023 (the Brazilian gambling legalisation statute). A manual compliance review for this kind of cross-channel, cross-payment-method campaign in Brazil takes an estimated 10–30 person-hours.*
 
-\*Industry estimate per DEEP-RESEARCH §8; no public operator metrics published.
+\*Illustrative industry estimate; no public operator metrics are published.
 
 ## Step 1 — Campaign bundle as input
 
@@ -176,7 +176,7 @@ In English:
 
 This case study is the operational implementation of what that report identifies. Each of the 10 blockers above corresponds to a real enforcement precedent or a mandatory clause in Brazilian law as of Q2 2026. Preflight makes jurisdictional compliance a 12-second CI check rather than a 10–30 person-hour manual review cycle.\* The risk Stanislav describes is addressable — it requires tooling that runs in your pipeline, not a consultant engaged retroactively after a campaign is live.
 
-\*Industry estimate per DEEP-RESEARCH §8; no public operator metrics published.
+\*Illustrative industry estimate; no public operator metrics are published.
 
 ## What this took
 
@@ -187,7 +187,7 @@ This case study is the operational implementation of what that report identifies
 | Ownership trail | Slack thread + Google Doc | Structured JSON audit log, queryable |
 | Total to launch-ready | 10–30 person-hours* | < 30 minutes |
 
-\*Industry estimate per DEEP-RESEARCH §8; no public operator metrics published.
+\*Illustrative industry estimate; no public operator metrics are published.
 
 ---
 

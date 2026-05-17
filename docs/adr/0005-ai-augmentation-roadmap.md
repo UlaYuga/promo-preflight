@@ -5,7 +5,7 @@
 
 ## Context
 
-The 11 deterministic checks form a defensible compliance core (see ADR-0003): same input, same verdict, audit-friendly, reproducible. This is the contract Preflight makes with operators.
+The 8 deterministic checks form a defensible compliance core (see ADR-0003): same input, same verdict, audit-friendly, reproducible. This is the contract Preflight makes with operators.
 
 At the same time, an Anthropic SDK wrapper already exists at `infrastructure/ai/` but is not wired into the main flow. AI offers a genuine UX multiplier on top of the deterministic core — not as a decision-maker, but as the layer that helps marketers understand, act on, and fix what the deterministic engine flagged.
 
@@ -27,7 +27,7 @@ Document AI augmentation as a planned v1.x roadmap. AI is the planned augmentati
 
 4. **Plain-language explanation per blocker** — Each blocker currently surfaces a `ruleId` and a technical message. AI rewrites this as a marketer-facing explanation: *why* this matters, which regulator, which article, what the practical consequence is. Reduces the compliance-to-marketing translation round-trip.
 
-5. **Compliance Q&A** — Operator asks "Can I say 'risk-free' in the UK copy?" or "What does Brazil require in the T&C for a welcome bonus?" AI answers grounded in the `rules/*.yaml` artifacts and `DEEP-RESEARCH.md` knowledge base. Reduces dependency on legal counsel for routine questions.
+5. **Compliance Q&A** — Operator asks "Can I say 'risk-free' in the UK copy?" or "What does Brazil require in the T&C for a welcome bonus?" AI answers grounded in the `rules/*.yaml` artifacts and the jurisdiction rule knowledge base. Reduces dependency on legal counsel for routine questions.
 
 All five remain "AI on top of deterministic core." The deterministic verdict is always computed first. AI never overrides or bypasses it.
 
