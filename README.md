@@ -146,6 +146,27 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Environment defaults are documented in `.env.example`. The app works without `ANTHROPIC_API_KEY` because the current check runner is offline/deterministic.
 
+## Three Paths to Use
+
+1. `docker-compose up` (local full stack)
+2. npm package + CLI (`preflight-check`, shipped in T-033)
+3. managed SaaS (coming soon)
+
+### Path 2: npm package + CLI
+
+```bash
+# stdin mode
+cat campaign.json | npm run check
+
+# file mode
+npm run check -- --file ./campaign.json
+
+# human-readable output
+npm run check -- --file ./campaign.json --format human
+```
+
+Exit codes: `0=GO`, `1=WARN`, `2=BLOCK`, `3=invalid JSON/schema`, `4=internal check failure`.
+
 ## Commands
 
 | Command | Purpose |
