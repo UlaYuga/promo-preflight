@@ -71,7 +71,7 @@ sequenceDiagram
   API->>Bus: dispatch(RunChecksCommand)
   Bus->>UC: execute(RunChecksCommand)
   UC->>Repo: findCampaign(campaignId)
-  UC->>UC: run 11 deterministic checks per targetJurisdiction
+  UC->>UC: run 8 deterministic checks per targetJurisdiction
   UC->>Repo: saveRun(run) + saveBlockers(blockers) [transaction]
   UC->>Outbox: writeEvents(RunCompleted, BlockerRaised…) [same transaction]
   UC-->>Bus: Result<RunResult, PreflightException>
