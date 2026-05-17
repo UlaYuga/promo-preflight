@@ -1,11 +1,24 @@
 // Runs once when the server process starts (Next.js instrumentation hook).
-// Applies db/migrations/*.sql so the production schema is never behind the
-// deployed code. This runs inside the Next server bundle — the same context
-// the API routes use — so the bundled `pg`/`drizzle-orm` resolve correctly
-// (a standalone migrate script cannot: Next trims those from node_modules).
-// The generated SQL uses `create table if not exists`, so re-running on every
-// boot is safe and idempotent. A failure is logged but does not crash the
-// server — /api/ready then truthfully reports the missing tables.
+// Two responsibilities, both reasons live here (not in a separate process)
+// because Next standalone trims `pg`/`drizzle-orm` from node_modules — only
+// the Next bundle resolves them:
+//
+//   1. Apply db/migrations/*.sql so the production schema is never behind the
+//      deployed code. The generated SQL uses `create table if not exists`, so
+//      re-running on every boot is safe and idempotent. A failure is logged
+//      but does not crash the server — /api/ready then truthfully reports the
+//      missing tables.
+//
+//   2. Start the outbox worker so events written to `outbox` inside POST
+//      /api/v1/runs (RunStarted / BlockerRaised / RunCompleted) actually
+//      reach `audit_log` and downstream subscribers (Telegram). Without this,
+//      events accumulate silently and GET /api/v1/audit returns 200 with an
+//      empty list — a silent data-pipeline gap. The worker uses
+//      `for update skip locked` so multiple containers stay safe.
+
+let outboxWorkerRef: { stop(): Promise<void> } | null = null;
+let shutdownHandlersBound = false;
+
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== "nodejs") {
     return;
@@ -15,6 +28,7 @@ export async function register(): Promise<void> {
     return;
   }
 
+  let migrationsOk = false;
   try {
     const { readdir, readFile } = await import("node:fs/promises");
     const { join } = await import("node:path");
@@ -35,9 +49,63 @@ export async function register(): Promise<void> {
     }
 
     console.log("[migrate] schema up to date.");
+    migrationsOk = true;
   } catch (err) {
     console.error(
       "[migrate] migration failed; server will still start and /api/ready will report status:",
+      err
+    );
+  }
+
+  if (!migrationsOk) {
+    console.warn("[outbox] migrations did not complete — skipping worker boot.");
+    return;
+  }
+
+  try {
+    const { getDb } = await import("@infra/db/client");
+    const { OutboxWorker } = await import("@infra/outbox");
+    const { createAuditSubscriber } = await import("@infra/audit");
+    const { PgAuditRepository } = await import(
+      "@infra/persistence/PgAuditRepository"
+    );
+    const { telegramSubscriber } = await import("@infra/telegram");
+
+    const db = getDb();
+    const auditRepository = new PgAuditRepository(db);
+    const auditSubscriber = createAuditSubscriber(auditRepository);
+
+    const worker = new OutboxWorker(
+      db,
+      [auditSubscriber, telegramSubscriber],
+      {
+        pollIntervalMs: Number(process.env.OUTBOX_POLL_INTERVAL_MS ?? 1000),
+        maxAttempts: 5,
+      }
+    );
+
+    outboxWorkerRef = worker;
+
+    if (!shutdownHandlersBound) {
+      const shutdown = (): void => {
+        if (outboxWorkerRef) {
+          void outboxWorkerRef.stop();
+        }
+      };
+      process.once("SIGTERM", shutdown);
+      process.once("SIGINT", shutdown);
+      shutdownHandlersBound = true;
+    }
+
+    // Fire-and-forget: start() returns the loop promise that resolves on stop().
+    void worker.start().catch((err) => {
+      console.error("[outbox] worker loop exited with error:", err);
+    });
+
+    console.log("[outbox] worker started.");
+  } catch (err) {
+    console.error(
+      "[outbox] failed to start worker; events will queue in outbox until next boot:",
       err
     );
   }
