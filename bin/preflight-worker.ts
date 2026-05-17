@@ -13,7 +13,12 @@ const db = getDb();
 const auditRepository = new PgAuditRepository(db);
 const auditSubscriber = createAuditSubscriber(auditRepository);
 
-const worker = new OutboxWorker(db, [telegramSubscriber, auditSubscriber], {
+// Order matters: the worker delivers subscribers sequentially and a throw in
+// any one triggers redelivery of the whole event. The audit log is the
+// durable record and must run before the best-effort Telegram notifier, so a
+// transient Telegram failure can never starve audit_log. Keep in lockstep
+// with instrumentation.ts.
+const worker = new OutboxWorker(db, [auditSubscriber, telegramSubscriber], {
   pollIntervalMs,
   maxAttempts,
 });
