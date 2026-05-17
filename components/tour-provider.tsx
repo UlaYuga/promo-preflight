@@ -54,8 +54,9 @@ export function TourProvider() {
   const navigateForStep = useCallback(
     (stepIndex: number, state: TourState) => {
       const route = getTourStepRoute(stepIndex, state);
+      const routePath = route.split("?")[0];
 
-      if (route && route !== pathname) {
+      if (routePath && routePath !== pathname) {
         destroyDriver();
         router.push(route);
         return true;
