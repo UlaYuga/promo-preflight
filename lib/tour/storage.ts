@@ -70,7 +70,14 @@ export function writeTourState(
     ...nextState,
     updatedAt: new Date().toISOString()
   };
-  storage()?.setItem(PROMO_PREFLIGHT_TOUR_KEY, JSON.stringify(state));
+  // Safari private mode exposes window.localStorage but throws on setItem.
+  // Tour state is best-effort UX, not durable data — swallow like
+  // readTourState() does, so a blocked store can never crash tour start.
+  try {
+    storage()?.setItem(PROMO_PREFLIGHT_TOUR_KEY, JSON.stringify(state));
+  } catch {
+    // ignore — tour continues in-memory for this session
+  }
   if (!opts?.silent) {
     notifyTourStateChanged();
   }
