@@ -111,7 +111,7 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 ## Hero block (T-002)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Owner: this is the first thing Nina sees. Polish ruthlessly. -->
 
 ```
@@ -119,7 +119,7 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 *Pre-launch readiness checks for iGaming operators expanding into emerging markets. Built by a PM over a weekend with Claude Code.*
 
-*Built around the regulatory realities described in the [01.tech × G GATE MEDIA Global iGaming Report 2026](link-tbd).*
+*Built around the regulatory realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026.*
 
 [![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)]() [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)]() [![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/UlaYuga/promo-preflight/actions) [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/UlaYuga/promo-preflight/actions)
 
@@ -134,7 +134,7 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 ## The problem (T-001)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Worker: produce 3 bullets each citing a verifiable source from the "Verbatim quotes" block above. Tone: direct, technical, slightly self-aware. Max 350 words for the entire section. -->
 
 Every quarter, another regulator updates its rules. Your promo team is still reviewing T&C across eight locales in Google Docs.
@@ -153,7 +153,7 @@ A mid-size operator runs 20-30 campaigns a month,\* spends an estimated 2-5 pers
 
 Preflight runs 11 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
 
-Built around the regulatory and operational realities described in the [01.tech × G GATE MEDIA Global iGaming Report 2026](link-tbd). Preflight closes the gap that report identifies as 2026's most underrated risk.
+Built around the regulatory and operational realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026. Preflight closes the gap that report identifies as 2026's most underrated risk.
 
 ## What this is
 
@@ -262,7 +262,7 @@ Here's what the Telegram notification looks like in production:
 
 ## Three paths to use (T-003)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Three numbered sub-sections -->
 
 ### 1. Self-host via docker-compose
@@ -284,13 +284,13 @@ See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment va
 
 ### 2. Drop into your CI (npm package + CLI)
 
-*Coming in T-033.*
-
 ```bash
-npx preflight-check --bundle campaign.json --jurisdiction BR --exit-on-block
+cat campaign.json | npm run check
+npm run check -- --file ./campaign.json
+npm run check -- --file ./campaign.json --format human
 ```
 
-Exits `0` on GO, `1` on WARN, `2` on BLOCK. JSON to stdout. Use as a build gate in any CI pipeline.
+Exit codes: `0` on GO, `1` on WARN, `2` on BLOCK, `3` on invalid JSON/schema, `4` on internal failure. Use as a build gate in any CI pipeline.
 
 ### 3. Managed SaaS
 
@@ -1136,7 +1136,7 @@ See [docs/ARCHITECTURE.md](./ARCHITECTURE.md) for a full explanation of the port
 
 # docs/CASE-STUDY.md (T-035)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Brazilian welcome offer walkthrough under SPA/MF Q2 2026 -->
 <!-- Pull directly from DEEP-RESEARCH.md §8 for: required T&C in PT-BR, 10 blockers table, fixed version, alternate timeline citing Perfect Storm €5M. -->
 
@@ -1334,7 +1334,7 @@ This case study is the operational implementation of what that report identifies
 
 ---
 
-[Live demo](https://promo-preflight-production.up.railway.app/) · [01.tech × G GATE MEDIA Global iGaming Report 2026](link-tbd)
+[Live demo](https://promo-preflight-production.up.railway.app/) · 01.tech × G GATE MEDIA Global iGaming Report 2026
 ~~~~
 
 ---
