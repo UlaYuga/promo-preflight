@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 
 type MentionLevel = "owners" | "leads" | "full";
 type Tone = "neutral" | "urgent" | "friendly";
+type ReportSource = "saved" | "fallback";
 
 const ownerFallbackByCheckId: Record<string, string> = {
   channel_consistency: "crm",
@@ -46,7 +47,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function getSavedReport(fallbackReport: RiskReportData): RiskReportData | null {
+function loadHandoffReport(
+  fallbackReport: RiskReportData
+): { report: RiskReportData; source: ReportSource } | null {
   if (typeof window === "undefined") {
     return null;
   }
@@ -54,7 +57,7 @@ function getSavedReport(fallbackReport: RiskReportData): RiskReportData | null {
   const savedReport = window.localStorage.getItem(PROMO_PREFLIGHT_REPORT_KEY);
 
   if (!savedReport) {
-    return fallbackReport;
+    return { report: fallbackReport, source: "fallback" };
   }
 
   try {
@@ -62,9 +65,9 @@ function getSavedReport(fallbackReport: RiskReportData): RiskReportData | null {
     const reportCandidate =
       isRecord(parsed) && "report" in parsed ? parsed.report : parsed;
 
-    return RiskReportSchema.parse(reportCandidate);
+    return { report: RiskReportSchema.parse(reportCandidate), source: "saved" };
   } catch {
-    return fallbackReport;
+    return { report: fallbackReport, source: "fallback" };
   }
 }
 
@@ -134,6 +137,7 @@ export function HandoffPage({
 }>) {
   const { t } = useI18n();
   const [report, setReport] = useState<RiskReportData | null>(null);
+  const [source, setSource] = useState<ReportSource>("fallback");
   const [launchDate, setLaunchDate] = useState<string>("");
   const [channel, setChannel] = useState("#promo-launches");
   const [mentionLevel, setMentionLevel] = useState<MentionLevel>("owners");
@@ -144,7 +148,9 @@ export function HandoffPage({
 
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect */
-    setReport(getSavedReport(fallbackReport));
+    const loaded = loadHandoffReport(fallbackReport);
+    setReport(loaded?.report ?? null);
+    setSource(loaded?.source ?? "fallback");
     setLaunchDate(getLaunchDate());
     setCompareUrl(getCompareUrl());
     /* eslint-enable react-hooks/set-state-in-effect */
@@ -374,6 +380,14 @@ export function HandoffPage({
             {t("handoff.subtitle")}
           </p>
         </div>
+        <span
+          data-qa="handoff-source-badge"
+          className="rounded-sm hairline border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-subtle"
+        >
+          {source === "saved"
+            ? t("handoff.savedReport")
+            : t("handoff.offlineSample")}
+        </span>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
