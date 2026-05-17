@@ -121,7 +121,7 @@ Notably, 01.tech's own 159-page Global iGaming Report 2026 identifies "local blo
 
 *Built around the regulatory realities described in the [01.tech × G GATE MEDIA Global iGaming Report 2026](link-tbd).*
 
-[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)]() [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)]() [![Tests](https://img.shields.io/badge/tests-placeholder-yellow)]() [![CI](https://img.shields.io/badge/ci-placeholder-yellow)]()
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)]() [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)]() [![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/UlaYuga/promo-preflight/actions) [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/UlaYuga/promo-preflight/actions)
 
 <p align="center">
   <img src="./docs/assets/hero.png" alt="Preflight in action" width="800" />
@@ -157,7 +157,7 @@ Built around the regulatory and operational realities described in the [01.tech 
 
 ## What this is
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Worker T-003: 2-3 paragraphs. Reference 11 jurisdictional checks. Mention the Before/After collage from VISUALS §2. -->
 
 Promo Preflight runs 11 deterministic compliance checks against a campaign bundle before it goes live. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
@@ -175,7 +175,7 @@ The system accepts one canonical `CampaignBundle` in JSON — one format regardl
 
 ## Who this is for (T-003)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Worker: markdown table, 3 rows, columns "You are" and "What this gives you" -->
 
 | You are | What this gives you |
@@ -186,7 +186,7 @@ The system accepts one canonical `CampaignBundle` in JSON — one format regardl
 
 ## How it works (T-003)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Worker: insert mermaid sequence below + paragraph + Telegram screenshot reference (VISUALS §6) -->
 
 Each run follows a synchronous request path — validate, dispatch, check, persist, respond — with side effects (Telegram notifications, audit events) handled asynchronously via the outbox pattern.
@@ -298,7 +298,7 @@ Coming soon. [Email for early access](mailto:alex@marlerino.group).
 
 ## Tech stack (T-003)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- markdown table of stack with one-line rationale per dep -->
 
 | Package | Why |
@@ -316,7 +316,7 @@ Coming soon. [Email for early access](mailto:alex@marlerino.group).
 
 ## Architecture (T-003)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- ASCII tree of domain/application/infrastructure/api layout -->
 
 ```
@@ -352,7 +352,7 @@ Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 ## What we deliberately don't do (T-003)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 <!-- Bullet list of explicit non-goals with rationale -->
 
 - No multi-tenant (org-scoped data) — out of scope for this sprint; can be added without changing core
@@ -364,7 +364,7 @@ Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 ## AI augmentation roadmap (T-003 — new sub-section, after "What we deliberately don't do")
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 Preflight ships a deterministic-first compliance core. AI is the planned augmentation layer on top — never the decision-maker.
 
@@ -382,7 +382,7 @@ See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for full reasoning. N
 
 ## Contributing / License / Author (T-003)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 ```
 Issues and PRs welcome. Apache 2.0.
@@ -395,7 +395,7 @@ Built by Alexander Ulanov — PM with 6+ years in digital production, e-commerce
 
 # docs/ARCHITECTURE.md (T-006)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # Promo Preflight — Architecture
 
@@ -520,7 +520,7 @@ sequenceDiagram
 
 # docs/API.md (T-007)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # Promo Preflight — REST API
 
@@ -881,7 +881,7 @@ All error responses share this shape:
 
 # docs/CONFIGURATION.md (T-008)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # Promo Preflight — Configuration
 
@@ -943,7 +943,7 @@ Copy `.env.example` (provided in the repo) and fill in the required values.
 
 # docs/ERRORS.md (T-008)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # Promo Preflight — Error Handling
 
@@ -1014,7 +1014,7 @@ throw new CampaignNotFoundException(campaignId);
 
 # docs/INTEGRATIONS.md (T-008 + expanded in T-024)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # Promo Preflight — Integrations
 
@@ -1341,7 +1341,7 @@ This case study is the operational implementation of what that report identifies
 
 # docs/adr/0001-postgres-over-localstorage.md (T-009)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # ADR-0001 — Persist runs in Postgres instead of browser localStorage
 
@@ -1385,7 +1385,7 @@ Keep `localStorage` as a parallel mode controlled by the `PREFLIGHT_MODE=localSt
 
 # docs/adr/0002-cqrs-lite-bus.md (T-009)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # ADR-0002 — CQRS-lite with a tiny in-process bus
 
@@ -1429,7 +1429,7 @@ This is *not* a full CQRS read/write model split. The same domain models serve b
 
 # docs/adr/0003-deterministic-first-ai-second.md (T-009)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # ADR-0003 — Deterministic checks run first; AI is augmentation only
 
@@ -1478,7 +1478,7 @@ The augmentation layer is activated by `ANTHROPIC_API_KEY` and bypassed complete
 
 # docs/adr/0004-outbox-pattern-for-events.md (T-009)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # ADR-0004 — Outbox pattern for at-least-once event delivery
 
@@ -1527,7 +1527,7 @@ Poll interval is configurable via `OUTBOX_POLL_INTERVAL_MS` (default 1000ms).
 
 # docs/adr/0005-ai-augmentation-roadmap.md (T-009b)
 
-<!-- STATUS: drafted -->
+<!-- STATUS: polished -->
 
 # ADR-0005 — AI augmentation roadmap (planned, deferred from v1)
 
