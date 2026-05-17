@@ -68,10 +68,15 @@ docker compose restart worker
 Trigger a run via API using a fixture that produces blockers:
 
 ```bash
+node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  -e "import { workedExamples } from './schemas/worked-examples.ts'; console.log(JSON.stringify({ campaign: workedExamples.EX08.bundle }, null, 2));" \
+  > /tmp/preflight-ex08.json
+
 curl -X POST http://localhost:3000/api/v1/runs \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
-  -d @./schemas/fixtures.ts.json
+  -d @/tmp/preflight-ex08.json
 ```
 
 Confirm the run returns `verdict: "BLOCK"` and, within ~1 outbox poll interval, a Telegram message appears in the channel. A `BLOCK` verdict message looks like:
@@ -89,7 +94,7 @@ View: http://localhost:3000/runs/abc-123
 
 ## Roadmap
 
-The following adapters are scoped for future sprints. Each implements the `IHandoffAdapter` port from `application/port/handoff.ts`.
+The following adapters are scoped for future sprints. Each implements the `IHandoffAdapter` port from `application/port/IHandoffAdapter.ts`.
 
 | Adapter | What it does | Port | Config |
 |---|---|---|---|
@@ -101,7 +106,7 @@ The following adapters are scoped for future sprints. Each implements the `IHand
 
 ## Building your own adapter
 
-1. Implement `IHandoffAdapter` from [`application/port/handoff.ts`](../application/port/handoff.ts):
+1. Implement `IHandoffAdapter` from [`application/port/IHandoffAdapter.ts`](../application/port/IHandoffAdapter.ts):
    ```ts
    export interface IHandoffAdapter {
      notify(event: RunCompletedEvent): Promise<void>;

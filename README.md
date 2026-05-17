@@ -4,7 +4,7 @@
 
 *Built around the regulatory realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026.*
 
-[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)]() [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)]() [![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/UlaYuga/promo-preflight/actions) [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/UlaYuga/promo-preflight/actions)
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)](https://www.typescriptlang.org/) [![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/UlaYuga/promo-preflight/actions) [![CI](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml/badge.svg)](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml)
 
 <p align="center">
   <img src="./docs/assets/hero.png" alt="Preflight in action" width="800" />
@@ -137,12 +137,16 @@ The fastest path to a production-ready instance:
 ```bash
 git clone https://github.com/UlaYuga/promo-preflight.git
 cd promo-preflight
-cp .env.example .env   # fill DATABASE_URL, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
-docker-compose up -d
+cp .env.example .env   # fill TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID if needed
+docker compose up -d
+node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
+  --experimental-strip-types \
+  -e "import { workedExamples } from './schemas/worked-examples.ts'; console.log(JSON.stringify({ campaign: workedExamples.EX08.bundle }, null, 2));" \
+  > /tmp/preflight-ex08.json
 curl -X POST http://localhost:3000/api/v1/runs \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
-  -d @schemas/sample-bundle.json | jq
+  -d @/tmp/preflight-ex08.json | jq
 ```
 
 See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment variable reference.
