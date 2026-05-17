@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { BookmarkPlus, ChevronDown, Save } from "lucide-react";
 import {
   createCampaign,
@@ -29,6 +29,12 @@ export function SaveCampaignPanel({
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [savedPath, setSavedPath] = useState<string | null>(null);
+  // Synchronous re-entrancy guard. handleSave has no awaits, so a fast
+  // double-click fires two click handlers before React re-renders and hides
+  // the button — without this each click would createCampaign() again and
+  // leave a duplicate campaign in the list. A ref (not state) is required:
+  // the second handler must see the flag set by the first within the same tick.
+  const inFlightRef = useRef(false);
 
   const campaigns = mode === "open" ? listCampaigns() : [];
 
@@ -37,6 +43,7 @@ export function SaveCampaignPanel({
     setStatus("idle");
     setStatusMessage("");
     setSavedPath(null);
+    inFlightRef.current = false;
     const existing = listCampaigns();
     if (existing.length > 0 && !selectedCampaignId) {
       setSelectedCampaignId(existing[0].id);
@@ -48,6 +55,10 @@ export function SaveCampaignPanel({
   }
 
   function handleSave() {
+    if (inFlightRef.current) {
+      return;
+    }
+    inFlightRef.current = true;
     try {
       let campaignId: string;
 
@@ -59,6 +70,7 @@ export function SaveCampaignPanel({
         if (!selectedCampaignId) {
           setStatus("error");
           setStatusMessage(t("saveCampaign.selectCampaignError"));
+          inFlightRef.current = false;
           return;
         }
         campaignId = selectedCampaignId;
@@ -78,6 +90,7 @@ export function SaveCampaignPanel({
       setStatus("error");
       setSavedPath(null);
       setStatusMessage(err instanceof Error ? err.message : t("common.saveFailed"));
+      inFlightRef.current = false;
     }
   }
 
