@@ -55,6 +55,9 @@ describe('RunPersistenceService', () => {
     let insertedRunVersion: number | null = null;
 
     const tx = {
+      execute: async () => {
+        callOrder.push('advisory_lock');
+      },
       insert: (table: unknown) => {
         if (table === idempotencyKeys) {
           return {
@@ -203,6 +206,7 @@ describe('RunPersistenceService', () => {
     expect(eventPublisher.publishAll).toHaveBeenCalledTimes(1);
     expect(callOrder).toEqual([
       'idempotency.claim',
+      'advisory_lock',
       'campaign.select',
       'campaign.insert',
       'version.select',
