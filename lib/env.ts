@@ -15,6 +15,10 @@ const envSchema = z.object({
   ANTHROPIC_MODEL_FAST: z.string().optional(),
   ANTHROPIC_MODEL_AUDIT: z.string().optional(),
   DATABASE_URL: z.string().optional(),
+  // Public origin used to build absolute links in outbound notifications
+  // (e.g. Telegram run alerts). Unset → callers fall back to localhost,
+  // which is correct for local dev but wrong in production.
+  PUBLIC_APP_URL: z.string().optional(),
   USE_MOCK_AI: booleanEnv("true"),
   MAX_INPUT_CHARS: positiveIntEnv(50000),
   RATE_LIMIT_WINDOW_SECONDS: positiveIntEnv(60),
