@@ -24,3 +24,8 @@ pnpm-debug.log*
 
 # vercel
 .vercel/
+
+# local agent worktrees
+.claude/
+.codex/
+.opencode/
