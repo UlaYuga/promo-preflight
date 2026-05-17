@@ -499,6 +499,8 @@
     "eyebrow": "04 / Handoff",
     "title": "Prepare launch handoff",
     "subtitle": "Generate a Slack-ready internal ops update so launch owners can act without reopening the full workspace.",
+    "savedReport": "Saved report",
+    "offlineSample": "Sample handoff",
     "preview": "Slack preview",
     "channel": "Channel",
     "mentionLevel": "Mention level",
