@@ -1,0 +1,308 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 2738c1d..cd4fc1c 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -1,75 +1,127 @@
+-# AGENTS.md — Promo Preflight
++# AGENTS.md — Promo Preflight v2
+ 
+-> Единый источник контекста для AI-агентов (OpenCode, Claude, Cursor и др.)
++> Единый источник контекста для AI-кодинг-агентов (Claude Code Pro, Codex Desktop, OpenCode Go). Читай этот файл первым перед любой работой в репо.
+ 
+-## ЖЁСТКОЕ ПРАВИЛО: Skills
++## Что это за проект (контекст для нового агента)
+ 
+-**Перед ЛЮБЫМ действием** (включая ответ на вопрос, чтение файла, запуск команды, поиск) ты ОБЯЗАН проверить ВСЕ навыки из `available_skills` — не только superpowers, но и project-level навыки (docx, figma-*, frontend-design, code-review, debugging, pdf, xlsx, и т.д.). Если есть хотя бы 1% шанс, что навык применим — ВЫЗОВИ `Skill` tool.
++**Promo Preflight v2** — pre-launch readiness checks для iGaming операторов, работающих на нескольких юрисдикциях (Tier-1 EU + emerging markets LATAM/APAC/Africa/CIS).
+ 
+-Вот полный список навыков, которые нужно всегда держать в уме и проверять:
+-- **integration-artifacts группы**: docx, pdf, pptx, xlsx — для любых операций с офисными файлами
+-- **figma-группа**: figma-use, figma-implement-design, figma-generate-design, figma-generate-library, figma-create-design-system-rules
+-- **design/frontend-группа**: frontend-design, frontend-design-review, frontend-ui-engineering, web-design-guidelines, brand-guidelines, canvas-design, theme-factory
+-- **engineering-группа**: code-review-and-quality, code-simplification, debugging-and-error-recovery, systematic-debugging, performance-optimization, security-and-hardening, api-and-interface-design, vercel-composition-patterns, vercel-react-best-practices, vercel-react-view-transitions, source-driven-development
+-- **process-группа**: brainstorming, spec-driven-development, test-driven-development, writing-plans, executing-plans, planning-and-task-breakdown, incremental-implementation, dispatching-parallel-agents, subagent-driven-development, finishing-a-development-branch
+-- **testing-группа**: browser-testing-with-devtools, webapp-testing, verification-before-completion
+-- **infra-группа**: ci-cd-and-automation, shipping-and-launch, deprecation-and-migration, documentation-and-adrs, git-workflow-and-versioning, using-git-worktrees, context-engineering
+-- **meta-группа**: skill-creator, writing-skills, using-superpowers
++**Целевой клиент**: Operator работающий с B2B iGaming platform (типа 01.tech White Label). Их боль (по их же отчёту): локальные блокировки и регуляторное давление в LATAM/Asia — #1 риск 2026.
+ 
+-Это не опционально. Это не обсуждается. Даже «простой» вопрос требует проверки. Никаких рационализаций вроде «это слишком просто», «я уже знаю этот навык», «давай сначала посмотрю код».
++**Цель проекта**: оффер у Нины (Head of Python and Go в 01tech). Понедельник 2026-05-18 утром. **Артефакт должен показывать что PM думает как инженер.**
+ 
+-Навыки определяют КАК подходить к задаче. Игнорирование навыков = неправильный подход = зря потраченное время.
++Подробный контекст: `EXPLAINER.md` (полный домен-primer), `RESEARCH-NOTES.md` (анализ 01.tech отчёта), `DEEP-RESEARCH.md` (верифицированные регуляторные факты).
+ 
+-## Стек
++## Координация работы
+ 
+-- **Next.js 16** (App Router, React 19)
+-- **TypeScript 6** — strict mode, no `any`
+-- **Tailwind CSS 3.4** + `tailwindcss-animate`
+-- **Zod** — валидация всех внешних границ
+-- **PostgreSQL** (pg, Railway-ready)
+-- **Anthropic SDK** — AI-ассистирование (опционально, есть mock-режим)
+-- **YAML** — rules/rules.yaml, config/owners.yaml
+-- **Lucide React** — иконки
+-- **driver.js** — desktop product tour
++Все споук-агенты подчиняются **координатор-чату**, запущенному в Codex Desktop из `COORDINATOR-PROMPT.md`. Координатор:
++- Выдаёт тикеты из `BACKLOG.md`
++- Указывает рекомендуемую модель и effort из `MODELS.md`
++- Делает ревью результатов
++- Корректирует план если нужно
++
++**Ты как агент-исполнитель**: получаешь промпт из BACKLOG.md → выполняешь → возвращаешь результат координатору.
++
++## ЖЁСТКОЕ ПРАВИЛО: Skills
++
++**Перед ЛЮБЫМ действием** проверь все навыки из `available_skills`. Если есть хотя бы 1% шанс что навык применим — ВЫЗОВИ `Skill` tool. Это не опционально.
++
++Группы навыков для проверки:
++- engineering: `code-review-and-quality`, `debugging-and-error-recovery`, `api-and-interface-design`, `security-and-hardening`
++- process: `spec-driven-development`, `incremental-implementation`, `planning-and-task-breakdown`
++- testing: `webapp-testing`, `browser-testing-with-devtools`
++- infra: `ci-cd-and-automation`, `documentation-and-adrs`, `git-workflow-and-versioning`
++
++## Файлы контекста (читай по необходимости)
++
++| Файл | Когда читать |
++|---|---|
++| `BACKLOG.md` | **Всегда** — твой тикет тут |
++| `MODELS.md` | Если не знаешь какая модель/effort |
++| `TEXTS.md` | Если тикет создаёт текст для README/docs/ADR — выходишь сюда, не в финальный файл |
++| `VISUALS.md` | Если тикет требует картинки — спеки тут (но генерит сам owner в ChatGPT Image) |
++| `RESEARCH-NOTES.md` | Когда нужна верифицированная цитата из 01.tech отчёта |
++| `DEEP-RESEARCH.md` | Когда нужна регуляторная конкретика (фразы CONAR, штрафы Spain DGOJ, etc.) |
++| `OLD-RESEARCH.md` | Tier-1 EU фокус (UKGC, Spelinspektionen, AGCO Ontario fines) |
++| `EXPLAINER.md` | Если не помнишь что за iGaming и какие 11 чеков |
++| `COORDINATOR-PROMPT.md` | Если случайно открыл этот файл из координатор-сессии — wrong file, тебе сюда не нужно |
+ 
+-## Архитектура
++## Архитектура v2 (target — то, к чему идём)
+ 
+ ```
+-app/                  Next.js App Router
+-  app/intake/         Campaign bundle intake form
+-  app/risk-report/    Structured check results
+-  app/readiness/      Launch readiness board
+-  app/rules/          Rules artifact viewer
+-components/           Shared UI components
+-lib/
+-  checks/             Offline deterministic check engine (8 checks)
+-  ai/                 AI-assisted extraction (Anthropic SDK)
+-  rules/              YAML artifact loader + validation
+-  i18n/               EN/RU translation utilities
+-  tour/               Product tour logic
+-  owners/             Launch ownership matrix
+-  readiness.ts        Go/No-Go board generation
+-  versioning.ts       Version diff logic
+-  rate-limit.ts       In-memory rate limiter
+-  input-limit.ts      Input size validation
+-  export.ts           Markdown/Slack export
+-rules/
+-  rules.yaml          Versioned documentation artifact
+-config/
+-  owners.yaml         Workspace owner names
+-db/
+-  schema.sql          Postgres schema
+-  seed.sql            Seed data
+-locales/
+-  en.json             English translations
+-  ru.json             Russian translations
+-schemas/
+-  index.ts            Zod contracts for all product types
+-  worked-examples.ts  EX01–EX11 synthetic test bundles
+-  fixtures.ts         Offline sample bundle
++domain/                  Чистый домен, без runtime-зависимостей
++  model/                 Campaign, Run, Blocker, Owner
++  vo/                    Amount, Url, Locale, Severity (branded types)
++  service/               ReadinessCalculator, BlockerDiff (pure functions)
++  event/                 PreflightEvent (sealed discriminated union)
++  exception/             PreflightException hierarchy
++
++application/             Use cases + ports
++  command/               RunChecksCommand, ...
++  query/                 FindRunQuery, CampaignDiffQuery, ...
++  usecase/               RunChecksUseCase, VersionDiff, ...
++  port/                  IRunRepository, IEventPublisher, IHandoffAdapter, ...
++  bus/                   Bus, HandlerRegistry
++
++infrastructure/          Адаптеры
++  persistence/           PgRunRepository (Drizzle + Postgres)
++  telegram/              TelegramAdapter
++  outbox/                OutboxEventPublisher, OutboxWorker
++  ai/                    Anthropic adapter (legacy, optional)
++  handler/               Command/query handler implementations
++  registry/              DI registry, Bus factory
++
++api/
++  v1/                    Next.js route handlers — тонкие, всё через Bus
++
++app/                     Next.js App Router (UI — остаётся)
++components/              Shared UI components (остаётся)
++lib/                     LEGACY — будет постепенно расселяться в новые слои
++  checks/                Старые 6 чеков (помечены TODO к миграции в v2.1)
++  ai/                    → переедет в infrastructure/ai/
++  rules/                 → переедет в infrastructure/rules/
++  ...
++
++schemas/                 Zod contracts — re-export из domain/
++rules/                   YAML rule artifacts
++  rules.yaml             Legacy 23-rule artifact
++  payment-methods-by-region.yaml      NEW (T-013a)
++  forbidden-phrases-by-region.yaml    NEW (T-013c)
++config/                  Owner config
++db/                      Legacy schema.sql
++locales/                 EN/RU UI translations
+ ```
+ 
+-## Tailwind CSS — кастомная палитра
++## Стек v2
++
++- **Next.js 16** (App Router, React 19)
++- **TypeScript 6** strict — no `any`
++- **Tailwind CSS 3.4** (кастомная палитра — см. ниже)
++- **Drizzle ORM + postgres** (новое, заменяет raw pg)
++- **Zod** — валидация всех границ
++- **Vitest** (новое для тестов)
++- **Anthropic SDK** — опционально, mock-режим
++- **Telegram Bot API** — основной handoff (заменяет Slack из v1)
++- **YAML** для rule artifacts
++- **node:test или Vitest для tests** (vitest предпочтительнее)
++
++## 11 чеков v2 (вместо 8 в v1)
++
++| # | Чек | Источник правил | Статус |
++|---|---|---|---|
++| 1 | Channel consistency | hardcoded | legacy (lib/checks/) |
++| 2 | Jurisdictional T&C completeness | `rules/forbidden-phrases-by-region.yaml` | legacy (lib/checks/) — обновляется в T-013c |
++| 3 | Offer math sanity | hardcoded | legacy (lib/checks/) |
++| 4 | Jurisdictional risk signals | `rules/forbidden-phrases-by-region.yaml` | **NEW в T-013c** |
++| 5 | Localization depth QA | hardcoded + i18n | legacy (lib/checks/) |
++| 6 | Launch ownership | `config/owners.yaml` | legacy (lib/checks/) |
++| 7 | Link QA | hardcoded | **мигрирован в T-013** |
++| 8 | Format QA | hardcoded | **мигрирован в T-013** |
++| 9 | **Payment compatibility** | `rules/payment-methods-by-region.yaml` | **NEW в T-013a** |
++| 10 | **Crypto disclosure** | `rules/payment-methods-by-region.yaml` | **NEW в T-013b** |
++| 11 | **Mobile-first format** | hardcoded | **NEW (опционально, drop если время)** |
++
++## Tailwind кастомная палитра (СОХРАНЯЕТСЯ)
+ 
+ **Не использовать стандартные Tailwind цвета** для основного UI. Использовать только кастомные:
+ 
+@@ -89,33 +141,43 @@ schemas/
+ | `text-fail` | `#e5534b` | Ошибка |
+ | `text-info` | `#4d9cf4` | Информация |
+ 
+-Радиусы: `rounded-sm` (5px), `rounded` / `rounded-md` (8px), `rounded-lg` (10px), `rounded-xl` (14px), `rounded-2xl` (18px).
++Радиусы: `rounded-sm` (5px), `rounded`/`rounded-md` (8px), `rounded-lg` (10px), `rounded-xl` (14px), `rounded-2xl` (18px).
+ 
+ ## TypeScript правила
+ 
+-- Strict mode включен
++- Strict mode
+ - Никаких `any` без явного комментария
+ - Все API-границы валидируются Zod
+ - Типы выводятся из Zod: `type Foo = z.infer<typeof FooSchema>`
+-- React Server Components по умолчанию, `'use client'` только при необходимости (useState, useEffect, browser APIs)
++- Branded types для value objects: `type Amount = number & { readonly __brand: 'Amount' }`
++- React Server Components по умолчанию
++
++## Ключевые архитектурные инварианты (НЕ нарушай)
++
++1. **Domain layer не зависит ни от чего** кроме других domain/-модулей
++2. **Ports владеет application/**, реализации в infrastructure/
++3. **Commands возвращают `Result<T, PreflightException>`**, queries возвращают T или throw
++4. **Все write paths через repositories** — никаких raw SQL вне infrastructure/persistence/
++5. **Events публикуются ПОСЛЕ commit** через outbox — нет phantom events
++6. **Idempotency-Key обязателен на POST /v1/runs** — один ключ → один runId
++7. **Domain throws только PreflightException** subclasses, не raw Error
++8. **API layer не ловит PreflightException** — это делает global error handler
++
++См. `docs/adr/` после генерации в Block 2.
+ 
+ ## i18n (EN/RU)
+ 
+ - Файлы: `locales/en.json`, `locales/ru.json`
+-- Ключи должны быть идентичны в обоих файлах
++- Ключи идентичны в обоих
+ - Проверка: `npm run i18n:check`
+-- Перевод через точечную нотацию: `t('risk_report.severity.high')`
++- **Английский — основной**, русский — owner поддерживает вручную (см. TEXTS.md notes)
+ 
+-## 8 офлайн-чеков
++## Git workflow
+ 
+-1. **Channel consistency** — copy vs offer value mismatch
+-2. **Terms robustness** — max bet, wagering, cashout clauses
+-3. **Offer math sanity** — математические противоречия
+-4. **Jurisdictional risk** — risk phrases, missing RG wording
+-5. **Localization QA** — locale/currency mismatch, ambiguous dates
+-6. **Launch ownership** — approvers assigned and approved
+-7. **Link QA** — URL validity, UTM params, domain consistency
+-8. **Format QA** — channel-specific character limits
++- Каждый тикет = один conventional commit в worktree (branch `claude/serene-mayer-697d54`)
++- Формат: `[T-XXX] feat: short description` / `fix:` / `docs:` / `test:` / `ci:` / `chore:`
++- Merge в main делается одним PR в самом конце (Block 11)
++- НЕ amend-ить старые коммиты после push
+ 
+ ## Команды
+ 
+@@ -124,25 +186,43 @@ npm run dev              # Dev server
+ npm run build            # Production build
+ npm run typecheck        # TypeScript strict
+ npm run lint             # ESLint
+-npm run schema:check     # Zod schema smoke
+-npm run checks:mock      # Mock check runner
+-npm run checks:run       # Full regression: EX01-EX11 + 9 cases
+-npm run rules:check      # Validate rules/rules.yaml
+-npm run i18n:check       # Validate translations
+-npm run db:check         # Validate DB schema/seed
++npm run test             # Vitest (после T-027)
++npm run db:generate      # Drizzle generate migrations (после T-014)
++npm run db:migrate       # Apply migrations
++npm run worker           # Outbox worker (после T-023)
++npm run check            # bin/preflight-check CLI (после T-033)
++npm run demo:bus         # Bus demo script (после T-013)
++npm run demo:e2e         # End-to-end demo (после T-026)
+ ```
+ 
+-## Safety conventions
++## Безопасность / scope
+ 
+-- No auth, payments, SaaS onboarding
+-- No gambling visual language or operator logos
+-- Draft data only in `localStorage`
+-- Request bodies not logged
+-- `noindex` / `nofollow` on all pages
++- Нет auth, payments, SaaS onboarding (это намеренно вне scope)
++- Демо-данные синтетические — никаких реальных промо-операторов
++- `noindex` / `nofollow` на всех страницах
+ - Rate limit: 20 req/min per IP
++- `ANTHROPIC_API_KEY` опционально — `USE_MOCK_AI=true` обходится
+ 
+ ## Deployment
+ 
+-- Railway via `railway.toml` (Nixpacks)
+-- `ANTHROPIC_API_KEY` опционально — без него все чеки работают офлайн
+-- `USE_MOCK_AI=true` для локальной разработки без API ключа
++- Текущий: Railway via `railway.toml` (Nixpacks) — это **legacy demo**
++- Новый: `docker-compose.yml` с Postgres + worker (Block 8)
++- README будет указывать "self-host via docker-compose" как path #1
++
++## Что НЕ делать (для агентов-исполнителей)
++
++1. **Не редактируй текст в README, docs/, ADR напрямую** — сначала в TEXTS.md
++2. **Не выдумывай регуляторные цитаты** — берёшь из DEEP-RESEARCH.md / OLD-RESEARCH.md либо помечаешь `[TODO: verify]`
++3. **Не мигрируй старые 6 чеков** из lib/checks/ — они помечены `v2.1 TODO`, ADR-0002 это документирует
++4. **Не используй standard Tailwind colors** — только кастомные токены выше
++5. **Не пиши в `domain/`** код, использующий fetch / file system / DB — это infra-зависимости
++6. **Не запускай миграции в production** — только на локальной Postgres
++7. **Не используй `any`** — если действительно нужен `unknown`, ставь явный комментарий
++
++## Ссылки на финальные артефакты
++
++- Координатор-промпт: `COORDINATOR-PROMPT.md`
++- Бэклог тикетов: `BACKLOG.md`
++- Карта моделей: `MODELS.md`
++- Тексты: `TEXTS.md`
++- Картинки: `VISUALS.md`
