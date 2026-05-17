@@ -215,6 +215,7 @@
       "currency": "Валюта",
       "launchDate": "Дата запуска",
       "channelsIncluded": "Каналы",
+      "targetJurisdiction": "Целевые юрисдикции",
       "minDeposit": "Мин. депозит",
       "bonusAmount": "Сумма бонуса",
       "bonusPercentage": "Процент бонуса",
@@ -238,7 +239,8 @@
       "selectLocale": "Выберите локаль",
       "selectCurrency": "Выберите валюту",
       "currency": "EUR",
-      "ownerName": "Имя или команда"
+      "ownerName": "Имя или команда",
+      "maxJurisdictions": "До 3 юрисдикций"
     },
     "assetHint": "Условия обязательны. Добавьте хотя бы одно поле с текстом для Email, Push или Onsite.",
     "requirements": {

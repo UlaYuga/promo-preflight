@@ -1,0 +1,174 @@
+version: 1
+# Forbidden phrases and mandatory disclaimer requirements per target jurisdiction.
+# Sources: DEEP-RESEARCH.md §1-§2, RESEARCH-NOTES.md §7, OLD-RESEARCH.md
+# Do NOT edit rule_refs without verifying against research documents.
+regions:
+  UK:
+    forbidden:
+      - phrase: "risk-free"
+        rule_ref: "CAP/ASA Code 16.3.3 — misleading gambling advertising"
+        severity: block
+      - phrase: "risk free"
+        rule_ref: "CAP/ASA Code 16.3.3"
+        severity: block
+      - phrase: "guaranteed win"
+        rule_ref: "UKGC LCCP / CAP advertising guidance"
+        severity: block
+      - phrase: "guaranteed wins"
+        rule_ref: "UKGC LCCP / CAP advertising guidance"
+        severity: block
+      - phrase: "no risk"
+        rule_ref: "CAP/ASA Code 16.3.3 — no risk claims prohibited"
+        severity: block
+      - phrase: "free money"
+        rule_ref: "UKGC LCCP — misleading inducements"
+        severity: warn
+    mandatory:
+      - text: "18+"
+        rule_ref: "UKGC LCCP Social Responsibility Code 17.1"
+        severity: block
+      - text: "BeGambleAware"
+        rule_ref: "UKGC LCCP — responsible gambling messaging requirement"
+        severity: block
+
+  BR:
+    forbidden:
+      - phrase: "bônus sem condições"
+        rule_ref: "Portaria SPA/MF #3 — promo restrictions"
+        severity: block
+      - phrase: "garantido"
+        rule_ref: "CONAR — guaranteed success claims prohibited (ruling re vencer é só o começo)"
+        severity: block
+      - phrase: "renda extra garantida"
+        rule_ref: "CONAR decision — promises of guaranteed income prohibited"
+        severity: block
+      - phrase: "risco zero"
+        rule_ref: "CONAR / SPA/MF #3 — risk-free claims prohibited"
+        severity: block
+      - phrase: "vencer é só o começo"
+        rule_ref: "CONAR ruling (2024) — creates unrealistic expectations of guaranteed financial success"
+        severity: block
+      - phrase: "ganhe sem riscos"
+        rule_ref: "CONAR — risk-free claims prohibited"
+        severity: warn
+    mandatory:
+      - text: "18+"
+        rule_ref: "Lei 14.790/2023 — minimum age requirement for gambling"
+        severity: block
+      - text: "Jogue com responsabilidade"
+        rule_ref: "Portaria SPA/MF #3 — mandatory responsible gambling message"
+        severity: block
+
+  RU:
+    forbidden: []
+    mandatory:
+      - text: "18+"
+        rule_ref: "ФЗ-244 — обязательная маркировка возрастного ограничения"
+        severity: block
+
+  ES:
+    forbidden:
+      - phrase: "sin riesgo"
+        rule_ref: "DGOJ Real Decreto 958/2020 — risk-free claims prohibited"
+        severity: block
+      - phrase: "asegurado"
+        rule_ref: "DGOJ Real Decreto 958/2020 — guaranteed claims prohibited"
+        severity: warn
+    mandatory:
+      # Note (per RESEARCH-NOTES.md §15.3): "Juega con responsabilidad" is NOT confirmed
+      # as a formal textual requirement of Real Decreto 958/2020. It is industry best practice.
+      # The decree prohibits associating gambling with success/wealth — but does not mandate
+      # a specific phrase. We flag absence as a warning, not a block.
+      - text: "Juega con responsabilidad"
+        rule_ref: "DGOJ industry practice — responsible gambling messaging (not verbatim mandated)"
+        severity: warn
+
+  DE:
+    forbidden:
+      - phrase: "risk free"
+        rule_ref: "GGL Glücksspielstaatsvertrag 2021 / German advertising standards"
+        severity: block
+      - phrase: "garantiert gewinnen"
+        rule_ref: "GGL / German UWG unfair commercial practices — guaranteed win claims"
+        severity: block
+      - phrase: "sicher gewinnen"
+        rule_ref: "GGL / German advertising standards"
+        severity: warn
+    mandatory:
+      - text: "Glücksspiel kann süchtig machen"
+        rule_ref: "Glücksspielstaatsvertrag 2021 §5(3) — mandatory addiction warning in advertising"
+        severity: block
+      - text: "18+"
+        rule_ref: "GlüStV 2021 — minimum age 18 mandatory in all advertising"
+        severity: block
+
+  IT:
+    forbidden:
+      # Dignity Decree (Decreto Dignità, DL 87/2018) banned gambling ads featuring celebrities
+      # This ban was partially suspended but remains a reference point for brand-safety reviews
+      - phrase: "# celebrity-detection is not text-based — use as manual review trigger"
+        rule_ref: "Decreto Dignità 2018 (DL 87/2018) — celebrity endorsement of gambling prohibited"
+        severity: warn
+    mandatory:
+      - text: "18+"
+        rule_ref: "ADM (Agenzia delle Dogane e dei Monopoli) — age gate mandatory"
+        severity: block
+      - text: "Gioca responsabilmente"
+        rule_ref: "ADM / industry code — responsible gambling messaging"
+        severity: warn
+
+  SE:
+    forbidden:
+      - phrase: "bonus unlimited"
+        rule_ref: "Spelinspektionen — single bonus rule; multiple/unlimited bonuses prohibited"
+        severity: block
+    mandatory:
+      - text: "18+"
+        rule_ref: "Swedish Gambling Act (SFS 2018:1138) — minimum age requirement"
+        severity: block
+
+  CA-ON:
+    forbidden:
+      - phrase: "welcome bonus"
+        rule_ref: "AGCO iGaming Ontario Standard 2.11 — welcome bonus advertising prohibited"
+        severity: block
+      - phrase: "sign-up bonus"
+        rule_ref: "AGCO Standard 2.11 — sign-up bonus advertising prohibited"
+        severity: block
+      - phrase: "registration bonus"
+        rule_ref: "AGCO Standard 2.11 — registration bonus advertising prohibited"
+        severity: block
+    mandatory:
+      - text: "19+"
+        rule_ref: "AGCO — Ontario minimum gambling age is 19"
+        severity: block
+
+  KR:
+    forbidden: []
+    mandatory:
+      - text: "불법 도박은 처벌받습니다"
+        rule_ref: "Korean Game Industry Promotion Act — mandatory illegal gambling warning"
+        severity: block
+      - text: "19+"
+        rule_ref: "Korean law — minimum gambling age is 19 (not 18)"
+        severity: block
+
+  MY:
+    forbidden: []
+    mandatory:
+      - text: "18+"
+        rule_ref: "Common Gaming Houses Act 1953 — minimum age 18 (21+ for sports betting)"
+        severity: block
+
+  IN:
+    forbidden:
+      - phrase: "win guaranteed"
+        rule_ref: "Indian consumer protection — misleading advertising"
+        severity: block
+      - phrase: "guaranteed returns"
+        rule_ref: "Indian consumer protection — misleading advertising"
+        severity: block
+    mandatory:
+      - text: "18+"
+        rule_ref: "Online gaming age restriction — standard 18+ across Indian states"
+        severity: block

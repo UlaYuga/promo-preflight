@@ -215,6 +215,7 @@
       "currency": "Currency",
       "launchDate": "Launch date",
       "channelsIncluded": "Channels",
+      "targetJurisdiction": "Target jurisdictions",
       "minDeposit": "Min deposit",
       "bonusAmount": "Bonus amount",
       "bonusPercentage": "Bonus percentage",
@@ -238,7 +239,8 @@
       "selectLocale": "Select locale",
       "selectCurrency": "Select currency",
       "currency": "EUR",
-      "ownerName": "Name or team"
+      "ownerName": "Name or team",
+      "maxJurisdictions": "Up to 3 jurisdictions"
     },
     "assetHint": "T&C is required. Add at least one Email, Push, or Onsite copy field.",
     "requirements": {

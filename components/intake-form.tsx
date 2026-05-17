@@ -22,7 +22,8 @@ import type {
   Channel,
   OwnerRole,
   OwnerStatus,
-  PromoType
+  PromoType,
+  TargetJurisdiction
 } from "@/schemas";
 import { CampaignBundleSchema } from "@/schemas";
 
@@ -64,6 +65,7 @@ type IntakeDraft = {
   owners: NonNullable<CampaignBundleInput["owners"]>;
   termsText: string;
   notes: string;
+  targetJurisdiction: TargetJurisdiction[];
   updatedAt?: string;
 };
 
@@ -93,6 +95,11 @@ const channelOptions: Array<{ value: Channel; label: string }> = [
 ];
 
 const jurisdictionOptions = ["BR", "EU", "CIS", "Curacao", "Other"] as const;
+
+const targetJurisdictionOptions: TargetJurisdiction[] = [
+  "BR", "MX", "CO", "AR", "IN", "RU", "TR", "UK", "DE", "ES", "IT",
+  "NG", "ZA", "KR", "MY", "AL", "SE", "PL", "CA-ON",
+];
 
 const operatorOptions = [
   "BetVault",
@@ -251,7 +258,8 @@ function createDefaultDraft(): IntakeDraft {
       status: "pending"
     })),
     termsText: "",
-    notes: ""
+    notes: "",
+    targetJurisdiction: []
   };
 }
 
@@ -290,7 +298,12 @@ function parseStoredDraft(raw: string): IntakeDraft | null {
       links: Array.isArray(parsed.links) ? parsed.links : fallback.links,
       owners: normalizeOwners(parsed.owners),
       termsText: typeof parsed.termsText === "string" ? parsed.termsText : "",
-      notes: typeof parsed.notes === "string" ? parsed.notes : ""
+      notes: typeof parsed.notes === "string" ? parsed.notes : "",
+      targetJurisdiction: Array.isArray(parsed.targetJurisdiction)
+        ? (parsed.targetJurisdiction.filter((j) =>
+            targetJurisdictionOptions.includes(j as TargetJurisdiction)
+          ) as TargetJurisdiction[])
+        : fallback.targetJurisdiction
     };
   } catch {
     return null;
@@ -370,7 +383,8 @@ function bundleToIntakeDraft(bundle: CampaignBundleInput): IntakeDraft {
     })),
     owners: normalizeOwners(bundle.owners),
     termsText: bundle.termsText ?? "",
-    notes: ""
+    notes: "",
+    targetJurisdiction: (bundle.targetJurisdiction ?? []) as TargetJurisdiction[]
   };
 }
 
@@ -408,7 +422,8 @@ function buildBundle(draft: IntakeDraft): CampaignBundleInput {
     assets: draft.assets.filter((a) => a.text.trim()),
     links: draft.links.filter((l) => l.url.trim()),
     owners: draft.owners.filter((o) => o.name?.trim() || o.status !== "pending"),
-    notes: draft.notes || undefined
+    notes: draft.notes || undefined,
+    targetJurisdiction: draft.targetJurisdiction.length > 0 ? draft.targetJurisdiction : undefined
   };
 }
 
@@ -685,6 +700,15 @@ export function IntakeForm() {
     });
   }
 
+  function toggleJurisdiction(jurisdiction: TargetJurisdiction, checked: boolean) {
+    updateDraft((current) => {
+      const next = checked
+        ? Array.from(new Set([...current.targetJurisdiction, jurisdiction])).slice(0, 3)
+        : current.targetJurisdiction.filter((j) => j !== jurisdiction);
+      return { ...current, targetJurisdiction: next };
+    });
+  }
+
   function handleRunPreflight() {
     if (!readyToRun) {
       return;
@@ -943,6 +967,44 @@ export function IntakeForm() {
                     </label>
                   ))}
                 </div>
+              </div>
+              <div className="md:col-span-2">
+                <FieldLabel label={t("intake.fields.targetJurisdiction")} />
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {targetJurisdictionOptions.map((jur) => {
+                    const checked = draft.targetJurisdiction.includes(jur);
+                    const maxReached = draft.targetJurisdiction.length >= 3;
+                    return (
+                      <label
+                        key={jur}
+                        className={cn(
+                          "inline-flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors",
+                          checked
+                            ? "border-accent/30 bg-accent/10 text-accent"
+                            : maxReached
+                              ? "cursor-not-allowed border-white/[0.07] bg-background text-foreground/30"
+                              : "border-white/[0.07] bg-background text-foreground/70"
+                        )}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={!checked && maxReached}
+                          onChange={(event) =>
+                            toggleJurisdiction(jur, event.target.checked)
+                          }
+                          className="h-4 w-4 accent-accent"
+                        />
+                        {jur}
+                      </label>
+                    );
+                  })}
+                </div>
+                {draft.targetJurisdiction.length >= 3 ? (
+                  <p className="mt-1.5 text-xs text-muted">
+                    {t("intake.placeholders.maxJurisdictions")}
+                  </p>
+                ) : null}
               </div>
             </div>
           </Section>
