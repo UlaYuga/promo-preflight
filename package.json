@@ -43,6 +43,7 @@
     "smoke:outbox": "tsx scripts/smoke-outbox.ts",
     "smoke:audit": "tsx scripts/smoke-audit.ts",
     "smoke:worker": "tsx scripts/smoke-worker.ts",
+    "demo:e2e": "tsx scripts/demo-e2e.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui"
