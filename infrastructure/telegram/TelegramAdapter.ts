@@ -107,7 +107,7 @@ export class TelegramAdapter implements IHandoffAdapter {
   }
 
   private buildRunUrl(runId: string): string {
-    return `${this.publicRunBaseUrl}/runs/${encodeURIComponent(runId)}`;
+    return `${this.publicRunBaseUrl}/app/runs/${encodeURIComponent(runId)}`;
   }
 
   private resolveBlockerSummaries(event: RunCompleted): string[] {
