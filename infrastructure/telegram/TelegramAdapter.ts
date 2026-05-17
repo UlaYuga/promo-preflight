@@ -103,7 +103,7 @@ export class TelegramAdapter implements IHandoffAdapter {
 
     const blockerSummaries = this.resolveBlockerSummaries(event);
     const bulletList = blockerSummaries.map((summary) => `• ${escapeMarkdownV2(summary)}`).join('\n');
-    return `🚨 Run *${runId}* BLOCKED (${event.counts.blockers} blockers, ${event.counts.warnings} warnings)\n${bulletList}\nView: ${url}`;
+    return `🚨 Run *${runId}* BLOCKED \\(${event.counts.blockers} blockers, ${event.counts.warnings} warnings\\)\n${bulletList}\nView: ${url}`;
   }
 
   private buildRunUrl(runId: string): string {
