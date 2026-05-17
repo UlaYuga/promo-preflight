@@ -86,31 +86,36 @@ The `campaign` field matches [`CampaignBundleSchema`](../schemas/index.ts) exact
     paymentMethods?: string[]       // e.g. ["PIX", "VISA", "USDT"]
   }
   options?: {
-    skipChecks?: string[]           // check IDs to skip, e.g. ["mobile-first-format"]
+    skipChecks?: string[]           // check IDs to skip, e.g. ["format_qa", "link_qa", "terms_robustness"]
   }
 }
 ```
+
+Valid `skipChecks` values are the eight check IDs: `channel_consistency`, `terms_robustness`, `offer_math_sanity`, `jurisdictional_risk_signals`, `localization_qa`, `launch_ownership`, `link_qa`, `format_qa`. Unknown IDs are silently ignored.
 
 **Response — 200 OK**
 
 ```ts
 {
   runId: string                   // UUID
-  campaignId: string
+  campaignId?: string             // UUID; present when a campaign was found-or-created
+  campaignVersion?: number        // 1-based version number for this run
   verdict: "GO" | "WARN" | "BLOCK"
+  status: string                  // e.g. "completed"
   counts: {
-    blockers: number
-    warnings: number
-    passed: number
+    block: number
+    warn: number
+    info: number
   }
   blockers: Array<{
-    checkId: string
-    severity: "BLOCK" | "WARN"
-    ruleId: string
-    message: string
-    ownerHint?: string
+    ruleId: string                // e.g. "terms_robustness.TERMS_ROBUSTNESS-002"
+    severity: "block" | "warn" | "info"
+    evidence: string              // semicolon-joined "field: snippet" pairs
+    suggestion: string
+    ownerHint?: string            // e.g. "legal", "risk"
   }>
   createdAt: string               // ISO 8601
+  completedAt?: string            // ISO 8601
 }
 ```
 
@@ -152,34 +157,30 @@ curl -X POST http://localhost:3000/api/v1/runs \
 
 ```json
 {
-  "runId": "018f4b2c-1234-7abc-9def-000000000001",
-  "campaignId": "camp_br_welcome_q2_2026",
+  "runId": "2a099960-d864-4d93-954f-1886bd5e980c",
+  "campaignId": "631f7c66-f803-4302-85f7-956634e5f40d",
+  "campaignVersion": 5,
   "verdict": "BLOCK",
-  "counts": { "blockers": 3, "warnings": 2, "passed": 6 },
+  "status": "completed",
+  "counts": { "block": 2, "warn": 2, "info": 0 },
   "blockers": [
     {
-      "checkId": "jurisdictional-tc-completeness",
-      "severity": "BLOCK",
-      "ruleId": "BR-SPA-LICENSE-REQUIRED",
-      "message": "T&C for BR must include the SPA/MF license number (Portaria SPA/MF #1231/2024)",
+      "ruleId": "terms_robustness.TERMS_ROBUSTNESS-002",
+      "severity": "block",
+      "evidence": "termsText: 100% welcome bonus up to 200 EUR. 30x wagering on bonus.…",
+      "suggestion": "Add the missing required clauses to the terms before launch.",
       "ownerHint": "legal"
     },
     {
-      "checkId": "jurisdictional-risk-signals",
-      "severity": "BLOCK",
-      "ruleId": "BR-FORBIDDEN-PHRASE-GARANTIDO",
-      "message": "Phrase 'bônus garantido' found in pt-BR copy — prohibited by CONAR 2024 ruling",
-      "ownerHint": "compliance"
-    },
-    {
-      "checkId": "payment-compatibility",
-      "severity": "BLOCK",
-      "ruleId": "IN-UPI-GAMING-BLOCKED",
-      "message": "UPI listed as payment method for IN — NPCI blocked UPI Collect for gaming since Q3 2022",
-      "ownerHint": "payments"
+      "ruleId": "format_qa.FORMAT_QA-001",
+      "severity": "warn",
+      "evidence": "email.subject: 95 chars > 60-char soft limit",
+      "suggestion": "Shorten subject to fit the soft limit.",
+      "ownerHint": "crm"
     }
   ],
-  "createdAt": "2026-05-16T09:14:00.000Z"
+  "createdAt": "2026-05-17T20:48:00.000Z",
+  "completedAt": "2026-05-17T20:48:00.100Z"
 }
 ```
 
@@ -189,38 +190,33 @@ curl -X POST http://localhost:3000/api/v1/runs \
 
 Fetches a run with all blockers and full result detail.
 
-**Path params**: `id` — UUID from `POST /api/v1/runs` response.
+**Path params**: `id` — UUID from `POST /api/v1/runs` response. Non-UUID ids return `404`.
 
-**Response — 200 OK**: same shape as the `POST` response, plus `campaignVersion` field.
+**Response — 200 OK**: same shape as the `POST` response.
 
-**Errors**: `404 RunNotFoundException` if `id` is unknown.
+**Errors**: `404 RunNotFoundException` if `id` is unknown or not a UUID.
 
 ---
 
 ## 3. GET /api/v1/campaigns
 
-Lists campaigns, newest first. Paginated.
-
-**Query params**
-
-| Param | Default | Description |
-|---|---|---|
-| `limit` | 20 | Max items per page (1–100) |
-| `cursor` | — | Opaque cursor from previous response's `nextCursor` field |
+Lists campaigns, newest first.
 
 **Response — 200 OK**
 
 ```ts
 {
-  items: Array<{
-    id: string
-    name: string
+  campaigns: Array<{
+    id: string                          // UUID
+    campaignName: string
+    operatorLabel: string | null
+    promoType: string
     geo: string
-    targetJurisdiction: string[]       // v2 planned; empty array until v2 field is wired
-    latestVerdict: "GO" | "WARN" | "BLOCK" | null
-    updatedAt: string
+    locale: string
+    currency: string
+    launchDate: string | null           // ISO 8601 date
+    createdAt: string                   // ISO 8601
   }>
-  nextCursor: string | null
 }
 ```
 
@@ -228,9 +224,25 @@ Lists campaigns, newest first. Paginated.
 
 ## 4. GET /api/v1/campaigns/:id
 
-Fetches a campaign with its latest version and most recent run summary.
+Fetches a single campaign by id. Non-UUID ids return `404`.
 
-**Response — 200 OK**: campaign object with `latestRun` nested.
+**Response — 200 OK**
+
+```ts
+{
+  campaign: {
+    id: string
+    campaignName: string
+    operatorLabel: string | null
+    promoType: string
+    geo: string
+    locale: string
+    currency: string
+    launchDate: string | null
+    createdAt: string
+  }
+}
+```
 
 **Errors**: `404 CampaignNotFoundException`.
 
@@ -238,41 +250,53 @@ Fetches a campaign with its latest version and most recent run summary.
 
 ## 5. GET /api/v1/campaigns/:id/versions
 
-Lists all saved versions of a campaign, newest first.
-
-**Response — 200 OK**
-
-```ts
-{
-  items: Array<{
-    version: string          // e.g. "v3"
-    runId: string
-    verdict: "GO" | "WARN" | "BLOCK"
-    createdAt: string
-  }>
-}
-```
-
----
-
-## 6. GET /api/v1/campaigns/:id/diff
-
-Returns the blocker diff between two run versions — which blockers were introduced, resolved, or unchanged.
-
-**Query params**: `from` (version string, e.g. `v1`) and `to` (version string, e.g. `v3`). Both required.
+Lists all saved versions of a campaign, newest first. Versions are created when `POST /api/v1/runs` is called for a campaign.
 
 **Response — 200 OK**
 
 ```ts
 {
   campaignId: string
-  from: string
-  to: string
-  introduced: Blocker[]    // new blockers in `to` not present in `from`
-  resolved: Blocker[]      // blockers present in `from` but gone in `to`
-  unchanged: Blocker[]     // blockers present in both
+  versions: Array<{
+    id: string                          // version UUID
+    campaignId: string
+    n: number                           // 1-based version number
+    createdAt: string                   // ISO 8601
+    blockers: Blocker[]                 // same blocker shape as POST /runs response
+    readinessState: string              // e.g. "BLOCKED", "READY"
+  }>
 }
 ```
+
+**Errors**: `404 CampaignNotFoundException` if the campaign id is unknown or not a UUID.
+
+---
+
+## 6. GET /api/v1/campaigns/:id/diff
+
+Returns the blocker diff between two campaign versions — which blockers were added, resolved, or unchanged.
+
+**Query params**: `from` and `to` — positive integers matching the `n` field returned by `GET /campaigns/:id/versions`. Both required.
+
+**Response — 200 OK**
+
+```ts
+{
+  campaignId: string
+  from: number
+  to: number
+  diff: {
+    added: Blocker[]       // new blockers in `to` not present in `from`
+    resolved: Blocker[]    // blockers present in `from` but gone in `to`
+    unchanged: Blocker[]   // blockers present in both
+  }
+}
+```
+
+**Errors**:
+- `400` if `from` or `to` is missing or not a positive integer.
+- `404 CampaignNotFoundException` if the campaign id is unknown.
+- `404` if either version number does not exist for the campaign.
 
 ---
 
@@ -300,6 +324,7 @@ Readiness probe. Returns `200` only when the database is reachable **and** all m
 {
   "status": "ok",
   "checks": {
+    "env": "ok",
     "db": "ok",
     "migrations": "ok"
   }
@@ -312,6 +337,7 @@ Readiness probe. Returns `200` only when the database is reachable **and** all m
 {
   "status": "not-ready",
   "checks": {
+    "env": "ok",
     "db": "error",
     "migrations": "pending"
   }
@@ -322,15 +348,12 @@ Readiness probe. Returns `200` only when the database is reachable **and** all m
 
 ## Error model
 
-All error responses share this shape:
+All error responses share this flat shape:
 
 ```ts
 {
-  error: {
-    code: string        // machine-readable, e.g. "CAMPAIGN_NOT_FOUND"
-    message: string     // human-readable
-    details?: unknown   // Zod issues array for 400 validation errors
-  }
+  error: string         // machine-readable code, e.g. "CAMPAIGN_NOT_FOUND", "BAD_REQUEST"
+  message: string       // human-readable; for 400 validation errors, the Zod issues are stringified into the message
 }
 ```
 
