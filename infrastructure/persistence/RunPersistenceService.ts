@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull, sql } from 'drizzle-orm';
 import type { Db } from '../db/client';
 import { campaignVersions, campaigns, idempotencyKeys, runBlockers, runs } from '../db/schema';
 import {
@@ -101,6 +101,20 @@ export class RunPersistenceService {
       }
 
       // We own the slot — all writes are inside this transaction.
+      //
+      // Serialize on (campaignName, operatorLabel) for the duration of this tx.
+      // findOrCreateCampaign and createVersion are SELECT-then-INSERT, and
+      // READ COMMITTED lets concurrent transactions for the same campaign
+      // identity race: each reads "no campaign exists", each inserts, and we
+      // end up with N campaign rows for one logical campaign. A transaction-
+      // scoped advisory lock (released automatically on COMMIT/ROLLBACK)
+      // sidesteps this without a schema migration and without a unique
+      // constraint that would reject legitimate duplicate names from
+      // different operators.
+      const { campaignName, operatorLabel } = input.campaign.metadata;
+      const lockKey = JSON.stringify([campaignName, operatorLabel ?? null]);
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`);
+
       const campaignRecord = await this.findOrCreateCampaign(tx, input.campaign);
       const campaignVersionRecord = await this.createVersion(
         tx,
