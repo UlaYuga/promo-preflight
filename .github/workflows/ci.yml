@@ -39,10 +39,15 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      - run: npm run schema:check
       - run: npm run db:migrate
+      - run: npm run db:check
       - run: npm run test
       - run: npm run rules:check
+      - run: npm run owners:check
       - run: npm run i18n:check
+      - run: npm run versioning:check
+      - run: npm run ai:check
       - run: npm run checks:run
 
   docker:
