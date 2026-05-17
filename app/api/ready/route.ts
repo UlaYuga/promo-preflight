@@ -126,7 +126,12 @@ export async function GET(): Promise<Response> {
   }
 
   try {
-    const missingTableRows = await db.execute<MissingTableRow>(sql`
+    // Returns the required tables that DO exist; findMissingRequiredTables
+    // then derives which required tables are absent. The predicate must be
+    // IS NOT NULL — the helper expects the set of existing tables, not the
+    // missing ones (otherwise readiness is inverted: a correctly migrated
+    // DB reports 503 and an unmigrated DB falsely reports 200).
+    const existingTableRows = await db.execute<MissingTableRow>(sql`
       SELECT required.table_name
       FROM (
         VALUES ('runs'), ('outbox'), ('audit_log')
@@ -134,11 +139,11 @@ export async function GET(): Promise<Response> {
       LEFT JOIN pg_catalog.pg_tables existing
         ON existing.schemaname = 'public'
        AND existing.tablename = required.table_name
-      WHERE existing.tablename IS NULL
+      WHERE existing.tablename IS NOT NULL
     `);
 
     const missingTables = findMissingRequiredTables(
-      missingTableRows.rows ?? []
+      existingTableRows.rows ?? []
     );
     if (missingTables.length > 0) {
       return toResponse(
