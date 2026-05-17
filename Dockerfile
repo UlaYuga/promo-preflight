@@ -26,6 +26,9 @@ RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+# Migration SQL is read at server boot by instrumentation.ts so the prod
+# schema is never behind the deployed code.
+COPY --from=builder --chown=nextjs:nodejs /app/db/migrations ./db/migrations
 
 USER nextjs
 EXPOSE 3000
