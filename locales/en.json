@@ -147,6 +147,23 @@
       "rules": "rules",
       "endpoints": "API endpoints",
       "tests": "tests"
+    },
+    "heroA": {
+      "positioning": "Systematic pre-launch checks for promo campaigns",
+      "ctaPrimary": "Start 90-second tour",
+      "ctaSecondary": "Sample case"
+    },
+    "handoff": {
+      "verdict": "Launch blocked",
+      "launchIn": "launches in 3 days · pt-BR",
+      "summary": "Three issues need to clear before launch:",
+      "issues": [
+        "T&C and Email body are missing responsible-gambling wording. Required for Portuguese promos.",
+        "Maximum-bet limit for bonus funds is not specified.",
+        "Email title is 62 characters. The hard limit is 55."
+      ],
+      "cta": "Open Risk Report",
+      "secondary": "Assign owners"
     }
   },
   "tour": {
