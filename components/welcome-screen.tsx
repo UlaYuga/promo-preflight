@@ -11,6 +11,7 @@ import {
   DatabaseZap,
   FileSearch,
   GitCompareArrows,
+  GitPullRequestArrow,
   RadioTower,
   Send,
   ServerCog,
@@ -200,6 +201,13 @@ export function WelcomeScreen() {
               >
                 <Code2 className="h-4 w-4" aria-hidden="true" />
                 {t("welcome.systemLinks.api")}
+              </Link>
+              <Link
+                href="/app/evidence"
+                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-foreground transition hover:border-accent/30 hover:text-accent"
+              >
+                <GitPullRequestArrow className="h-4 w-4" aria-hidden="true" />
+                {t("welcome.systemLinks.evidence")}
               </Link>
               <a
                 href="https://github.com/UlaYuga/promo-preflight/blob/main/docs/API.md"

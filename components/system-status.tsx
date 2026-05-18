@@ -557,6 +557,7 @@ function LinksCard() {
   const links: Array<{ label: string; href: string; Icon: typeof FileCode2 }> = [
     { label: t("systemStatus.links.apiDocs"), href: API_DOCS_URL, Icon: FileCode2 },
     { label: t("systemStatus.links.apiContract"), href: "/app/api", Icon: Code2 },
+    { label: t("systemStatus.links.evidence"), href: "/app/evidence", Icon: CheckCircle2 },
     { label: t("systemStatus.links.repo"), href: REPO_URL, Icon: Code2 },
     { label: t("systemStatus.links.auditJson"), href: AUDIT_JSON_URL, Icon: Database },
     { label: t("systemStatus.links.ci"), href: CI_URL, Icon: Workflow }
