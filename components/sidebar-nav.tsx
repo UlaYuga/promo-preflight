@@ -11,7 +11,8 @@ const navKeys = [
   "handoff",
   "readiness",
   "rules",
-  "owners"
+  "owners",
+  "systemStatus"
 ] as const;
 
 const navNums: Record<string, string> = {
@@ -21,7 +22,8 @@ const navNums: Record<string, string> = {
   handoff: "04",
   readiness: "05",
   rules: "06",
-  owners: "07"
+  owners: "07",
+  systemStatus: "08"
 };
 
 const navHints: Record<string, string> = {
@@ -31,7 +33,8 @@ const navHints: Record<string, string> = {
   handoff: "G H",
   readiness: "G L",
   rules: "G U",
-  owners: "G O"
+  owners: "G O",
+  systemStatus: "G S"
 };
 
 const navRoutes: Record<string, string> = {
@@ -42,6 +45,7 @@ const navRoutes: Record<string, string> = {
   readiness: "/app/readiness",
   rules: "/app/rules",
   owners: "/app/owners",
+  systemStatus: "/app/status",
   versiondiff: "/app/campaigns/CMP-1042/versions/2"
 };
 
@@ -58,6 +62,7 @@ export function SidebarNav() {
     if (key === "readiness") return pathname === "/app/readiness";
     if (key === "rules") return pathname === "/app/rules";
     if (key === "owners") return pathname === "/app/owners";
+    if (key === "systemStatus") return pathname === "/app/status";
     if (key === "versiondiff") return pathname.startsWith("/app/campaigns/") && pathname.includes("/versions/");
     return false;
   }
