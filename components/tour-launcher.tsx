@@ -78,7 +78,7 @@ export function TourLauncher() {
         type="button"
         data-tour="take-tour"
         onClick={canContinue ? handleContinueTour : handleStartTour}
-        className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-md border border-[#c5ff3d]/30 bg-[#c5ff3d] px-7 py-3 text-base font-semibold text-[#070708] shadow-[0_0_0_1px_rgba(197,255,61,0.12),0_0_40px_rgba(197,255,61,0.18),0_4px_16px_rgba(0,0,0,0.25)] transition-all duration-300 hover:brightness-[1.04] hover:shadow-[0_0_0_1px_rgba(197,255,61,0.18),0_0_56px_rgba(197,255,61,0.24),0_4px_20px_rgba(0,0,0,0.3)]"
+        className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-md border border-[#c5ff3d]/30 bg-[#c5ff3d] px-7 py-3 text-base font-semibold text-[#070708] shadow-[0_0_0_1px_rgba(197,255,61,0.12),0_0_40px_rgba(197,255,61,0.18),0_4px_16px_rgba(0,0,0,0.25)] transition-[filter,box-shadow] duration-300 hover:brightness-[1.04] hover:shadow-[0_0_0_1px_rgba(197,255,61,0.18),0_0_56px_rgba(197,255,61,0.24),0_4px_20px_rgba(0,0,0,0.3)]"
       >
         <PlayCircle className="h-[22px] w-[22px]" aria-hidden="true" />
         {canContinue

@@ -6,13 +6,14 @@ import { useI18n } from "@/lib/i18n";
 export function RunOverlay({ step }: Readonly<{ step: number }>) {
   const { language } = useI18n();
   const isDone = step >= CHECK_DEFS.length;
+  const isRu = language === "ru";
 
   return (
     <div className="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm flex items-center justify-center">
       <div className="w-[480px] bg-page hairline border rounded-sm p-7 shadow-2xl shadow-black/60">
         <div className="flex items-center justify-between">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
-            Preflight · running
+            {isRu ? "Preflight · проверка" : "Preflight · running"}
           </p>
           <p className="font-mono text-[11px] text-muted">
             {step}/{CHECK_DEFS.length}
@@ -20,18 +21,20 @@ export function RunOverlay({ step }: Readonly<{ step: number }>) {
         </div>
         <p className="display mt-4 text-[42px] leading-[1] tracking-tightest">
           {isDone ? (
-            "Done"
+            isRu ? "Готово" : "Done"
           ) : (
             <>
-              Checking
+              {isRu ? "Проверяем" : "Checking"}
               <br />
-              <span className="text-accent">bundle</span>
+              <span className="text-accent">
+                {isRu ? "пакет" : "bundle"}
+              </span>
             </>
           )}
         </p>
         <div className="relative mt-7 h-px w-full bg-overlay overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-accent transition-all glow"
+            className="absolute inset-y-0 left-0 bg-accent transition-[width] glow"
             style={{ width: `${(step / CHECK_DEFS.length) * 100}%` }}
           />
         </div>

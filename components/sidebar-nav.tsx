@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -59,7 +60,6 @@ const navRoutes: Record<string, string> = {
 
 export function SidebarNav() {
   const pathname = usePathname();
-  const router = useRouter();
   const { t } = useI18n();
 
   function isActive(key: string) {
@@ -86,9 +86,9 @@ export function SidebarNav() {
         const num = navNums[key] || "0";
 
         return (
-          <button
+          <Link
             key={key}
-            onClick={() => router.push(navRoutes[key])}
+            href={navRoutes[key]}
             className={cn(
               "group relative flex items-center gap-3 rounded-sm px-3 py-2 text-left transition-colors",
               active
@@ -117,7 +117,7 @@ export function SidebarNav() {
                 </kbd>
               </span>
             )}
-          </button>
+          </Link>
         );
       })}
     </nav>

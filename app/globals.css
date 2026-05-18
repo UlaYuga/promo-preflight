@@ -476,6 +476,166 @@ select {
 .landing-a .hp-btn-ghost { background: transparent; color: var(--text); border-color: var(--hairline-2); }
 .landing-a .hp-btn-ghost:hover { border-color: var(--text); background: rgba(255, 255, 255, 0.04); }
 
+@media (min-width: 901px) and (max-height: 780px) {
+  .landing-a .frame {
+    padding: 22px 60px;
+  }
+
+  .landing-a .topbar {
+    padding-bottom: 12px;
+  }
+
+  .landing-a .grid {
+    grid-template-columns: minmax(0, 1fr) 600px;
+    gap: 64px;
+    padding: 14px 0;
+  }
+
+  .landing-a .display {
+    margin-top: 16px;
+    font-size: clamp(88px, 8.5vw, 128px);
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+  }
+
+  .landing-a .positioning {
+    margin-top: 22px;
+    max-width: 30ch;
+    font-size: 32px;
+    line-height: 1.16;
+  }
+
+  .landing-a .cta-row {
+    margin-top: 28px;
+  }
+
+  .landing-a .btn {
+    height: 58px;
+    gap: 10px;
+    padding: 0 26px;
+    border-radius: 10px;
+    font-size: 17px;
+  }
+
+  .landing-a .syslinks {
+    margin-top: 18px;
+    gap: 24px;
+  }
+
+  .landing-a .syslink {
+    font-size: 16px;
+  }
+
+  .landing-a .hp-head {
+    gap: 14px;
+    padding: 18px 24px 14px;
+  }
+
+  .landing-a .hp-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 20px;
+  }
+
+  .landing-a .hp-id-row {
+    gap: 9px;
+    font-size: 17px;
+  }
+
+  .landing-a .hp-app {
+    padding: 2px 7px;
+    font-size: 11px;
+  }
+
+  .landing-a .hp-time {
+    font-size: 15px;
+  }
+
+  .landing-a .hp-channel {
+    font-size: 15px;
+  }
+
+  .landing-a .hp-msg {
+    margin: 0 24px 20px;
+    border-radius: 12px;
+  }
+
+  .landing-a .hp-body {
+    padding: 20px 22px;
+  }
+
+  .landing-a .hp-status {
+    gap: 9px;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+
+  .landing-a .hp-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .landing-a .hp-status-text {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  .landing-a .hp-campaign {
+    margin-top: 15px;
+    font-size: 26px;
+  }
+
+  .landing-a .hp-meta {
+    font-size: 16px;
+  }
+
+  .landing-a .hp-summary {
+    margin-top: 18px;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .landing-a .hp-issues {
+    margin-top: 12px;
+    gap: 10px;
+  }
+
+  .landing-a .hp-issue {
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+  }
+
+  .landing-a .hp-issue-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .landing-a .hp-issue-text {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .landing-a .hp-issue-owner {
+    margin-top: 5px;
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  .landing-a .hp-actions {
+    margin-top: 16px;
+  }
+
+  .landing-a .hp-btn {
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+}
+
 @media (max-width: 900px) {
   .landing-a .frame { padding: 28px; }
   .landing-a .grid { grid-template-columns: 1fr; gap: 40px; padding: 28px 0; align-items: start; }

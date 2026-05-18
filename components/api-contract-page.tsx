@@ -6,16 +6,66 @@ import { Check, Clipboard, Code2, ExternalLink, KeyRound, ServerCog } from "luci
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 
 const endpoints = [
-  { method: "POST", path: "/api/v1/runs", note: "Idempotent run creation" },
-  { method: "GET", path: "/api/v1/runs/:id", note: "Fetch persisted run" },
-  { method: "GET", path: "/api/v1/campaigns", note: "List campaigns" },
-  { method: "GET", path: "/api/v1/campaigns/:id", note: "Fetch campaign" },
-  { method: "GET", path: "/api/v1/campaigns/:id/versions", note: "List versions" },
-  { method: "GET", path: "/api/v1/campaigns/:id/diff", note: "Compare blockers" },
-  { method: "GET", path: "/api/v1/audit", note: "Read audit events" },
-  { method: "GET", path: "/api/v1/stats", note: "Run telemetry" },
-  { method: "GET", path: "/api/health", note: "Liveness probe" },
-  { method: "GET", path: "/api/ready", note: "DB + migrations readiness" },
+  {
+    method: "POST",
+    path: "/api/v1/runs",
+    noteEn: "Idempotent run creation",
+    noteRu: "Идемпотентное создание прогона"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/runs/:id",
+    noteEn: "Fetch persisted run",
+    noteRu: "Получить сохранённый прогон"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/campaigns",
+    noteEn: "List campaigns",
+    noteRu: "Список кампаний"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/campaigns/:id",
+    noteEn: "Fetch campaign",
+    noteRu: "Получить кампанию"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/campaigns/:id/versions",
+    noteEn: "List versions",
+    noteRu: "Список версий"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/campaigns/:id/diff",
+    noteEn: "Compare blockers",
+    noteRu: "Сравнить блокеры"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/audit",
+    noteEn: "Read audit events",
+    noteRu: "Прочитать события аудита"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/stats",
+    noteEn: "Run telemetry",
+    noteRu: "Телеметрия прогонов"
+  },
+  {
+    method: "GET",
+    path: "/api/health",
+    noteEn: "Liveness probe",
+    noteRu: "Проверка доступности"
+  },
+  {
+    method: "GET",
+    path: "/api/ready",
+    noteEn: "DB + migrations readiness",
+    noteRu: "Готовность БД и миграций"
+  },
 ];
 
 const curlExample = `curl -X POST https://promo-preflight-production.up.railway.app/api/v1/runs \\
@@ -44,7 +94,7 @@ const responseExample = `{
 }`;
 
 export function ApiContractPage() {
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const [copied, setCopied] = useState(false);
 
   async function copyCurl() {
@@ -159,7 +209,9 @@ export function ApiContractPage() {
                   <td className="px-4 py-2.5 font-mono text-foreground">
                     {endpoint.path}
                   </td>
-                  <td className="px-4 py-2.5 text-subtle">{endpoint.note}</td>
+                  <td className="px-4 py-2.5 text-subtle">
+                    {language === "ru" ? endpoint.noteRu : endpoint.noteEn}
+                  </td>
                 </tr>
               ))}
             </tbody>

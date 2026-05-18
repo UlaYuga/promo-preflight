@@ -21,6 +21,7 @@ export function RulesPageContent({
 
   const heroLines = isRu ? "Двадцать три правила,\nвосемь проверок" : "Twenty-three rules,\neight checks";
   const lines = heroLines.split("\n");
+  const heroLabel = lines.join(" ");
   const subtitle = isRu
     ? "Полный список правил, по которым Preflight проверяет кампанию перед запуском."
     : "The full set of rules Preflight checks against before a campaign goes live.";
@@ -31,7 +32,10 @@ export function RulesPageContent({
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
           {isRu ? "06 / Правила" : "06 / Rules"}
         </p>
-        <h1 className="display mt-6 text-[64px] leading-[1] tracking-tightest">
+        <h1
+          aria-label={heroLabel}
+          className="display mt-6 text-[64px] leading-[1] tracking-tightest"
+        >
           {lines[0]}
           {lines[1] && (
             <>

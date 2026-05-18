@@ -24,6 +24,17 @@ function toIntOrNull(v: string | number | null): number | null {
 }
 
 export async function GET(): Promise<Response> {
+  if (!process.env.DATABASE_URL) {
+    return Response.json(
+      StatsResponseSchema.parse({
+        totalRuns: 0,
+        totalEvents: 0,
+        lastEventAt: null,
+        runP95LatencyMs: null,
+      })
+    );
+  }
+
   const db = getDb();
 
   // One round-trip, four aggregates. count(*) and max() are O(n) on small
