@@ -240,9 +240,12 @@ select {
   position: relative;
   z-index: 1;
   height: 100%;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
   display: grid;
   grid-template-rows: auto 1fr;
-  padding: 32px 56px;
+  padding: 28px 48px;
 }
 .landing-a .topbar {
   display: flex;
@@ -254,10 +257,10 @@ select {
 .landing-a .topbar-empty { min-height: 36px; }
 .landing-a .grid {
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 56px;
+  grid-template-columns: minmax(0, 1fr) 480px;
+  gap: 64px;
   align-items: center;
-  padding: 36px 0;
+  padding: 32px 0;
   min-height: 0;
 }
 .landing-a .lcol { min-width: 0; }
