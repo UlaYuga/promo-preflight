@@ -72,54 +72,85 @@
     "campaignsDescription": "Version history",
     "versiondiff": "Version comparison",
     "systemStatus": "System status",
-    "systemStatusDescription": "Health, audit feed, API"
+    "systemStatusDescription": "Health, audit feed, API",
+    "apiContract": "API contract",
+    "apiContractDescription": "REST endpoints and curl"
   },
   "welcome": {
     "eyebrow": "Start here · 90-second tour",
     "headline": "Promo Preflight",
-    "positioning": "Internal promo & CRM ops workspace for pre-launch review",
-    "body": "Start from a sample case or a live campaign bundle, run the check, review blockers, save the run, prepare handoff copy, and compare versions without changing the existing workflow.",
+    "positioning": "Deterministic pre-launch gate for regulated promo campaigns",
+    "body": "One workspace and one REST contract for campaign intake, 8 deterministic checks, idempotent run persistence, audit events, Telegram alerts, version diff, and launch handoff.",
     "openIntake": "Open campaign bundle",
     "testCases": "Start with Sample Case",
-    "ctaHint": "Use a sample case to follow the demo path from Intake to Risk Report, Campaigns, version diff, and handoff.",
+    "ctaHint": "Use a sample case to follow the visible path, then open System Status and API Contract to inspect the backend path.",
     "workflowTitle": "Workflow at a glance",
-    "workflowSubtitle": "From loading a campaign bundle to comparing versions",
+    "workflowSubtitle": "From campaign JSON to audit-proof launch handoff",
     "safetyNote": "Portfolio demo workspace.",
     "strip": "8 checks · 23 rules · 6 owners · EN/RU",
+    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 162 tests · Apache 2.0",
+    "architectureTitle": "What happens after Run",
+    "architectureBody": "The UI is only the front door. Each run goes through Zod validation, command bus dispatch, deterministic checks, Postgres persistence, outbox events, audit delivery, and best-effort Telegram notification.",
+    "systemLinks": {
+      "status": "Open System Status",
+      "api": "Open API Contract",
+      "docs": "Read API docs",
+      "github": "GitHub + CI"
+    },
     "workflowPreview": [
       {
-        "label": "Load a sample case or campaign bundle",
-        "description": "Start the demo with realistic promo, CRM, and launch-review inputs"
+        "label": "Load campaign bundle",
+        "description": "Start from sample data or one canonical JSON shape for promo, CRM, terms, links, owners, and GEO"
       },
       {
-        "label": "Run the check",
-        "description": "8 checks review the bundle before the Risk Report opens"
+        "label": "Validate API boundary",
+        "description": "Zod validates request shape, campaign schema, input limits, and the required Idempotency-Key"
+      },
+      {
+        "label": "Run 8 deterministic checks",
+        "description": "Rule-backed checks evaluate channel consistency, terms, offer math, GEO risk, localization, ownership, links, and formats"
+      },
+      {
+        "label": "Persist idempotent run",
+        "description": "Postgres stores the run, campaign version, blockers, and replay-safe idempotency record"
+      },
+      {
+        "label": "Emit outbox events",
+        "description": "RunStarted, BlockerRaised, and RunCompleted are written transactionally before async delivery"
+      },
+      {
+        "label": "Deliver audit + Telegram",
+        "description": "The worker drains outbox rows into the append-only audit log and Telegram notification pipeline"
       },
       {
         "label": "Review blockers",
-        "description": "Risk Report shows what blocks launch and who needs to act"
+        "description": "Risk Report shows what blocks launch, why it was flagged, and which owner should act"
       },
       {
-        "label": "Save the run & prepare the handoff",
-        "description": "Store the review in Campaigns, then copy a Slack-ready ops update"
+        "label": "Save and compare versions",
+        "description": "Campaigns keeps version history and highlights added, resolved, reopened, and still-open blockers"
       },
       {
-        "label": "Compare versions",
-        "description": "Open Campaigns to compare saved runs and track what changed"
+        "label": "Prepare handoff",
+        "description": "Handoff turns the saved report into a Slack-ready internal update for launch owners"
+      },
+      {
+        "label": "Inspect system proof",
+        "description": "System Status and API Contract expose health, stats, audit feed, endpoints, CI, and source links"
       }
     ],
     "metrics": {
       "checks": "check stages",
       "rules": "rules",
-      "owners": "owners",
-      "languages": "languages"
+      "endpoints": "API endpoints",
+      "tests": "tests"
     }
   },
   "tour": {
     "eyebrow": "Guided tour",
     "takeTour": "Start 90-second tour",
     "restartTour": "Restart tour",
-    "continueFromStep": "Continue tour · {step} / 8",
+    "continueFromStep": "Continue tour · {step} / 10",
     "desktopOnly": "Tour works best on desktop.",
     "mobileDisabled": "Tour works best on desktop.",
     "mobileDisabledShort": "Desktop tour",
@@ -159,6 +190,14 @@
       {
         "title": "Prepare the handoff update",
         "description": "Screen 04 / Handoff turns the saved report into a Slack-ready internal Promo/CRM Ops update for launch owners."
+      },
+      {
+        "title": "Inspect System Status",
+        "description": "Screen 08 / System Status exposes health, run telemetry, audit events, reliability guarantees, and source links."
+      },
+      {
+        "title": "Open the API contract",
+        "description": "Screen 09 / API Contract shows REST endpoints, idempotency semantics, and a curl path for integration."
       }
     ]
   },
@@ -554,7 +593,7 @@
     "subtitle": "Live health, audit feed, and the REST contract behind this workspace.",
     "health": {
       "title": "Health",
-      "subtitle": "Liveness and readiness probes refreshed every 10 s",
+      "subtitle": "Liveness and readiness probes refreshed every 30 s",
       "ok": "All systems operational",
       "degraded": "Database or migrations unhealthy",
       "checking": "Checking…",
@@ -577,7 +616,7 @@
     },
     "feed": {
       "title": "Live audit feed",
-      "subtitle": "Last 50 events from /api/v1/audit, polled every 2 s",
+      "subtitle": "Last 50 events from /api/v1/audit, polled every 5 s",
       "empty": "No events yet — POST /api/v1/runs to trigger one.",
       "time": "Time",
       "type": "Event",
@@ -587,9 +626,96 @@
       "title": "Contract & code",
       "subtitle": "What this workspace is wired to",
       "apiDocs": "REST API contract (docs/API.md)",
+      "apiContract": "API Contract screen",
       "repo": "Source code on GitHub",
       "auditJson": "Raw audit JSON",
       "ci": "CI workflow"
+    },
+    "pipeline": {
+      "title": "Delivery pipeline",
+      "subtitle": "What a saved run produces after the HTTP response",
+      "steps": [
+        "POST /api/v1/runs validates and executes checks",
+        "Run, campaign version, blockers, and outbox rows commit together",
+        "OutboxWorker drains rows with FOR UPDATE SKIP LOCKED",
+        "Audit subscriber writes durable audit_log records",
+        "Telegram subscriber sends best-effort launch alerts"
+      ]
+    },
+    "reliability": {
+      "title": "Reliability guarantees",
+      "subtitle": "The parts that make the demo reviewer-safe",
+      "items": [
+        "Required Idempotency-Key for POST /api/v1/runs",
+        "Same key + same body returns the same run",
+        "Same key + different body returns 409 conflict",
+        "Postgres transaction covers run persistence and outbox events",
+        "Audit append is idempotent by event id"
+      ]
+    },
+    "endpointCatalog": {
+      "title": "Endpoint catalog",
+      "subtitle": "Live surfaces behind the workspace",
+      "items": [
+        "POST /api/v1/runs",
+        "GET /api/v1/runs/:id",
+        "GET /api/v1/campaigns",
+        "GET /api/v1/campaigns/:id",
+        "GET /api/v1/campaigns/:id/versions",
+        "GET /api/v1/campaigns/:id/diff",
+        "GET /api/v1/audit",
+        "GET /api/v1/stats",
+        "GET /api/health",
+        "GET /api/ready"
+      ]
+    },
+    "quality": {
+      "title": "Quality gates",
+      "subtitle": "Checks that keep the portfolio build honest",
+      "items": [
+        "162 Vitest tests across 23 files",
+        "TypeScript strict mode",
+        "ESLint and Next.js production build",
+        "Schema, DB, rules, owners, and i18n checks in CI",
+        "Apache 2.0 license and public source"
+      ]
+    }
+  },
+  "apiContract": {
+    "eyebrow": "09 / API contract",
+    "title": "API contract",
+    "subtitle": "The integration surface behind the product UI: idempotent runs, campaign versioning, audit reads, health probes, and operational stats.",
+    "primary": {
+      "title": "Primary write path",
+      "subtitle": "POST /api/v1/runs",
+      "body": "Submit one campaign bundle with an Idempotency-Key. The API validates it, runs deterministic checks, persists a campaign version, emits outbox events, and returns the run result."
+    },
+    "idempotency": {
+      "title": "Idempotency contract",
+      "items": [
+        "Idempotency-Key is required for POST /api/v1/runs",
+        "Same key + same request body returns the original run",
+        "Same key + different body returns 409 conflict",
+        "Safe for client retries, webhook redelivery, and double-clicks"
+      ]
+    },
+    "endpoints": {
+      "title": "Endpoints",
+      "subtitle": "Everything exposed by the current REST surface"
+    },
+    "curl": {
+      "title": "Try the run endpoint",
+      "subtitle": "Use a worked example bundle from the repository or paste your own CampaignBundle.",
+      "copy": "Copy curl"
+    },
+    "response": {
+      "title": "Response shape",
+      "subtitle": "The UI reads the same contract that external clients receive."
+    },
+    "links": {
+      "docs": "Full docs/API.md",
+      "status": "System Status",
+      "audit": "Raw audit JSON"
     }
   },
   "palette": {
@@ -607,7 +733,7 @@
     "footer": {
       "move": "Move",
       "open": "Open",
-      "stats": "23 rules · 8 check stages · 6 owners"
+      "stats": "23 rules · 8 checks · 10 endpoints · 162 tests"
     },
     "noMatches": "No results"
   },
