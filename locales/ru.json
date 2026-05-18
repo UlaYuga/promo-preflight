@@ -72,54 +72,85 @@
     "campaignsDescription": "История версий",
     "versiondiff": "Сравнение версий",
     "systemStatus": "Статус системы",
-    "systemStatusDescription": "Здоровье, аудит, API"
+    "systemStatusDescription": "Здоровье, аудит, API",
+    "apiContract": "API-контракт",
+    "apiContractDescription": "REST endpoints и curl"
   },
   "welcome": {
     "eyebrow": "Начните здесь · тур за 90 секунд",
     "headline": "Promo Preflight",
-    "positioning": "Внутренний воркспейс для проверки promo и CRM запусков",
-    "body": "Начните с готового сценария или пакета кампании, запустите проверку, разберите блокеры, сохраните запуск, подготовьте резюме для передачи и сравните версии без изменений в текущем процессе.",
+    "positioning": "Детерминированный pre-launch gate для регулируемых promo-кампаний",
+    "body": "Один воркспейс и один REST-контракт для intake кампании, 8 детерминированных проверок, idempotent persistence, audit events, Telegram alerts, version diff и launch handoff.",
     "openIntake": "Открыть пакет кампании",
     "testCases": "Начать с готового сценария",
-    "ctaHint": "Используйте готовый сценарий, чтобы пройти демо-путь от Intake до Risk Report, Campaigns, сравнения версий и handoff.",
+    "ctaHint": "Используйте готовый сценарий, чтобы пройти видимый путь, затем откройте System Status и API Contract для backend path.",
     "workflowTitle": "Как устроен процесс",
-    "workflowSubtitle": "От загрузки пакета кампании до сравнения версий",
+    "workflowSubtitle": "От campaign JSON до audit-proof launch handoff",
     "safetyNote": "Демо-пространство для портфолио.",
     "strip": "8 этапов проверки · 23 правила · 6 ролей · EN/RU",
+    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 162 tests · Apache 2.0",
+    "architectureTitle": "Что происходит после Run",
+    "architectureBody": "UI — только входная дверь. Каждый run проходит Zod validation, command bus, deterministic checks, Postgres persistence, outbox events, audit delivery и best-effort Telegram notification.",
+    "systemLinks": {
+      "status": "Открыть System Status",
+      "api": "Открыть API Contract",
+      "docs": "Читать API docs",
+      "github": "GitHub + CI"
+    },
     "workflowPreview": [
       {
-        "label": "Загрузите готовый сценарий или пакет кампании",
-        "description": "Начните демо с реалистичных данных для promo, CRM и launch-review"
+        "label": "Загрузите campaign bundle",
+        "description": "Начните с sample data или единой JSON-формы для promo, CRM, terms, links, owners и GEO"
       },
       {
-        "label": "Запустите проверку",
-        "description": "8 проверок разбирают пакет кампании перед открытием Risk Report"
+        "label": "Проверьте API boundary",
+        "description": "Zod валидирует request shape, campaign schema, input limits и обязательный Idempotency-Key"
+      },
+      {
+        "label": "Запустите 8 deterministic checks",
+        "description": "Rule-backed checks оценивают channel consistency, terms, offer math, GEO risk, localization, ownership, links и formats"
+      },
+      {
+        "label": "Сохраните idempotent run",
+        "description": "Postgres хранит run, campaign version, blockers и replay-safe idempotency record"
+      },
+      {
+        "label": "Создайте outbox events",
+        "description": "RunStarted, BlockerRaised и RunCompleted пишутся transactionally до async delivery"
+      },
+      {
+        "label": "Доставьте audit + Telegram",
+        "description": "Worker переносит outbox rows в append-only audit log и Telegram notification pipeline"
       },
       {
         "label": "Разберите блокеры",
-        "description": "Отчёт о рисках показывает, что мешает запуску и кто должен это закрыть"
+        "description": "Risk Report показывает, что блокирует запуск, почему это найдено и какой owner должен действовать"
       },
       {
-        "label": "Сохраните запуск и подготовьте handoff",
-        "description": "Сохраните review в Campaigns, затем соберите Slack-ready обновление"
+        "label": "Сохраните и сравните версии",
+        "description": "Campaigns хранит version history и показывает added, resolved, reopened и still-open blockers"
       },
       {
-        "label": "Сравните версии",
-        "description": "Откройте Campaigns, чтобы сравнить сохранённые запуски и увидеть изменения"
+        "label": "Подготовьте handoff",
+        "description": "Handoff превращает saved report в Slack-ready internal update для launch owners"
+      },
+      {
+        "label": "Проверьте system proof",
+        "description": "System Status и API Contract показывают health, stats, audit feed, endpoints, CI и source links"
       }
     ],
     "metrics": {
       "checks": "этапов проверки",
       "rules": "правила",
-      "owners": "ролей",
-      "languages": "языка"
+      "endpoints": "API endpoints",
+      "tests": "tests"
     }
   },
   "tour": {
     "eyebrow": "Тур по продукту",
     "takeTour": "Тур за 90 секунд",
     "restartTour": "Начать тур заново",
-    "continueFromStep": "Продолжить тур · {step} / 8",
+    "continueFromStep": "Продолжить тур · {step} / 10",
     "desktopOnly": "Тур лучше смотреть на десктопе.",
     "mobileDisabled": "Тур лучше смотреть на десктопе.",
     "mobileDisabledShort": "Десктопный тур",
@@ -159,6 +190,14 @@
       {
         "title": "Подготовьте handoff-обновление",
         "description": "Экран 04 / Handoff превращает сохранённый отчёт в Slack-ready внутреннее обновление для launch owners."
+      },
+      {
+        "title": "Проверьте System Status",
+        "description": "Экран 08 / System Status показывает health, run telemetry, audit events, reliability guarantees и source links."
+      },
+      {
+        "title": "Откройте API contract",
+        "description": "Экран 09 / API Contract показывает REST endpoints, idempotency semantics и curl path для integration."
       }
     ]
   },
@@ -554,7 +593,7 @@
     "subtitle": "Живое здоровье, лента аудита и REST-контракт под этим воркспейсом.",
     "health": {
       "title": "Здоровье",
-      "subtitle": "Liveness/readiness-пробы обновляются каждые 10 с",
+      "subtitle": "Liveness/readiness-пробы обновляются каждые 30 с",
       "ok": "Все системы в норме",
       "degraded": "База или миграции нездоровы",
       "checking": "Проверка…",
@@ -577,7 +616,7 @@
     },
     "feed": {
       "title": "Живая лента аудита",
-      "subtitle": "Последние 50 событий из /api/v1/audit, поллинг каждые 2 с",
+      "subtitle": "Последние 50 событий из /api/v1/audit, поллинг каждые 5 с",
       "empty": "Событий пока нет — POST на /api/v1/runs триггернёт первое.",
       "time": "Время",
       "type": "Событие",
@@ -587,9 +626,96 @@
       "title": "Контракт и код",
       "subtitle": "К чему подключён этот воркспейс",
       "apiDocs": "Контракт REST API (docs/API.md)",
+      "apiContract": "Экран API Contract",
       "repo": "Исходники на GitHub",
       "auditJson": "Сырые audit-JSON",
       "ci": "CI-workflow"
+    },
+    "pipeline": {
+      "title": "Delivery pipeline",
+      "subtitle": "Что создаёт saved run после HTTP response",
+      "steps": [
+        "POST /api/v1/runs валидирует данные и запускает checks",
+        "Run, campaign version, blockers и outbox rows коммитятся вместе",
+        "OutboxWorker забирает rows через FOR UPDATE SKIP LOCKED",
+        "Audit subscriber пишет durable audit_log records",
+        "Telegram subscriber отправляет best-effort launch alerts"
+      ]
+    },
+    "reliability": {
+      "title": "Reliability guarantees",
+      "subtitle": "Части, которые делают demo reviewer-safe",
+      "items": [
+        "Обязательный Idempotency-Key для POST /api/v1/runs",
+        "Тот же key + тот же body возвращает тот же run",
+        "Тот же key + другой body возвращает 409 conflict",
+        "Postgres transaction покрывает run persistence и outbox events",
+        "Audit append idempotent по event id"
+      ]
+    },
+    "endpointCatalog": {
+      "title": "Endpoint catalog",
+      "subtitle": "Live surfaces под воркспейсом",
+      "items": [
+        "POST /api/v1/runs",
+        "GET /api/v1/runs/:id",
+        "GET /api/v1/campaigns",
+        "GET /api/v1/campaigns/:id",
+        "GET /api/v1/campaigns/:id/versions",
+        "GET /api/v1/campaigns/:id/diff",
+        "GET /api/v1/audit",
+        "GET /api/v1/stats",
+        "GET /api/health",
+        "GET /api/ready"
+      ]
+    },
+    "quality": {
+      "title": "Quality gates",
+      "subtitle": "Проверки, которые держат portfolio build честным",
+      "items": [
+        "162 Vitest tests в 23 файлах",
+        "TypeScript strict mode",
+        "ESLint и Next.js production build",
+        "Schema, DB, rules, owners и i18n checks в CI",
+        "Apache 2.0 license и public source"
+      ]
+    }
+  },
+  "apiContract": {
+    "eyebrow": "09 / API-контракт",
+    "title": "API-контракт",
+    "subtitle": "Integration surface за продуктовым UI: idempotent runs, campaign versioning, audit reads, health probes и operational stats.",
+    "primary": {
+      "title": "Primary write path",
+      "subtitle": "POST /api/v1/runs",
+      "body": "Отправьте один campaign bundle с Idempotency-Key. API валидирует его, запускает deterministic checks, сохраняет campaign version, создаёт outbox events и возвращает run result."
+    },
+    "idempotency": {
+      "title": "Idempotency contract",
+      "items": [
+        "Idempotency-Key обязателен для POST /api/v1/runs",
+        "Тот же key + тот же request body возвращает исходный run",
+        "Тот же key + другой body возвращает 409 conflict",
+        "Подходит для client retries, webhook redelivery и double-clicks"
+      ]
+    },
+    "endpoints": {
+      "title": "Endpoints",
+      "subtitle": "Весь текущий REST surface"
+    },
+    "curl": {
+      "title": "Попробуйте run endpoint",
+      "subtitle": "Используйте worked example bundle из repository или вставьте свой CampaignBundle.",
+      "copy": "Copy curl"
+    },
+    "response": {
+      "title": "Response shape",
+      "subtitle": "UI читает тот же contract, который получают external clients."
+    },
+    "links": {
+      "docs": "Полный docs/API.md",
+      "status": "System Status",
+      "audit": "Raw audit JSON"
     }
   },
   "palette": {
@@ -607,7 +733,7 @@
     "footer": {
       "move": "Переместиться",
       "open": "Открыть",
-      "stats": "23 правила · 8 этапов проверки · 6 ролей"
+      "stats": "23 правила · 8 checks · 10 endpoints · 162 tests"
     },
     "noMatches": "Ничего не найдено"
   },

@@ -1,4 +1,5 @@
 import { sql } from 'drizzle-orm';
+import { StatsResponseSchema } from '../../../../api/v1/index';
 import { getDb } from '../../../../infrastructure/db/client';
 
 export const runtime = 'nodejs';
@@ -45,10 +46,12 @@ export async function GET(): Promise<Response> {
 
   const row = result.rows[0];
 
-  return Response.json({
+  const response = {
     totalRuns: Number(row?.total_runs ?? 0),
     totalEvents: Number(row?.total_events ?? 0),
     lastEventAt: toIso(row?.last_event_at ?? null),
     runP95LatencyMs: toIntOrNull(row?.run_p95_latency_ms ?? null),
-  });
+  };
+
+  return Response.json(StatsResponseSchema.parse(response));
 }

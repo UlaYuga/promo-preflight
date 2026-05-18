@@ -12,7 +12,8 @@ import {
   FileCode2,
   Workflow
 } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import type { StatsResponse } from "@api/v1";
+import { useI18n, type Language, type TranslationKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 // External, stable URLs the system status surfaces. Hardcoded so the page works
@@ -39,13 +40,6 @@ type ReadyState =
   | { kind: "ok"; checks: { env: string; db: string; migrations: string } }
   | { kind: "not-ready"; checks: { env: string; db: string; migrations: string } }
   | { kind: "error" };
-
-interface StatsResponse {
-  totalRuns: number;
-  totalEvents: number;
-  lastEventAt: string | null;
-  runP95LatencyMs: number | null;
-}
 
 interface AuditItem {
   id: string;
@@ -185,7 +179,10 @@ export function SystemStatus() {
 
   return (
     <div className="px-10 py-10 space-y-6">
-      <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <header
+        data-tour="system-status"
+        className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between"
+      >
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
             {t("systemStatus.eyebrow")}
@@ -230,10 +227,87 @@ export function SystemStatus() {
         <MetricsCard stats={stats} />
       </div>
 
+      <div className="grid gap-6 lg:grid-cols-2">
+        <InfoListCard
+          titleKey="systemStatus.pipeline.title"
+          subtitleKey="systemStatus.pipeline.subtitle"
+          itemsKey="systemStatus.pipeline.steps"
+          Icon={Workflow}
+        />
+        <InfoListCard
+          titleKey="systemStatus.reliability.title"
+          subtitleKey="systemStatus.reliability.subtitle"
+          itemsKey="systemStatus.reliability.items"
+          Icon={CheckCircle2}
+        />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <InfoListCard
+          titleKey="systemStatus.endpointCatalog.title"
+          subtitleKey="systemStatus.endpointCatalog.subtitle"
+          itemsKey="systemStatus.endpointCatalog.items"
+          Icon={Code2}
+          mono
+        />
+        <InfoListCard
+          titleKey="systemStatus.quality.title"
+          subtitleKey="systemStatus.quality.subtitle"
+          itemsKey="systemStatus.quality.items"
+          Icon={FileCode2}
+        />
+      </div>
+
       <AuditFeedCard audit={audit} />
 
       <LinksCard />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Static proof cards
+// ---------------------------------------------------------------------------
+
+function InfoListCard({
+  titleKey,
+  subtitleKey,
+  itemsKey,
+  Icon,
+  mono = false
+}: Readonly<{
+  titleKey: TranslationKey;
+  subtitleKey: TranslationKey;
+  itemsKey: string;
+  Icon: typeof FileCode2;
+  mono?: boolean;
+}>) {
+  const { t, get } = useI18n();
+  const items = get<string[]>(itemsKey) ?? [];
+
+  return (
+    <section className="rounded border border-white/[0.07] bg-surface/60">
+      <div className="border-b border-white/[0.07] px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Icon className="h-4 w-4 text-subtle" aria-hidden="true" />
+          <h3 className="text-sm font-semibold text-foreground">{t(titleKey)}</h3>
+        </div>
+        <p className="mt-1 text-xs text-muted">{t(subtitleKey)}</p>
+      </div>
+      <ul className="divide-y divide-white/[0.05]">
+        {items.map((item) => (
+          <li
+            key={item}
+            className={cn(
+              "px-4 py-2.5 text-sm text-subtle",
+              mono && "font-mono text-xs text-foreground/80"
+            )}
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -334,7 +408,7 @@ function CheckRow({
 // ---------------------------------------------------------------------------
 
 function MetricsCard({ stats }: Readonly<{ stats: StatsState }>) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
 
   return (
     <section className="rounded border border-white/[0.07] bg-surface/60">
@@ -374,7 +448,7 @@ function MetricsCard({ stats }: Readonly<{ stats: StatsState }>) {
           label={t("systemStatus.metrics.lastEventAt")}
           value={
             stats.kind === "ok" && stats.data.lastEventAt
-              ? formatRelative(stats.data.lastEventAt)
+              ? formatRelative(stats.data.lastEventAt, language)
               : stats.kind === "ok"
               ? t("systemStatus.metrics.never")
               : t("systemStatus.metrics.unknown")
@@ -413,7 +487,7 @@ function Metric({
 // ---------------------------------------------------------------------------
 
 function AuditFeedCard({ audit }: Readonly<{ audit: AuditState }>) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
 
   return (
     <section className="rounded border border-white/[0.07] bg-surface/60">
@@ -457,7 +531,7 @@ function AuditFeedCard({ audit }: Readonly<{ audit: AuditState }>) {
               {audit.items.map((item) => (
                 <tr key={item.id} className="hover:bg-white/[0.02]">
                   <td className="px-4 py-2 font-mono text-foreground/80">
-                    {formatRelative(item.createdAt)}
+                    {formatRelative(item.createdAt, language)}
                   </td>
                   <td className="px-4 py-2 font-mono text-foreground">
                     {item.eventType}
@@ -482,6 +556,7 @@ function LinksCard() {
 
   const links: Array<{ label: string; href: string; Icon: typeof FileCode2 }> = [
     { label: t("systemStatus.links.apiDocs"), href: API_DOCS_URL, Icon: FileCode2 },
+    { label: t("systemStatus.links.apiContract"), href: "/app/api", Icon: Code2 },
     { label: t("systemStatus.links.repo"), href: REPO_URL, Icon: Code2 },
     { label: t("systemStatus.links.auditJson"), href: AUDIT_JSON_URL, Icon: Database },
     { label: t("systemStatus.links.ci"), href: CI_URL, Icon: Workflow }
@@ -502,8 +577,8 @@ function LinksCard() {
           <li key={href}>
             <a
               href={href}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={href.startsWith("/") ? undefined : "_blank"}
+              rel={href.startsWith("/") ? undefined : "noopener noreferrer"}
               className="group flex items-center justify-between px-4 py-3 text-sm text-foreground/80 transition hover:bg-white/[0.02] hover:text-foreground"
             >
               <span className="inline-flex items-center gap-2">
@@ -526,17 +601,22 @@ function LinksCard() {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function formatRelative(iso: string): string {
+function formatRelative(iso: string, language: Language): string {
   const ts = new Date(iso).getTime();
   if (!Number.isFinite(ts)) return iso;
   const diffMs = Date.now() - ts;
-  if (diffMs < 0) return new Date(iso).toLocaleTimeString();
+  const locale = language === "ru" ? "ru" : "en";
+  const date = new Date(iso);
+  if (diffMs < 0) {
+    return new Intl.DateTimeFormat(locale, { timeStyle: "short" }).format(date);
+  }
+
   const sec = Math.round(diffMs / 1000);
-  if (sec < 5) return "just now";
-  if (sec < 60) return `${sec}s ago`;
+  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  if (sec < 60) return formatter.format(-sec, "second");
   const min = Math.round(sec / 60);
-  if (min < 60) return `${min}m ago`;
+  if (min < 60) return formatter.format(-min, "minute");
   const hr = Math.round(min / 60);
-  if (hr < 24) return `${hr}h ago`;
-  return new Date(iso).toLocaleString();
+  if (hr < 24) return formatter.format(-hr, "hour");
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(date);
 }

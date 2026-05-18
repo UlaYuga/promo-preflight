@@ -17,7 +17,9 @@ const navRouteMap: Record<string, string> = {
   h: "/app/handoff",
   l: "/app/readiness",
   u: "/app/rules",
-  o: "/app/owners"
+  o: "/app/owners",
+  s: "/app/status",
+  a: "/app/api"
 };
 
 export function AppShell({
