@@ -13,7 +13,8 @@ const navKeys = [
   "rules",
   "owners",
   "systemStatus",
-  "apiContract"
+  "apiContract",
+  "evidence"
 ] as const;
 
 const navNums: Record<string, string> = {
@@ -25,7 +26,8 @@ const navNums: Record<string, string> = {
   rules: "06",
   owners: "07",
   systemStatus: "08",
-  apiContract: "09"
+  apiContract: "09",
+  evidence: "10"
 };
 
 const navHints: Record<string, string> = {
@@ -37,7 +39,8 @@ const navHints: Record<string, string> = {
   rules: "G U",
   owners: "G O",
   systemStatus: "G S",
-  apiContract: "G A"
+  apiContract: "G A",
+  evidence: "G E"
 };
 
 const navRoutes: Record<string, string> = {
@@ -50,6 +53,7 @@ const navRoutes: Record<string, string> = {
   owners: "/app/owners",
   systemStatus: "/app/status",
   apiContract: "/app/api",
+  evidence: "/app/evidence",
   versiondiff: "/app/campaigns/CMP-1042/versions/2"
 };
 
@@ -68,6 +72,7 @@ export function SidebarNav() {
     if (key === "owners") return pathname === "/app/owners";
     if (key === "systemStatus") return pathname === "/app/status";
     if (key === "apiContract") return pathname === "/app/api";
+    if (key === "evidence") return pathname === "/app/evidence";
     if (key === "versiondiff") return pathname.startsWith("/app/campaigns/") && pathname.includes("/versions/");
     return false;
   }
