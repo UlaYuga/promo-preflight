@@ -224,7 +224,7 @@ export function WelcomeScreen() {
         <div className="frame">
           <header className="topbar">
             <span />
-            <LanguageToggle />
+            <LanguageToggle className="scale-125 origin-top-right" />
           </header>
 
           <section className="grid">
