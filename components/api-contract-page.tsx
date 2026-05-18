@@ -86,6 +86,12 @@ export function ApiContractPage() {
           >
             {t("apiContract.links.status")}
           </Link>
+          <Link
+            href="/app/evidence"
+            className="inline-flex items-center gap-2 rounded-sm border border-white/[0.07] bg-surface px-3 py-2 text-sm text-foreground transition hover:border-accent/30 hover:text-accent"
+          >
+            {t("apiContract.links.evidence")}
+          </Link>
         </div>
       </header>
 

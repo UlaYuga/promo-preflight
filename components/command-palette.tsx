@@ -22,6 +22,7 @@ const navItems = [
   { key: "owners", route: "/app/owners", num: "07", hint: "G O" },
   { key: "systemStatus", route: "/app/status", num: "08", hint: "G S" },
   { key: "apiContract", route: "/app/api", num: "09", hint: "G A" },
+  { key: "evidence", route: "/app/evidence", num: "10", hint: "G E" },
 ];
 
 export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {

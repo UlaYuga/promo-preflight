@@ -74,7 +74,9 @@
     "systemStatus": "Статус системы",
     "systemStatusDescription": "Здоровье, аудит, API",
     "apiContract": "API-контракт",
-    "apiContractDescription": "REST endpoints и curl"
+    "apiContractDescription": "REST endpoints и curl",
+    "evidence": "Доказательства",
+    "evidenceDescription": "Техническое досье"
   },
   "welcome": {
     "eyebrow": "Начните здесь · тур за 90 секунд",
@@ -94,6 +96,7 @@
     "systemLinks": {
       "status": "Открыть System Status",
       "api": "Открыть API Contract",
+      "evidence": "Открыть Evidence",
       "docs": "Читать API docs",
       "github": "GitHub + CI"
     },
@@ -150,7 +153,7 @@
     "eyebrow": "Тур по продукту",
     "takeTour": "Тур за 90 секунд",
     "restartTour": "Начать тур заново",
-    "continueFromStep": "Продолжить тур · {step} / 10",
+    "continueFromStep": "Продолжить тур · {step} / 11",
     "desktopOnly": "Тур лучше смотреть на десктопе.",
     "mobileDisabled": "Тур лучше смотреть на десктопе.",
     "mobileDisabledShort": "Десктопный тур",
@@ -198,6 +201,10 @@
       {
         "title": "Откройте API contract",
         "description": "Экран 09 / API Contract показывает REST endpoints, idempotency semantics и curl path для integration."
+      },
+      {
+        "title": "Откройте Evidence",
+        "description": "Экран 10 / Evidence связывает UI, API, reliability fixes, CI, docs и reviewer path в один technical narrative."
       }
     ]
   },
@@ -627,6 +634,7 @@
       "subtitle": "К чему подключён этот воркспейс",
       "apiDocs": "Контракт REST API (docs/API.md)",
       "apiContract": "Экран API Contract",
+      "evidence": "Экран Evidence",
       "repo": "Исходники на GitHub",
       "auditJson": "Сырые audit-JSON",
       "ci": "CI-workflow"
@@ -715,7 +723,140 @@
     "links": {
       "docs": "Полный docs/API.md",
       "status": "System Status",
+      "evidence": "Evidence",
       "audit": "Raw audit JSON"
+    }
+  },
+  "evidence": {
+    "eyebrow": "10 / Техническое досье",
+    "title": "Доказательства",
+    "subtitle": "Карта для ревьюера: что проект реально доказывает через product flow, API contract, reliability fixes, operational telemetry, documentation и CI.",
+    "summary": {
+      "checks": "checks",
+      "endpoints": "endpoints",
+      "tests": "tests",
+      "rules": "rules"
+    },
+    "matrix": {
+      "title": "Capability matrix",
+      "subtitle": "Что видно на сайте и где лежит техническое подтверждение.",
+      "area": "Область",
+      "visible": "Видимая поверхность",
+      "proof": "Доказательство",
+      "items": [
+        {
+          "area": "Campaign intake",
+          "visible": "Sample cases, campaign bundle form, language switch, owner status, links, terms и launch metadata.",
+          "proof": "Zod schemas, worked examples, input limits и deterministic fixture coverage."
+        },
+        {
+          "area": "Risk engine",
+          "visible": "Risk Report с blockers, warnings, owners, evidence и export controls.",
+          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples и 162 tests."
+        },
+        {
+          "area": "Persistence and versioning",
+          "visible": "Campaigns, saved runs, version detail и diff между сохранёнными review.",
+          "proof": "Postgres run storage, campaign versions и version diff contract."
+        },
+        {
+          "area": "REST API",
+          "visible": "Экран API Contract с endpoints, curl, response shape и idempotency semantics.",
+          "proof": "docs/API.md, Zod response schema, health/ready/stats/audit endpoints."
+        },
+        {
+          "area": "Operational pipeline",
+          "visible": "System Status показывает health, telemetry, audit feed, delivery path и quality gates.",
+          "proof": "Transactional outbox, audit subscriber, Telegram subscriber и live stats endpoint."
+        },
+        {
+          "area": "Reviewer posture",
+          "visible": "Evidence связывает нарратив сайта с code, docs, CI и closed PR history.",
+          "proof": "GitHub Actions, Docker build, Apache 2.0 license и public source trail."
+        }
+      ]
+    },
+    "reviewerPath": {
+      "title": "Reviewer path",
+      "subtitle": "Самый короткий путь от первого впечатления к engineering proof.",
+      "items": [
+        {
+          "label": "Landing",
+          "href": "/",
+          "note": "Первый экран показывает всю историю: UI workflow плюс REST, persistence, outbox, audit, Telegram, CI и tests."
+        },
+        {
+          "label": "System Status",
+          "href": "/app/status",
+          "note": "Проверьте live health, DB readiness, telemetry, audit events и reliability guarantees."
+        },
+        {
+          "label": "API Contract",
+          "href": "/app/api",
+          "note": "Посмотрите endpoints, idempotency behavior, curl path и response shape."
+        },
+        {
+          "label": "Campaigns",
+          "href": "/app/campaigns",
+          "note": "Откройте saved runs, version history и blockers diff."
+        },
+        {
+          "label": "Handoff",
+          "href": "/app/handoff",
+          "note": "Проверьте, что product findings превращаются в ops-ready launch update."
+        }
+      ]
+    },
+    "risks": {
+      "title": "Закрытые классы отказов",
+      "subtitle": "Это не только список функций: проект убрал конкретные production risks.",
+      "items": [
+        {
+          "title": "Duplicate campaigns under parallel POST",
+          "body": "Параллельные записи для той же campaign/operator сериализуются, поэтому version history остаётся связной."
+        },
+        {
+          "title": "Retry and redelivery ambiguity",
+          "body": "Обязательный Idempotency-Key разделяет replay, conflict и in-progress states."
+        },
+        {
+          "title": "Lost side effects after run persistence",
+          "body": "Run completion пишет outbox rows transactionally до async audit и Telegram delivery."
+        },
+        {
+          "title": "Invisible backend work",
+          "body": "Status, API Contract, Evidence, docs и live JSON endpoints теперь показывают platform layer."
+        },
+        {
+          "title": "Docs drifting from code",
+          "body": "docs/API.md, route behavior, Zod schemas, CI checks и visible pages выровнены."
+        },
+        {
+          "title": "Demo-only credibility",
+          "body": "Health/readiness, Docker build, CI, license, tests и public PR trail делают проект reviewable."
+        }
+      ]
+    },
+    "architecture": {
+      "title": "System story",
+      "subtitle": "Как один campaign run проходит через систему.",
+      "steps": [
+        "CampaignBundle приходит через UI или POST /api/v1/runs и валидируется на границе.",
+        "Deterministic engine запускает channel, terms, math, GEO, localization, ownership, link и format checks.",
+        "Command сохраняет run, campaign version, blockers и outbox rows в одной Postgres transaction.",
+        "Idempotency защищает retries и double-clicks от duplicate work.",
+        "Worker переносит outbox rows сначала в audit_log, затем в best-effort Telegram notification.",
+        "Campaigns, Risk Report, Handoff, Status, API Contract и Evidence показывают одно underlying state."
+      ]
+    },
+    "links": {
+      "title": "Evidence links",
+      "subtitle": "Переход от product narrative к live proof.",
+      "status": "Live System Status",
+      "api": "API Contract",
+      "docs": "docs/API.md",
+      "ci": "GitHub Actions",
+      "prs": "Closed PR trail"
     }
   },
   "palette": {
@@ -733,7 +874,7 @@
     "footer": {
       "move": "Переместиться",
       "open": "Открыть",
-      "stats": "23 правила · 8 checks · 10 endpoints · 162 tests"
+      "stats": "23 правила · 8 checks · 10 endpoints · 162 tests · 10 screens"
     },
     "noMatches": "Ничего не найдено"
   },
