@@ -74,83 +74,83 @@
     "systemStatus": "Статус системы",
     "systemStatusDescription": "Здоровье, аудит, API",
     "apiContract": "API-контракт",
-    "apiContractDescription": "REST endpoints и curl",
+    "apiContractDescription": "REST-эндпоинты и curl",
     "evidence": "Доказательства",
     "evidenceDescription": "Техническое досье"
   },
   "welcome": {
     "eyebrow": "Начните здесь · тур за 90 секунд",
     "headline": "Promo Preflight",
-    "positioning": "Детерминированный pre-launch gate для регулируемых promo-кампаний",
-    "body": "Один воркспейс и один REST-контракт для intake кампании, 8 детерминированных проверок, idempotent persistence, audit events, Telegram alerts, version diff и launch handoff.",
+    "positioning": "Детерминированный предзапусковой контроль для регулируемых промо-кампаний",
+    "body": "Один воркспейс и один REST-контракт для сбора данных кампании, 8 детерминированных проверок, идемпотентное сохранение, события аудита, Telegram-уведомления, сравнение версий и передача в запуск.",
     "openIntake": "Открыть пакет кампании",
     "testCases": "Начать с готового сценария",
-    "ctaHint": "Используйте готовый сценарий, чтобы пройти видимый путь, затем откройте System Status и API Contract для backend path.",
+    "ctaHint": "Используйте готовый сценарий, чтобы пройти видимый путь, затем откройте статус системы и API-контракт для проверки backend-части.",
     "workflowTitle": "Как устроен процесс",
-    "workflowSubtitle": "От campaign JSON до audit-proof launch handoff",
+    "workflowSubtitle": "От JSON кампании до проверяемой передачи в запуск",
     "safetyNote": "Демо-пространство для портфолио.",
     "strip": "8 этапов проверки · 23 правила · 6 ролей · EN/RU",
-    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 162 tests · Apache 2.0",
-    "architectureTitle": "Что происходит после Run",
-    "architectureBody": "UI — только входная дверь. Каждый run проходит Zod validation, command bus, deterministic checks, Postgres persistence, outbox events, audit delivery и best-effort Telegram notification.",
+    "proofStrip": "REST API v1 · идемпотентные прогоны · Postgres · транзакционный outbox · журнал аудита · Telegram-уведомления · CI · 164 теста · Apache 2.0",
+    "architectureTitle": "Что происходит после запуска",
+    "architectureBody": "UI — только входная дверь. Каждый прогон проходит валидацию Zod, command bus, детерминированные проверки, сохранение в Postgres, события outbox, доставку аудита и best-effort Telegram-уведомление.",
     "systemLinks": {
-      "status": "Открыть System Status",
-      "api": "Открыть API Contract",
-      "evidence": "Открыть Evidence",
-      "docs": "Читать API docs",
+      "status": "Открыть статус системы",
+      "api": "Открыть API-контракт",
+      "evidence": "Открыть доказательства",
+      "docs": "Читать API-документацию",
       "github": "GitHub + CI"
     },
     "workflowPreview": [
       {
-        "label": "Загрузите campaign bundle",
-        "description": "Начните с sample data или единой JSON-формы для promo, CRM, terms, links, owners и GEO"
+        "label": "Загрузите пакет кампании",
+        "description": "Начните с готовых данных или единой JSON-формы для промо, CRM, условий, ссылок, ролей и GEO"
       },
       {
-        "label": "Проверьте API boundary",
-        "description": "Zod валидирует request shape, campaign schema, input limits и обязательный Idempotency-Key"
+        "label": "Проверьте границу API",
+        "description": "Zod валидирует форму запроса, схему кампании, лимиты ввода и обязательный Idempotency-Key"
       },
       {
-        "label": "Запустите 8 deterministic checks",
-        "description": "Rule-backed checks оценивают channel consistency, terms, offer math, GEO risk, localization, ownership, links и formats"
+        "label": "Запустите 8 детерминированных проверок",
+        "description": "Проверки по правилам оценивают согласованность каналов, условия, математику оффера, GEO-риск, локализацию, роли, ссылки и форматы"
       },
       {
-        "label": "Сохраните idempotent run",
-        "description": "Postgres хранит run, campaign version, blockers и replay-safe idempotency record"
+        "label": "Сохраните идемпотентный прогон",
+        "description": "Postgres хранит прогон, версию кампании, блокеры и запись идемпотентности, безопасную для повторов"
       },
       {
-        "label": "Создайте outbox events",
-        "description": "RunStarted, BlockerRaised и RunCompleted пишутся transactionally до async delivery"
+        "label": "Создайте события outbox",
+        "description": "RunStarted, BlockerRaised и RunCompleted записываются транзакционно до асинхронной доставки"
       },
       {
-        "label": "Доставьте audit + Telegram",
-        "description": "Worker переносит outbox rows в append-only audit log и Telegram notification pipeline"
+        "label": "Доставьте аудит и Telegram",
+        "description": "Worker переносит строки outbox в append-only журнал аудита и цепочку Telegram-уведомлений"
       },
       {
         "label": "Разберите блокеры",
-        "description": "Risk Report показывает, что блокирует запуск, почему это найдено и какой owner должен действовать"
+        "description": "Отчёт о рисках показывает, что блокирует запуск, почему это найдено и какая роль должна действовать"
       },
       {
         "label": "Сохраните и сравните версии",
-        "description": "Campaigns хранит version history и показывает added, resolved, reopened и still-open blockers"
+        "description": "Кампании хранят историю версий и показывают новые, закрытые, переоткрытые и всё ещё открытые блокеры"
       },
       {
-        "label": "Подготовьте handoff",
-        "description": "Handoff превращает saved report в Slack-ready internal update для launch owners"
+        "label": "Подготовьте передачу в работу",
+        "description": "Передача в работу превращает сохранённый отчёт во внутреннее Slack-сообщение для ответственных за запуск"
       },
       {
-        "label": "Проверьте system proof",
-        "description": "System Status и API Contract показывают health, stats, audit feed, endpoints, CI и source links"
+        "label": "Проверьте технические доказательства",
+        "description": "Статус системы и API-контракт показывают health, статистику, ленту аудита, эндпоинты, CI и ссылки на исходники"
       }
     ],
     "metrics": {
       "checks": "этапов проверки",
       "rules": "правила",
-      "endpoints": "API endpoints",
-      "tests": "tests"
+      "endpoints": "API-эндпоинтов",
+      "tests": "тестов"
     },
     "heroA": {
       "positioning": "Системная проверка промо-кампаний перед запуском",
-      "ctaPrimary": "Запустить 90-секундный тур",
+      "ctaPrimary": "Запустить тур за 90 секунд",
       "ctaSecondary": "Готовый сценарий"
     },
     "handoff": {
@@ -162,7 +162,7 @@
         "Не задан лимит максимальной ставки для бонусных средств.",
         "Заголовок Email — 62 символа. Допустимо до 55."
       ],
-      "cta": "Открыть Risk Report",
+      "cta": "Открыть отчёт о рисках",
       "secondary": "Назначить ответственных"
     }
   },
@@ -180,48 +180,48 @@
     "done": "Готово",
     "steps": [
       {
-        "title": "Начните с welcome-экрана",
-        "description": "Откройте внутренний воркспейс Promo Preflight и запустите walkthrough по синтетическому demo flow."
+        "title": "Начните с первого экрана",
+        "description": "Откройте внутренний воркспейс Promo Preflight и запустите тур по синтетическому демо-сценарию."
       },
       {
         "title": "Загрузите готовый сценарий",
-        "description": "Экран 02 / Campaign bundle открывается с готовыми сценариями, чтобы walkthrough стартовал с реалистичного synthetic CRM review scenario."
+        "description": "Экран 02 / Пакет кампании открывается с готовыми сценариями, чтобы тур стартовал с реалистичного CRM-кейса."
       },
       {
         "title": "Запустите проверку",
-        "description": "С экрана 02 запустите 8 offline checks по пакету кампании и сразу перейдите в Risk Report."
+        "description": "С экрана 02 запустите 8 офлайн-проверок по пакету кампании и сразу перейдите в отчёт о рисках."
       },
       {
-        "title": "Откройте Risk Report",
-        "description": "Экран 03 / Risk Report показывает блокеры, предупреждения и чистые проверки так, чтобы следующий ops-шаг был очевиден."
+        "title": "Откройте отчёт о рисках",
+        "description": "Экран 03 / Отчёт о рисках показывает блокеры, предупреждения и чистые проверки так, чтобы следующий операционный шаг был очевиден."
       },
       {
-        "title": "Сохраните review run",
-        "description": "Сохраните текущий отчёт как внутренний review run перед переходом в Campaigns, version history и handoff."
+        "title": "Сохраните прогон ревью",
+        "description": "Сохраните текущий отчёт как внутренний прогон ревью перед переходом в кампании, историю версий и передачу в работу."
       },
       {
-        "title": "Откройте Campaigns",
-        "description": "Экран 01 / Campaigns показывает сохранённые run, последний readiness state и путь в историю версий этой кампании."
+        "title": "Откройте кампании",
+        "description": "Экран 01 / Кампании показывает сохранённые прогоны, последний статус готовности и путь в историю версий этой кампании."
       },
       {
         "title": "Сравните версии",
-        "description": "Version detail и diff показывают, что было исправлено, переоткрыто или добавлено между сохранёнными review run."
+        "description": "Детали версии и сравнение показывают, что было исправлено, переоткрыто или добавлено между сохранёнными прогонами ревью."
       },
       {
-        "title": "Подготовьте handoff-обновление",
-        "description": "Экран 04 / Handoff превращает сохранённый отчёт в Slack-ready внутреннее обновление для launch owners."
+        "title": "Подготовьте передачу в работу",
+        "description": "Экран 04 / Передача в работу превращает сохранённый отчёт во внутреннее Slack-сообщение для ответственных за запуск."
       },
       {
-        "title": "Проверьте System Status",
-        "description": "Экран 08 / System Status показывает health, run telemetry, audit events, reliability guarantees и source links."
+        "title": "Проверьте статус системы",
+        "description": "Экран 08 / Статус системы показывает health, телеметрию прогонов, события аудита, гарантии надёжности и ссылки на исходники."
       },
       {
-        "title": "Откройте API contract",
-        "description": "Экран 09 / API Contract показывает REST endpoints, idempotency semantics и curl path для integration."
+        "title": "Откройте API-контракт",
+        "description": "Экран 09 / API-контракт показывает REST-эндпоинты, семантику идемпотентности и curl-путь для интеграции."
       },
       {
-        "title": "Откройте Evidence",
-        "description": "Экран 10 / Evidence связывает UI, API, reliability fixes, CI, docs и reviewer path в один technical narrative."
+        "title": "Откройте доказательства",
+        "description": "Экран 10 / Доказательства связывает UI, API, исправления надёжности, CI, документацию и путь ревьюера в одну техническую историю."
       }
     ]
   },
@@ -251,7 +251,7 @@
     "title": "Пакет кампании",
     "subtitle": "Начните с готового сценария или добавьте факты о кампании, тексты для каналов, условия, ссылки и статусы ролей перед проверкой.",
     "workedExamples": "Готовые сценарии",
-    "workedExamplesSubtitle": "Загрузите сценарий, затем запустите проверку и пройдите полный demo flow.",
+    "workedExamplesSubtitle": "Загрузите сценарий, затем запустите проверку и пройдите полный демо-сценарий.",
     "closeExamples": "Закрыть сценарии",
     "load": "Загрузить",
     "draftSaved": "Черновик сохранён.",
@@ -259,7 +259,7 @@
     "draftCleared": "Черновик удалён.",
     "runPreflight": "Запустить проверку",
     "runPreflightSubtitle": "Следующий шаг: после проверки откроется отчёт о рисках.",
-    "examplesNextStep": "Следующий шаг: загрузите один сценарий и запустите проверку, чтобы открыть Risk Report.",
+    "examplesNextStep": "Следующий шаг: загрузите один сценарий и запустите проверку, чтобы открыть отчёт о рисках.",
     "runPreflightReady": "Готово к запуску",
     "runPreflightMissing": "Заполните обязательные поля перед запуском проверки.",
     "unknownRunError": "Во время проверки что-то пошло не так.",
@@ -340,10 +340,10 @@
     "savedReportInvalid": "Сохранённый отчёт нельзя показать: данные невалидны.",
     "useFallback": "Использовать пример",
     "nextStepsTitle": "Следующие шаги",
-    "nextStepsBody": "Сохраните этот review run кнопкой справа сверху, затем откройте Launch Readiness, подготовьте handoff update или перейдите в Campaigns для истории версий и diff.",
-    "nextStepsReadiness": "Открыть Launch Readiness",
-    "nextStepsHandoff": "Подготовить Handoff",
-    "nextStepsCampaigns": "Открыть Campaigns",
+    "nextStepsBody": "Сохраните этот прогон ревью кнопкой справа сверху, затем откройте готовность к запуску, подготовьте передачу в работу или перейдите в кампании для истории версий и сравнения.",
+    "nextStepsReadiness": "Открыть готовность к запуску",
+    "nextStepsHandoff": "Подготовить передачу в работу",
+    "nextStepsCampaigns": "Открыть кампании",
     "summary": {
       "overallStatus": "Общий статус",
       "criticalBlockers": "Критичные блокеры",
@@ -518,7 +518,7 @@
     "pageEyebrow": "Версии",
     "pageTitle": "Кампании",
     "emptyTitle": "Сохранённых кампаний пока нет",
-    "emptyDescription": "Здесь появятся сохранённые review run с историей версий. Начните с готового сценария, запустите проверку и сохраните результат из Risk Report.",
+    "emptyDescription": "Здесь появятся сохранённые прогоны ревью с историей версий. Начните с готового сценария, запустите проверку и сохраните результат из отчёта о рисках.",
     "emptyAction": "Открыть готовые сценарии",
     "goToIntake": "Открыть пакет кампании",
     "columns": {
@@ -530,7 +530,7 @@
     "detailEyebrow": "Кампания",
     "created": "Создано {date} · {count} {versionWord}",
     "versionsTitle": "Версии",
-    "versionsSubtitle": "Откройте v1, чтобы посмотреть сохранённый run. Для v2 и выше доступно сравнение с предыдущим review run.",
+    "versionsSubtitle": "Откройте v1, чтобы посмотреть сохранённый прогон. Для v2 и выше доступно сравнение с предыдущим прогоном ревью.",
     "version": "Версия",
     "readinessState": "Статус готовности",
     "blockers": "Блокеры",
@@ -592,29 +592,29 @@
     "warnings": "Предупреждения",
     "targetLaunch": "Целевая дата запуска",
     "openReport": "Открыть отчёт о рисках",
-    "compareHint": "Сохраните минимум два run в Campaigns, чтобы открыть сравнение версий."
+    "compareHint": "Сохраните минимум два прогона в кампаниях, чтобы открыть сравнение версий."
   },
   "saveCampaign": {
-    "button": "Сохранить Run",
-    "title": "Сохранить Review Run",
-    "description": "Сохраните эту проверку как review run кампании, чтобы Campaigns и version diff показывали актуальную историю.",
+    "button": "Сохранить прогон",
+    "title": "Сохранить прогон ревью",
+    "description": "Сохраните эту проверку как прогон ревью кампании, чтобы кампании и сравнение версий показывали актуальную историю.",
     "newCampaign": "Новая кампания",
     "existingCampaign": "Существующая кампания",
     "campaignName": "Название кампании",
     "jurisdiction": "Юрисдикция / ГЕО",
     "selectCampaign": "Выберите кампанию",
-    "noCampaigns": "Сохранённых кампаний пока нет. Сначала сохраните этот отчёт как новый run кампании.",
+    "noCampaigns": "Сохранённых кампаний пока нет. Сначала сохраните этот отчёт как новый прогон кампании.",
     "selectCampaignError": "Выберите кампанию",
     "saved": "Сохранено",
     "savedMessage": "Сохранено как версия {version}. Открыть: {path}",
     "viewVersionDetail": "Открыть детали версии",
-    "openCampaigns": "Открыть Campaigns",
-    "openHandoff": "Открыть Handoff"
+    "openCampaigns": "Открыть кампании",
+    "openHandoff": "Открыть передачу в работу"
   },
   "systemStatus": {
     "eyebrow": "08 / Статус системы",
     "title": "Статус системы",
-    "subtitle": "Живое здоровье, лента аудита и REST-контракт под этим воркспейсом.",
+    "subtitle": "Проверки доступности, лента аудита и REST-контракт под этим воркспейсом.",
     "health": {
       "title": "Здоровье",
       "subtitle": "Liveness/readiness-пробы обновляются каждые 30 с",
@@ -631,7 +631,7 @@
       "title": "Телеметрия прогонов",
       "subtitle": "Счётчики по всей базе",
       "totalRuns": "Всего прогонов сохранено",
-      "totalEvents": "Доставлено audit-событий",
+      "totalEvents": "Доставлено событий аудита",
       "lastEventAt": "Последнее событие",
       "runP95LatencyMs": "Латентность прогона p95",
       "ms": "мс",
@@ -641,7 +641,7 @@
     "feed": {
       "title": "Живая лента аудита",
       "subtitle": "Последние 50 событий из /api/v1/audit, поллинг каждые 5 с",
-      "empty": "Событий пока нет — POST на /api/v1/runs триггернёт первое.",
+      "empty": "Событий пока нет — POST на /api/v1/runs создаст первое.",
       "time": "Время",
       "type": "Событие",
       "actor": "Источник"
@@ -650,37 +650,37 @@
       "title": "Контракт и код",
       "subtitle": "К чему подключён этот воркспейс",
       "apiDocs": "Контракт REST API (docs/API.md)",
-      "apiContract": "Экран API Contract",
-      "evidence": "Экран Evidence",
+      "apiContract": "Экран API-контракта",
+      "evidence": "Экран доказательств",
       "repo": "Исходники на GitHub",
-      "auditJson": "Сырые audit-JSON",
+      "auditJson": "Сырой audit-JSON",
       "ci": "CI-workflow"
     },
     "pipeline": {
-      "title": "Delivery pipeline",
-      "subtitle": "Что создаёт saved run после HTTP response",
+      "title": "Цепочка доставки",
+      "subtitle": "Что создаёт сохранённый прогон после HTTP-ответа",
       "steps": [
-        "POST /api/v1/runs валидирует данные и запускает checks",
-        "Run, campaign version, blockers и outbox rows коммитятся вместе",
-        "OutboxWorker забирает rows через FOR UPDATE SKIP LOCKED",
-        "Audit subscriber пишет durable audit_log records",
-        "Telegram subscriber отправляет best-effort launch alerts"
+        "POST /api/v1/runs валидирует данные и запускает проверки",
+        "Прогон, версия кампании, блокеры и строки outbox коммитятся вместе",
+        "OutboxWorker забирает строки через FOR UPDATE SKIP LOCKED",
+        "Audit subscriber пишет устойчивые записи audit_log",
+        "Telegram subscriber отправляет best-effort уведомления о запуске"
       ]
     },
     "reliability": {
-      "title": "Reliability guarantees",
-      "subtitle": "Части, которые делают demo reviewer-safe",
+      "title": "Гарантии надёжности",
+      "subtitle": "Части, которые делают демо пригодным для ревью",
       "items": [
         "Обязательный Idempotency-Key для POST /api/v1/runs",
-        "Тот же key + тот же body возвращает тот же run",
-        "Тот же key + другой body возвращает 409 conflict",
-        "Postgres transaction покрывает run persistence и outbox events",
-        "Audit append idempotent по event id"
+        "Тот же ключ и то же тело запроса возвращают тот же прогон",
+        "Тот же ключ и другое тело запроса возвращают 409 conflict",
+        "Транзакция Postgres покрывает сохранение прогона и события outbox",
+        "Запись аудита идемпотентна по event id"
       ]
     },
     "endpointCatalog": {
-      "title": "Endpoint catalog",
-      "subtitle": "Live surfaces под воркспейсом",
+      "title": "Каталог эндпоинтов",
+      "subtitle": "Живые поверхности под воркспейсом",
       "items": [
         "POST /api/v1/runs",
         "GET /api/v1/runs/:id",
@@ -695,185 +695,185 @@
       ]
     },
     "quality": {
-      "title": "Quality gates",
-      "subtitle": "Проверки, которые держат portfolio build честным",
+      "title": "Контроль качества",
+      "subtitle": "Проверки, которые держат портфолио-сборку честной",
       "items": [
-        "162 Vitest tests в 23 файлах",
+        "164 Vitest-теста в 24 файлах",
         "TypeScript strict mode",
-        "ESLint и Next.js production build",
-        "Schema, DB, rules, owners и i18n checks в CI",
-        "Apache 2.0 license и public source"
+        "ESLint и production build Next.js",
+        "Проверки схемы, БД, правил, ролей и i18n в CI",
+        "Лицензия Apache 2.0 и публичные исходники"
       ]
     }
   },
   "apiContract": {
     "eyebrow": "09 / API-контракт",
     "title": "API-контракт",
-    "subtitle": "Integration surface за продуктовым UI: idempotent runs, campaign versioning, audit reads, health probes и operational stats.",
+    "subtitle": "Интеграционная поверхность за продуктовым UI: идемпотентные прогоны, версии кампаний, чтение аудита, health-пробы и операционная статистика.",
     "primary": {
-      "title": "Primary write path",
+      "title": "Основной путь записи",
       "subtitle": "POST /api/v1/runs",
-      "body": "Отправьте один campaign bundle с Idempotency-Key. API валидирует его, запускает deterministic checks, сохраняет campaign version, создаёт outbox events и возвращает run result."
+      "body": "Отправьте один пакет кампании с Idempotency-Key. API валидирует его, запускает детерминированные проверки, сохраняет версию кампании, создаёт события outbox и возвращает результат прогона."
     },
     "idempotency": {
-      "title": "Idempotency contract",
+      "title": "Контракт идемпотентности",
       "items": [
         "Idempotency-Key обязателен для POST /api/v1/runs",
-        "Тот же key + тот же request body возвращает исходный run",
-        "Тот же key + другой body возвращает 409 conflict",
-        "Подходит для client retries, webhook redelivery и double-clicks"
+        "Тот же ключ и то же тело запроса возвращают исходный прогон",
+        "Тот же ключ и другое тело запроса возвращают 409 conflict",
+        "Подходит для повторных запросов клиента, повторной доставки webhook и двойных кликов"
       ]
     },
     "endpoints": {
-      "title": "Endpoints",
-      "subtitle": "Весь текущий REST surface"
+      "title": "Эндпоинты",
+      "subtitle": "Вся текущая REST-поверхность"
     },
     "curl": {
-      "title": "Попробуйте run endpoint",
-      "subtitle": "Используйте worked example bundle из repository или вставьте свой CampaignBundle.",
-      "copy": "Copy curl"
+      "title": "Попробуйте эндпоинт прогона",
+      "subtitle": "Используйте готовый example bundle из репозитория или вставьте свой CampaignBundle.",
+      "copy": "Скопировать curl"
     },
     "response": {
-      "title": "Response shape",
-      "subtitle": "UI читает тот же contract, который получают external clients."
+      "title": "Форма ответа",
+      "subtitle": "UI читает тот же контракт, который получают внешние клиенты."
     },
     "links": {
       "docs": "Полный docs/API.md",
-      "status": "System Status",
-      "evidence": "Evidence",
-      "audit": "Raw audit JSON"
+      "status": "Статус системы",
+      "evidence": "Доказательства",
+      "audit": "Сырой audit JSON"
     }
   },
   "evidence": {
     "eyebrow": "10 / Техническое досье",
     "title": "Доказательства",
-    "subtitle": "Карта для ревьюера: что проект реально доказывает через product flow, API contract, reliability fixes, operational telemetry, documentation и CI.",
+    "subtitle": "Карта для ревьюера: что проект реально доказывает через продуктовый сценарий, API-контракт, исправления надёжности, операционную телеметрию, документацию и CI.",
     "summary": {
-      "checks": "checks",
-      "endpoints": "endpoints",
-      "tests": "tests",
-      "rules": "rules"
+      "checks": "проверок",
+      "endpoints": "эндпоинтов",
+      "tests": "тестов",
+      "rules": "правил"
     },
     "matrix": {
-      "title": "Capability matrix",
+      "title": "Матрица возможностей",
       "subtitle": "Что видно на сайте и где лежит техническое подтверждение.",
       "area": "Область",
       "visible": "Видимая поверхность",
       "proof": "Доказательство",
       "items": [
         {
-          "area": "Campaign intake",
-          "visible": "Sample cases, campaign bundle form, language switch, owner status, links, terms и launch metadata.",
-          "proof": "Zod schemas, worked examples, input limits и deterministic fixture coverage."
+          "area": "Сбор данных кампании",
+          "visible": "Готовые сценарии, форма пакета кампании, переключатель языка, статусы ролей, ссылки, условия и метаданные запуска.",
+          "proof": "Zod-схемы, worked examples, лимиты ввода и детерминированное покрытие fixtures."
         },
         {
-          "area": "Risk engine",
-          "visible": "Risk Report с blockers, warnings, owners, evidence и export controls.",
-          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples и 162 tests."
+          "area": "Движок рисков",
+          "visible": "Отчёт о рисках с блокерами, предупреждениями, ролями, доказательствами и экспортом.",
+          "proof": "8 офлайн-проверок, 23 правила, валидация rules.yaml, regression examples и 164 теста."
         },
         {
-          "area": "Persistence and versioning",
-          "visible": "Campaigns, saved runs, version detail и diff между сохранёнными review.",
-          "proof": "Postgres run storage, campaign versions и version diff contract."
+          "area": "Сохранение и версии",
+          "visible": "Кампании, сохранённые прогоны, детали версии и сравнение между сохранёнными ревью.",
+          "proof": "Хранилище прогонов в Postgres, версии кампаний и контракт сравнения версий."
         },
         {
           "area": "REST API",
-          "visible": "Экран API Contract с endpoints, curl, response shape и idempotency semantics.",
-          "proof": "docs/API.md, Zod response schema, health/ready/stats/audit endpoints."
+          "visible": "Экран API-контракта с эндпоинтами, curl, формой ответа и семантикой идемпотентности.",
+          "proof": "docs/API.md, Zod-схема ответа и endpoints health/ready/stats/audit."
         },
         {
-          "area": "Operational pipeline",
-          "visible": "System Status показывает health, telemetry, audit feed, delivery path и quality gates.",
-          "proof": "Transactional outbox, audit subscriber, Telegram subscriber и live stats endpoint."
+          "area": "Операционная цепочка",
+          "visible": "Статус системы показывает health, телеметрию, ленту аудита, путь доставки и quality gates.",
+          "proof": "Транзакционный outbox, audit subscriber, Telegram subscriber и live stats endpoint."
         },
         {
-          "area": "Reviewer posture",
-          "visible": "Evidence связывает нарратив сайта с code, docs, CI и closed PR history.",
-          "proof": "GitHub Actions, Docker build, Apache 2.0 license и public source trail."
+          "area": "Позиция для ревьюера",
+          "visible": "Доказательства связывают историю сайта с кодом, документацией, CI и историей закрытых PR.",
+          "proof": "GitHub Actions, Docker build, лицензия Apache 2.0 и публичный след исходников."
         }
       ]
     },
     "reviewerPath": {
-      "title": "Reviewer path",
-      "subtitle": "Самый короткий путь от первого впечатления к engineering proof.",
+      "title": "Путь ревьюера",
+      "subtitle": "Самый короткий путь от первого впечатления к инженерным доказательствам.",
       "items": [
         {
-          "label": "Landing",
+          "label": "Первый экран",
           "href": "/",
-          "note": "Первый экран показывает всю историю: UI workflow плюс REST, persistence, outbox, audit, Telegram, CI и tests."
+          "note": "Первый экран показывает всю историю: UI-сценарий плюс REST, сохранение, outbox, аудит, Telegram, CI и тесты."
         },
         {
-          "label": "System Status",
+          "label": "Статус системы",
           "href": "/app/status",
-          "note": "Проверьте live health, DB readiness, telemetry, audit events и reliability guarantees."
+          "note": "Проверьте live health, готовность БД, телеметрию, события аудита и гарантии надёжности."
         },
         {
-          "label": "API Contract",
+          "label": "API-контракт",
           "href": "/app/api",
-          "note": "Посмотрите endpoints, idempotency behavior, curl path и response shape."
+          "note": "Посмотрите эндпоинты, поведение идемпотентности, curl-путь и форму ответа."
         },
         {
-          "label": "Campaigns",
+          "label": "Кампании",
           "href": "/app/campaigns",
-          "note": "Откройте saved runs, version history и blockers diff."
+          "note": "Откройте сохранённые прогоны, историю версий и сравнение блокеров."
         },
         {
-          "label": "Handoff",
+          "label": "Передача в работу",
           "href": "/app/handoff",
-          "note": "Проверьте, что product findings превращаются в ops-ready launch update."
+          "note": "Проверьте, что продуктовые выводы превращаются в готовое для операционной команды обновление по запуску."
         }
       ]
     },
     "risks": {
       "title": "Закрытые классы отказов",
-      "subtitle": "Это не только список функций: проект убрал конкретные production risks.",
+      "subtitle": "Это не только список функций: проект убрал конкретные production-риски.",
       "items": [
         {
-          "title": "Duplicate campaigns under parallel POST",
-          "body": "Параллельные записи для той же campaign/operator сериализуются, поэтому version history остаётся связной."
+          "title": "Дубли кампаний при параллельном POST",
+          "body": "Параллельные записи для той же campaign/operator сериализуются, поэтому история версий остаётся связной."
         },
         {
-          "title": "Retry and redelivery ambiguity",
-          "body": "Обязательный Idempotency-Key разделяет replay, conflict и in-progress states."
+          "title": "Неясность между retry и redelivery",
+          "body": "Обязательный Idempotency-Key разделяет replay, conflict и in-progress состояния."
         },
         {
-          "title": "Lost side effects after run persistence",
-          "body": "Run completion пишет outbox rows transactionally до async audit и Telegram delivery."
+          "title": "Потерянные side effects после сохранения прогона",
+          "body": "Завершение прогона транзакционно пишет строки outbox до асинхронной доставки аудита и Telegram."
         },
         {
-          "title": "Invisible backend work",
-          "body": "Status, API Contract, Evidence, docs и live JSON endpoints теперь показывают platform layer."
+          "title": "Невидимая backend-работа",
+          "body": "Статус, API-контракт, доказательства, документация и live JSON endpoints теперь показывают platform layer."
         },
         {
-          "title": "Docs drifting from code",
-          "body": "docs/API.md, route behavior, Zod schemas, CI checks и visible pages выровнены."
+          "title": "Расхождение документации и кода",
+          "body": "docs/API.md, поведение маршрутов, Zod-схемы, CI-проверки и видимые страницы выровнены."
         },
         {
-          "title": "Demo-only credibility",
-          "body": "Health/readiness, Docker build, CI, license, tests и public PR trail делают проект reviewable."
+          "title": "Доверие к демо",
+          "body": "Health/readiness, Docker build, CI, лицензия, тесты и публичный PR trail делают проект пригодным для ревью."
         }
       ]
     },
     "architecture": {
-      "title": "System story",
-      "subtitle": "Как один campaign run проходит через систему.",
+      "title": "Системная история",
+      "subtitle": "Как один прогон кампании проходит через систему.",
       "steps": [
         "CampaignBundle приходит через UI или POST /api/v1/runs и валидируется на границе.",
-        "Deterministic engine запускает channel, terms, math, GEO, localization, ownership, link и format checks.",
-        "Command сохраняет run, campaign version, blockers и outbox rows в одной Postgres transaction.",
-        "Idempotency защищает retries и double-clicks от duplicate work.",
-        "Worker переносит outbox rows сначала в audit_log, затем в best-effort Telegram notification.",
-        "Campaigns, Risk Report, Handoff, Status, API Contract и Evidence показывают одно underlying state."
+        "Детерминированный engine запускает проверки каналов, условий, математики, GEO, локализации, ролей, ссылок и форматов.",
+        "Command сохраняет прогон, версию кампании, блокеры и строки outbox в одной транзакции Postgres.",
+        "Idempotency защищает retries и двойные клики от duplicate work.",
+        "Worker переносит строки outbox сначала в audit_log, затем в best-effort Telegram notification.",
+        "Кампании, отчёт о рисках, передача в работу, статус, API-контракт и доказательства показывают одно underlying state."
       ]
     },
     "links": {
-      "title": "Evidence links",
-      "subtitle": "Переход от product narrative к live proof.",
-      "status": "Live System Status",
-      "api": "API Contract",
+      "title": "Ссылки на доказательства",
+      "subtitle": "Переход от продуктовой истории к живым доказательствам.",
+      "status": "Статус системы",
+      "api": "API-контракт",
       "docs": "docs/API.md",
       "ci": "GitHub Actions",
-      "prs": "Closed PR trail"
+      "prs": "Закрытые PR"
     }
   },
   "palette": {
@@ -891,7 +891,7 @@
     "footer": {
       "move": "Переместиться",
       "open": "Открыть",
-      "stats": "23 правила · 8 checks · 10 endpoints · 162 tests · 10 screens"
+      "stats": "23 правила · 8 проверок · 10 эндпоинтов · 164 теста · 10 экранов"
     },
     "noMatches": "Ничего не найдено"
   },

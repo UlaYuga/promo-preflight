@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { NextRequest } from 'next/server';
 import { encodeAuditCursor } from '../../../../application/query/ListAuditLogQuery';
-import { parseAuditListFilter } from './route';
+import { GET, parseAuditListFilter } from './route';
 
 describe('GET /api/v1/audit query parsing', () => {
   it('uses default limit when omitted', () => {
@@ -55,6 +56,28 @@ describe('GET /api/v1/audit query parsing', () => {
     expect(parsed.ok).toBe(false);
     if (!parsed.ok) {
       expect(parsed.message).toContain('cursor');
+    }
+  });
+
+  it('returns an empty feed when DATABASE_URL is not configured', async () => {
+    const previousDatabaseUrl = process.env.DATABASE_URL;
+    delete process.env.DATABASE_URL;
+
+    try {
+      const response = await GET(
+        new NextRequest('http://localhost/api/v1/audit?limit=1')
+      );
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toEqual({
+        items: [],
+        nextCursor: null,
+      });
+    } finally {
+      if (previousDatabaseUrl === undefined) {
+        delete process.env.DATABASE_URL;
+      } else {
+        process.env.DATABASE_URL = previousDatabaseUrl;
+      }
     }
   });
 });

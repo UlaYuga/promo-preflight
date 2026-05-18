@@ -295,7 +295,7 @@ function CampaignDrawer({
           className="flex-1 hairline border px-3 py-2 rounded-sm text-[12.5px] hover:border-overlay inline-flex items-center justify-center gap-2 transition"
         >
           <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-          {locale === "ru" ? "Risk Report" : "Open Risk Report"}
+          {locale === "ru" ? "Отчёт о рисках" : "Open Risk Report"}
         </button>
       </div>
     </div>

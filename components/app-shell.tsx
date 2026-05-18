@@ -29,7 +29,7 @@ export function AppShell({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [running, setRunning] = useState(false);
   const [runStep, setRunStep] = useState(0);
@@ -115,7 +115,7 @@ export function AppShell({
             onClick={() => setPaletteOpen(true)}
             className="w-full flex items-center gap-2 rounded-sm px-2.5 py-2 text-[12px] text-subtle hover:text-foreground hover:bg-surface/50 transition-colors"
           >
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" />
               <path d="m21 21-4.3-4.3" />
             </svg>
@@ -148,7 +148,7 @@ export function AppShell({
                 onClick={() => setPaletteOpen(true)}
                 className="hidden md:flex items-center gap-2 hairline border px-3 py-1.5 rounded-sm text-[12px] text-subtle hover:text-foreground hover:bg-surface/50 transition-colors"
               >
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" />
                   <path d="m21 21-4.3-4.3" />
                 </svg>
@@ -160,12 +160,16 @@ export function AppShell({
               <button
                 onClick={runPreflight}
                 disabled={running}
-                className="inline-flex items-center gap-2 bg-accent text-ink px-3.5 py-1.5 rounded-sm text-[12.5px] font-semibold hover:brightness-110 active:brightness-90 disabled:opacity-50 transition-all focus-ring"
+                className="inline-flex items-center gap-2 bg-accent text-ink px-3.5 py-1.5 rounded-sm text-[12.5px] font-semibold hover:brightness-110 active:brightness-90 disabled:opacity-50 transition-[filter,opacity] focus-ring"
               >
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z" />
                 </svg>
-                {running ? "Running…" : t("topbar.runPreflight" as TranslationKey)}
+                {running
+                  ? language === "ru"
+                    ? "Проверка…"
+                    : "Running…"
+                  : t("topbar.runPreflight" as TranslationKey)}
               </button>
             </div>
           </div>

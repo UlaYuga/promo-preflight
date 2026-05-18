@@ -75,6 +75,10 @@ export async function GET(req: NextRequest): Promise<Response> {
     return badRequest(parsed.message);
   }
 
+  if (!process.env.DATABASE_URL) {
+    return Response.json({ items: [], nextCursor: null });
+  }
+
   const db = getDb();
   const auditRepository = new PgAuditRepository(db);
   const queryHandler = new ListAuditLogQueryHandler(auditRepository);

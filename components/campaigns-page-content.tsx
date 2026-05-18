@@ -10,6 +10,7 @@ export function CampaignsPageContent() {
   const eyebrow = isRu ? "01 / Кампании" : "01 / Campaigns";
   const heroTitle = isRu ? "Запущенные\nкампании" : "Campaigns\nin flight";
   const heroLines = heroTitle.split("\n");
+  const heroLabel = heroLines.join(" ");
   const allRunsLabel = isRu ? "Все запуски" : "All runs";
   const subtitle = isRu
     ? "Все проверки кампаний, сохранённые в этом воркспейсе. Откройте любую, чтобы посмотреть отчёт, сравнить версии или передать в запуск."
@@ -23,7 +24,10 @@ export function CampaignsPageContent() {
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
               {eyebrow}
             </p>
-            <h1 className="display mt-6 text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] leading-[1] tracking-tightest">
+            <h1
+              aria-label={heroLabel}
+              className="display mt-6 text-[3.5rem] sm:text-[4.5rem] lg:text-[5.5rem] leading-[1] tracking-tightest"
+            >
               {heroLines[0]}
               {heroLines[1] && (
                 <>

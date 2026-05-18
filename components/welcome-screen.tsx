@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { loadTourSample } from "@/lib/tour/sample";
 import { getTourStepRoute } from "@/lib/tour/steps";
 import { startTour } from "@/lib/tour/storage";
-import { LanguageToggle, useI18n } from "@/lib/i18n";
+import { LanguageToggle, useI18n, type TranslationKey } from "@/lib/i18n";
 
 const particles = Array.from({ length: 26 }, (_, i) => {
   const seed = (i * 2654435761) >>> 0;
@@ -25,10 +25,10 @@ const particles = Array.from({ length: 26 }, (_, i) => {
 });
 
 const SYSTEM_LINKS = [
-  { label: "System Status", href: "/app/status" },
-  { label: "API Contract", href: "/app/api" },
-  { label: "Evidence", href: "/app/evidence" }
-];
+  { labelKey: "welcome.systemLinks.status", href: "/app/status" },
+  { labelKey: "welcome.systemLinks.api", href: "/app/api" },
+  { labelKey: "welcome.systemLinks.evidence", href: "/app/evidence" }
+] as const satisfies ReadonlyArray<{ labelKey: TranslationKey; href: string }>;
 
 const HANDOFF_OWNERS = ["Legal", "Risk", "CRM"];
 
@@ -229,7 +229,7 @@ export function WelcomeScreen() {
 
           <section className="grid">
             <div className="lcol" data-tour="welcome-overview">
-              <h1 className="display">
+              <h1 className="display" aria-label="Promo Preflight">
                 <span>Promo</span>
                 <span className="display-accent">Preflight</span>
               </h1>
@@ -255,7 +255,7 @@ export function WelcomeScreen() {
               <div className="syslinks">
                 {SYSTEM_LINKS.map((l) => (
                   <Link key={l.href} href={l.href} className="syslink">
-                    {l.label}
+                    {t(l.labelKey)}
                     <ExtIcon />
                   </Link>
                 ))}

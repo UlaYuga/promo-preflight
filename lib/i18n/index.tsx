@@ -114,6 +114,7 @@ export function LanguageToggle({ className }: { className?: string }) {
           key={item}
           type="button"
           onClick={() => setLanguage(item)}
+          aria-pressed={language === item}
           className={
             language === item
               ? "bg-accent px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-ink font-semibold"
