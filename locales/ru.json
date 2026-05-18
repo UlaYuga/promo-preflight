@@ -70,7 +70,9 @@
     "ownersDescription": "Роли и настройки",
     "campaigns": "Кампании",
     "campaignsDescription": "История версий",
-    "versiondiff": "Сравнение версий"
+    "versiondiff": "Сравнение версий",
+    "systemStatus": "Статус системы",
+    "systemStatusDescription": "Здоровье, аудит, API"
   },
   "welcome": {
     "eyebrow": "Начните здесь · тур за 90 секунд",
@@ -545,6 +547,50 @@
     "viewVersionDetail": "Открыть детали версии",
     "openCampaigns": "Открыть Campaigns",
     "openHandoff": "Открыть Handoff"
+  },
+  "systemStatus": {
+    "eyebrow": "08 / Статус системы",
+    "title": "Статус системы",
+    "subtitle": "Живое здоровье, лента аудита и REST-контракт под этим воркспейсом.",
+    "health": {
+      "title": "Здоровье",
+      "subtitle": "Liveness/readiness-пробы обновляются каждые 10 с",
+      "ok": "Все системы в норме",
+      "degraded": "База или миграции нездоровы",
+      "checking": "Проверка…",
+      "liveness": "Liveness",
+      "readiness": "Readiness",
+      "env": "Окружение",
+      "db": "База данных",
+      "migrations": "Миграции"
+    },
+    "metrics": {
+      "title": "Телеметрия прогонов",
+      "subtitle": "Счётчики по всей базе",
+      "totalRuns": "Всего прогонов сохранено",
+      "totalEvents": "Доставлено audit-событий",
+      "lastEventAt": "Последнее событие",
+      "runP95LatencyMs": "Латентность прогона p95",
+      "ms": "мс",
+      "unknown": "—",
+      "never": "событий ещё нет"
+    },
+    "feed": {
+      "title": "Живая лента аудита",
+      "subtitle": "Последние 50 событий из /api/v1/audit, поллинг каждые 2 с",
+      "empty": "Событий пока нет — POST на /api/v1/runs триггернёт первое.",
+      "time": "Время",
+      "type": "Событие",
+      "actor": "Источник"
+    },
+    "links": {
+      "title": "Контракт и код",
+      "subtitle": "К чему подключён этот воркспейс",
+      "apiDocs": "Контракт REST API (docs/API.md)",
+      "repo": "Исходники на GitHub",
+      "auditJson": "Сырые audit-JSON",
+      "ci": "CI-workflow"
+    }
   },
   "palette": {
     "placeholder": "Поиск, запуск или переход",
