@@ -219,7 +219,7 @@ Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 - No gRPC — REST + webhooks fit the consumer model (CRM/Promo Ops teams)
 - No live LLM in default checks path — checks must be deterministic and reproducible; AI is an optional augmentation only (see ADR-0003 + ADR-0005 for the planned augmentation roadmap)
 - No auth — out of scope for demo; production deployment expects auth at infra layer
-- No microservices — one process; outbox worker is a separate entrypoint of the same binary
+- No microservices — one process: in production the outbox worker boots inside the Next server via `instrumentation.node.ts`; a standalone `bin/preflight-worker.ts` entrypoint exists for local docker-compose and tests
 - No "promo compliance score" magic number — verdicts are GO / WARN / BLOCK based on rule severity, not opaque AI
 
 ## AI augmentation roadmap
