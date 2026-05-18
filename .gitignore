@@ -32,3 +32,6 @@ pnpm-debug.log*
 
 # internal text staging (kept local, not shipped)
 TEXTS.md
+t20-translation-source.json
+# pre-shipping screenshot drafts (linked artifacts go in docs/)
+/screenshots/
