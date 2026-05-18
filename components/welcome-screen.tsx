@@ -1,37 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Activity,
-  BellRing,
-  BookOpen,
-  CheckCircle2,
-  ClipboardCheck,
-  Code2,
-  DatabaseZap,
-  FileSearch,
-  GitCompareArrows,
-  GitPullRequestArrow,
-  RadioTower,
-  Send,
-  ServerCog,
-  ShieldCheck
-} from "lucide-react";
-import { TourLauncher } from "@/components/tour-launcher";
+import { useRouter } from "next/navigation";
+import { loadTourSample } from "@/lib/tour/sample";
+import { getTourStepRoute } from "@/lib/tour/steps";
+import { startTour } from "@/lib/tour/storage";
 import { LanguageToggle, useI18n } from "@/lib/i18n";
-
-const workflowIcons = [
-  DatabaseZap,
-  ShieldCheck,
-  RadioTower,
-  ServerCog,
-  ClipboardCheck,
-  BellRing,
-  FileSearch,
-  GitCompareArrows,
-  Send,
-  Activity
-];
 
 const particles = Array.from({ length: 14 }, (_, i) => {
   const seed = (i * 2654435761) >>> 0;
@@ -50,28 +24,109 @@ const particles = Array.from({ length: 14 }, (_, i) => {
   };
 });
 
-export function WelcomeScreen() {
-  const { get, t } = useI18n();
-  const workflow =
-    get<Array<{ label: string; description: string }>>("welcome.workflowPreview") ?? [];
+const SYSTEM_LINKS = [
+  { label: "System Status", href: "/app/status" },
+  { label: "API Contract", href: "/app/api" },
+  { label: "Evidence", href: "/app/evidence" }
+];
 
-  const systemLinks = [
-    { href: "/app/status", icon: Activity, label: t("welcome.systemLinks.status"), external: false },
-    { href: "/app/api", icon: Code2, label: t("welcome.systemLinks.api"), external: false },
-    { href: "/app/evidence", icon: GitPullRequestArrow, label: t("welcome.systemLinks.evidence"), external: false },
-    {
-      href: "https://github.com/UlaYuga/promo-preflight/blob/main/docs/API.md",
-      icon: BookOpen,
-      label: t("welcome.systemLinks.docs"),
-      external: true
-    },
-    {
-      href: "https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml",
-      icon: ServerCog,
-      label: t("welcome.systemLinks.github"),
-      external: true
-    }
-  ];
+const HANDOFF_OWNERS = ["Legal", "Risk", "CRM"];
+
+function ArrowIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
+function BookIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    </svg>
+  );
+}
+function ExtIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M7 17 17 7" />
+      <path d="M7 7h10v10" />
+    </svg>
+  );
+}
+
+function HandoffPreview() {
+  const { get, t } = useI18n();
+  const issues = get<string[]>("welcome.handoff.issues") ?? [];
+
+  return (
+    <div className="hp">
+      <div className="hp-head">
+        <div className="hp-avatar">
+          <span>P</span>
+        </div>
+        <div className="hp-id">
+          <div className="hp-id-row">
+            <span className="hp-sender">Preflight</span>
+            <span className="hp-app">APP</span>
+            <span className="hp-time">14:22</span>
+          </div>
+          <div className="hp-channel">#promo-launches</div>
+        </div>
+      </div>
+
+      <div className="hp-msg">
+        <div className="hp-bar" />
+        <div className="hp-body">
+          <div className="hp-status">
+            <span className="hp-dot" />
+            <span className="hp-status-text">{t("welcome.handoff.verdict")}</span>
+          </div>
+          <div className="hp-campaign">Brazil Welcome 100%</div>
+          <div className="hp-meta">{t("welcome.handoff.launchIn")}</div>
+
+          <div className="hp-summary">{t("welcome.handoff.summary")}</div>
+
+          <div className="hp-issues">
+            {issues.map((text, i) => (
+              <div key={i} className="hp-issue">
+                <span className="hp-issue-num">{i + 1}</span>
+                <div className="hp-issue-body">
+                  <div className="hp-issue-text">{text}</div>
+                  <div className="hp-issue-owner">
+                    <span className="hp-owner-dot" />
+                    {HANDOFF_OWNERS[i] ?? ""}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hp-actions">
+            <Link href="/app/risk-report" className="hp-btn hp-btn-primary inline-flex items-center justify-center">
+              {t("welcome.handoff.cta")}
+            </Link>
+            <Link href="/app/handoff" className="hp-btn hp-btn-ghost inline-flex items-center justify-center">
+              {t("welcome.handoff.secondary")}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function WelcomeScreen() {
+  const router = useRouter();
+  const { t, language } = useI18n();
+
+  function startProductTour() {
+    loadTourSample({ clearDemoData: true, language });
+    const next = startTour(0);
+    router.push(getTourStepRoute(next.stepIndex, next));
+  }
 
   return (
     <main className="relative h-screen overflow-hidden bg-background text-foreground">
@@ -164,169 +219,54 @@ export function WelcomeScreen() {
         }}
       />
 
-      {/* ── Layer 5: Content — refined editorial broadsheet ── */}
-      <div className="relative z-10 mx-auto flex h-screen w-full max-w-[1440px] flex-col px-6 sm:px-10 lg:px-14">
-        {/* Masthead */}
-        <header className="hairline-b flex items-baseline justify-between py-5">
-          <div className="flex items-baseline gap-4">
-            <span className="display text-[0.95rem] font-semibold tracking-[-0.01em] text-foreground">
-              Promo&nbsp;Preflight
-            </span>
-            <span className="hidden font-mono text-[10px] uppercase tracking-[0.3em] text-muted sm:inline">
-              {t("welcome.workflowTitle")}
-            </span>
-          </div>
-          <LanguageToggle className="origin-top-right" />
-        </header>
+      {/* ── Layer 5: Content — Variant A "Refined Classic" ── */}
+      <div className="landing-a">
+        <div className="frame">
+          <header className="topbar">
+            <span />
+            <LanguageToggle />
+          </header>
 
-        <section className="grid flex-1 min-h-0 items-stretch gap-12 py-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:gap-16">
-          {/* Lede column */}
-          <div
-            data-tour="welcome-overview"
-            className="flex max-h-full min-w-0 flex-col overflow-y-auto pr-1"
-          >
-            <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-muted">
-              <span className="inline-block h-[5px] w-[5px] rounded-full bg-accent shadow-[0_0_10px_rgba(197,255,61,0.7)]" />
-              {t("welcome.eyebrow")}
-            </p>
+          <section className="grid">
+            <div className="lcol" data-tour="welcome-overview">
+              <h1 className="display">
+                <span>Promo</span>
+                <span className="display-accent">Preflight</span>
+              </h1>
 
-            <h1 className="display mt-6 text-[3.5rem] font-medium leading-[0.9] tracking-[-0.035em] text-foreground text-glow-green sm:text-7xl lg:text-[5.25rem]">
-              Promo
-              <br />
-              <span className="text-subtle">Preflight</span>
-            </h1>
+              <p className="positioning">{t("welcome.heroA.positioning")}</p>
 
-            <div className="mt-8 max-w-2xl border-l border-accent/30 pl-5">
-              <p className="text-[1.45rem] font-medium leading-[1.16] tracking-[-0.015em] text-foreground sm:text-[1.7rem]">
-                {t("welcome.positioning")}
-              </p>
-              <p className="mt-4 text-[0.95rem] leading-7 text-subtle">
-                {t("welcome.body")}
-              </p>
-            </div>
-
-            <p className="hairline-t hairline-b mt-8 py-3 font-mono text-[10.5px] uppercase leading-5 tracking-[0.2em] text-muted">
-              {t("welcome.proofStrip")}
-            </p>
-
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-              <TourLauncher />
-              <Link
-                href="/app/intake?examples=1"
-                className="group inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-md border border-white/[0.1] px-7 py-3 font-mono text-[12px] uppercase tracking-[0.16em] text-foreground transition-all duration-300 hover:border-accent/40 hover:text-accent"
-              >
-                {t("welcome.testCases")}
-                <BookOpen
-                  className="h-[15px] w-[15px] text-muted transition-colors duration-300 group-hover:text-accent"
-                  aria-hidden="true"
-                />
-              </Link>
-            </div>
-            <p className="mt-4 max-w-xl text-[0.8rem] leading-6 text-muted">
-              {t("welcome.ctaHint")}
-            </p>
-
-            <nav className="hairline-t mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 pt-5">
-              {systemLinks.map(({ href, icon: Icon, label, external }) => {
-                const cls =
-                  "group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-subtle transition-colors duration-200 hover:text-accent";
-                const inner = (
-                  <>
-                    <Icon
-                      className="h-[14px] w-[14px] text-muted transition-colors duration-200 group-hover:text-accent"
-                      aria-hidden="true"
-                    />
-                    {label}
-                  </>
-                );
-                return external ? (
-                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" className={cls}>
-                    {inner}
-                  </a>
-                ) : (
-                  <Link key={href} href={href} className={cls}>
-                    {inner}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            <div className="mt-7 max-w-2xl border-l border-accent/30 pl-5">
-              <h3 className="display text-[0.95rem] font-semibold tracking-[-0.005em] text-foreground">
-                {t("welcome.architectureTitle")}
-              </h3>
-              <p className="mt-2 text-[0.85rem] leading-6 text-subtle">
-                {t("welcome.architectureBody")}
-              </p>
-            </div>
-          </div>
-
-          {/* Editorial ledger card */}
-          <aside className="glass-surface flex max-h-full min-h-0 flex-col overflow-hidden rounded-lg border border-white/[0.08] shadow-2xl shadow-black/60">
-            <div className="hairline-b flex items-baseline justify-between px-6 py-5">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted">
-                  {t("welcome.workflowTitle")}
-                </p>
-                <h2 className="display mt-1.5 text-[1.05rem] font-semibold tracking-[-0.01em] text-foreground">
-                  {t("welcome.workflowSubtitle")}
-                </h2>
-              </div>
-              <span className="num text-[11px] tracking-[0.18em] text-muted">
-                {String(workflow.length).padStart(2, "0")}
-              </span>
-            </div>
-
-            <ol className="min-h-0 flex-1 divide-y divide-white/[0.05] overflow-y-auto">
-              {workflow.map((item, index) => {
-                const Icon = workflowIcons[index] ?? CheckCircle2;
-                return (
-                  <li
-                    key={item.label}
-                    className="group grid grid-cols-[34px_1fr_18px] items-baseline gap-4 px-6 py-3.5 transition-colors duration-200 hover:bg-white/[0.025]"
-                  >
-                    <span className="num text-[0.95rem] font-medium text-muted transition-colors duration-200 group-hover:text-accent">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-[0.88rem] font-semibold leading-snug tracking-[-0.005em] text-foreground">
-                        {item.label}
-                      </p>
-                      <p className="mt-1 text-[0.78rem] leading-5 text-subtle">
-                        {item.description}
-                      </p>
-                    </div>
-                    <Icon
-                      className="mt-1 h-[15px] w-[15px] text-muted transition-colors duration-200 group-hover:text-accent/70"
-                      aria-hidden="true"
-                    />
-                  </li>
-                );
-              })}
-            </ol>
-
-            <div className="hairline-t grid grid-cols-4">
-              {[
-                ["08", t("welcome.metrics.checks")],
-                ["23", t("welcome.metrics.rules")],
-                ["10", t("welcome.metrics.endpoints")],
-                ["162", t("welcome.metrics.tests")]
-              ].map(([value, label], idx) => (
-                <div
-                  key={label}
-                  className={`${idx < 3 ? "border-r border-white/[0.06]" : ""} px-5 py-4`}
+              <div className="cta-row">
+                <button
+                  type="button"
+                  data-tour="take-tour"
+                  className="btn btn-primary"
+                  onClick={startProductTour}
                 >
-                  <p className="num text-[1.7rem] font-medium leading-none tracking-[-0.02em] text-foreground">
-                    {value}
-                  </p>
-                  <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-muted">
-                    {label}
-                  </p>
-                </div>
-              ))}
+                  {t("welcome.heroA.ctaPrimary")}
+                  <ArrowIcon />
+                </button>
+                <Link href="/app/intake?examples=1" className="btn btn-ghost">
+                  {t("welcome.heroA.ctaSecondary")}
+                  <BookIcon />
+                </Link>
+              </div>
+
+              <div className="syslinks">
+                {SYSTEM_LINKS.map((l) => (
+                  <Link key={l.href} href={l.href} className="syslink">
+                    {l.label}
+                    <ExtIcon />
+                  </Link>
+                ))}
+              </div>
             </div>
-          </aside>
-        </section>
+
+            <aside className="rcol">
+              <HandoffPreview />
+            </aside>
+          </section>
+        </div>
       </div>
     </main>
   );
