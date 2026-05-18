@@ -230,6 +230,8 @@ select {
   z-index: 10;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: transparent;
   color: var(--text);
   font-size: 16px;
@@ -239,13 +241,13 @@ select {
 .landing-a .frame {
   position: relative;
   z-index: 1;
-  height: 100%;
+  min-height: 100%;
   width: 100%;
-  max-width: 1320px;
+  max-width: 1640px;
   margin: 0 auto;
   display: grid;
   grid-template-rows: auto 1fr;
-  padding: 28px 48px;
+  padding: 40px 60px;
 }
 .landing-a .topbar {
   display: flex;
@@ -257,16 +259,16 @@ select {
 .landing-a .topbar-empty { min-height: 36px; }
 .landing-a .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 480px;
-  gap: 64px;
+  grid-template-columns: minmax(0, 1fr) 720px;
+  gap: 96px;
   align-items: center;
-  padding: 32px 0;
+  padding: 28px 0;
   min-height: 0;
 }
 .landing-a .lcol { min-width: 0; }
 .landing-a .display {
-  margin: 22px 0 0;
-  font-size: clamp(72px, 8.4vw, 124px);
+  margin: 32px 0 0;
+  font-size: clamp(112px, 11vw, 184px);
   line-height: 0.88;
   letter-spacing: -0.045em;
   font-weight: 500;
@@ -280,35 +282,35 @@ select {
                0 0 18px color-mix(in oklab, var(--accent) 16%, transparent);
 }
 .landing-a .positioning {
-  margin: 26px 0 0;
+  margin: 36px 0 0;
   max-width: 28ch;
-  font-size: 26px;
+  font-size: 40px;
   line-height: 1.18;
   letter-spacing: -0.012em;
   font-weight: 500;
   color: var(--text);
 }
 .landing-a .body {
-  margin: 18px 0 0;
+  margin: 26px 0 0;
   max-width: 56ch;
-  font-size: 15px;
+  font-size: 23px;
   line-height: 1.55;
   color: var(--subtle);
 }
 .landing-a .cta-row {
   display: flex;
-  gap: 12px;
-  margin-top: 30px;
+  gap: 18px;
+  margin-top: 44px;
   flex-wrap: wrap;
 }
 .landing-a .btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  height: 48px;
-  padding: 0 22px;
-  border-radius: 8px;
-  font-size: 14px;
+  gap: 15px;
+  height: 72px;
+  padding: 0 34px;
+  border-radius: 12px;
+  font-size: 21px;
   font-weight: 600;
   letter-spacing: -0.005em;
   border: 1px solid transparent;
@@ -328,19 +330,19 @@ select {
 }
 .landing-a .btn-ghost:hover { border-color: var(--hairline-2); background: rgba(255, 255, 255, 0.04); }
 .landing-a .syslinks {
-  margin-top: 18px;
+  margin-top: 28px;
   display: flex;
-  gap: 22px;
+  gap: 34px;
   flex-wrap: wrap;
 }
 .landing-a .syslink {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 9px;
+  font-size: 19px;
   color: var(--subtle);
   border-bottom: 1px dashed var(--hairline);
-  padding-bottom: 2px;
+  padding-bottom: 3px;
   transition: color 0.15s, border-color 0.15s;
 }
 .landing-a .syslink:hover { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 40%, transparent); }
@@ -356,57 +358,57 @@ select {
   backdrop-filter: blur(22px) saturate(1.2);
   -webkit-backdrop-filter: blur(22px) saturate(1.2);
   border: 1px solid var(--hairline);
-  border-radius: 14px;
+  border-radius: 20px;
   overflow: hidden;
   box-shadow:
     0 50px 100px -30px rgba(0, 0, 0, 0.8),
     0 0 0 1px color-mix(in oklab, var(--accent) 5%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
-.landing-a .hp-head { display: flex; align-items: center; gap: 12px; padding: 18px 22px 14px; }
+.landing-a .hp-head { display: flex; align-items: center; gap: 18px; padding: 28px 34px 22px; }
 .landing-a .hp-avatar {
-  width: 38px; height: 38px;
-  border-radius: 10px;
+  width: 58px; height: 58px;
+  border-radius: 15px;
   background: linear-gradient(160deg, var(--accent), color-mix(in oklab, var(--accent) 60%, #0a0a0c));
   color: #0a0a0c;
   display: grid; place-items: center;
-  font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+  font-size: 26px; font-weight: 700; letter-spacing: -0.01em;
   box-shadow:
     0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent),
     0 0 24px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 .landing-a .hp-id { min-width: 0; flex: 1; }
-.landing-a .hp-id-row { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.landing-a .hp-id-row { display: flex; align-items: center; gap: 12px; font-size: 21px; }
 .landing-a .hp-sender { font-weight: 700; color: var(--text); letter-spacing: -0.005em; }
 .landing-a .hp-app {
-  padding: 1px 6px;
-  border-radius: 3px;
+  padding: 2px 9px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.07);
   color: var(--subtle);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.1em;
 }
-.landing-a .hp-time { color: var(--muted); font-size: 12px; margin-left: auto; }
-.landing-a .hp-channel { margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+.landing-a .hp-time { color: var(--muted); font-size: 18px; margin-left: auto; }
+.landing-a .hp-channel { margin-top: 3px; font-size: 19px; color: var(--muted); }
 .landing-a .hp-msg {
   display: grid;
-  grid-template-columns: 4px 1fr;
-  margin: 0 22px 18px;
+  grid-template-columns: 6px 1fr;
+  margin: 0 34px 28px;
   background: rgba(0, 0, 0, 0.22);
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
 }
 .landing-a .hp-bar { background: #ff5d5d; box-shadow: 0 0 12px rgba(255, 93, 93, 0.4); }
-.landing-a .hp-body { padding: 18px 20px; }
+.landing-a .hp-body { padding: 28px 30px; }
 .landing-a .hp-status {
-  display: inline-flex; align-items: center; gap: 9px;
-  padding: 5px 11px;
-  border-radius: 6px;
+  display: inline-flex; align-items: center; gap: 13px;
+  padding: 8px 17px;
+  border-radius: 9px;
   background: color-mix(in oklab, #ff5d5d 14%, transparent);
   border: 1px solid color-mix(in oklab, #ff5d5d 28%, transparent);
 }
 .landing-a .hp-dot {
-  width: 7px; height: 7px;
+  width: 11px; height: 11px;
   border-radius: 50%;
   background: #ff5d5d;
   box-shadow: 0 0 8px rgba(255, 93, 93, 0.7);
@@ -414,54 +416,54 @@ select {
 }
 .landing-a .hp-status-text {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10.5px; font-weight: 700; letter-spacing: 0.18em;
+  font-size: 15px; font-weight: 700; letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #ffb5b5;
 }
 .landing-a .hp-campaign {
-  margin-top: 14px;
-  font-size: 22px; font-weight: 600; letter-spacing: -0.015em;
+  margin-top: 20px;
+  font-size: 34px; font-weight: 600; letter-spacing: -0.015em;
   color: var(--text);
 }
-.landing-a .hp-meta { margin-top: 4px; font-size: 13px; color: var(--subtle); }
+.landing-a .hp-meta { margin-top: 6px; font-size: 20px; color: var(--subtle); }
 .landing-a .hp-summary {
-  margin-top: 18px;
-  font-size: 13.5px; line-height: 1.5; font-weight: 500;
+  margin-top: 26px;
+  font-size: 20px; line-height: 1.5; font-weight: 500;
   color: var(--text);
 }
-.landing-a .hp-issues { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
-.landing-a .hp-issue { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start; }
+.landing-a .hp-issues { margin-top: 18px; display: flex; flex-direction: column; gap: 15px; }
+.landing-a .hp-issue { display: grid; grid-template-columns: 40px 1fr; gap: 18px; align-items: start; }
 .landing-a .hp-issue-num {
-  width: 24px; height: 24px;
-  border-radius: 6px;
+  width: 36px; height: 36px;
+  border-radius: 9px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--hairline);
   display: grid; place-items: center;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px; font-weight: 600;
+  font-size: 18px; font-weight: 600;
   color: var(--subtle);
 }
 .landing-a .hp-issue-body { min-width: 0; }
-.landing-a .hp-issue-text { font-size: 13.5px; line-height: 1.5; color: var(--text); }
+.landing-a .hp-issue-text { font-size: 20px; line-height: 1.5; color: var(--text); }
 .landing-a .hp-issue-owner {
-  margin-top: 6px;
-  display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 9px;
+  display: inline-flex; align-items: center; gap: 11px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--subtle);
 }
 .landing-a .hp-owner-dot {
-  width: 5px; height: 5px;
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 5px color-mix(in oklab, var(--accent) 60%, transparent);
 }
-.landing-a .hp-actions { margin-top: 18px; display: flex; gap: 8px; }
+.landing-a .hp-actions { margin-top: 26px; display: flex; gap: 12px; }
 .landing-a .hp-btn {
-  height: 38px;
-  padding: 0 16px;
-  border-radius: 7px;
-  font-size: 13px; font-weight: 600; letter-spacing: -0.005em;
+  height: 56px;
+  padding: 0 26px;
+  border-radius: 10px;
+  font-size: 19px; font-weight: 600; letter-spacing: -0.005em;
   border: 1px solid transparent;
   transition: background 0.15s, border-color 0.15s, transform 0.15s;
 }
@@ -475,8 +477,8 @@ select {
 .landing-a .hp-btn-ghost:hover { border-color: var(--text); background: rgba(255, 255, 255, 0.04); }
 
 @media (max-width: 900px) {
-  .landing-a .frame { padding: 24px; overflow-y: auto; }
-  .landing-a .grid { grid-template-columns: 1fr; gap: 32px; padding: 24px 0; align-items: start; }
-  .landing-a .display { font-size: clamp(52px, 12vw, 84px); }
-  .landing-a .positioning { font-size: 22px; max-width: none; }
+  .landing-a .frame { padding: 28px; }
+  .landing-a .grid { grid-template-columns: 1fr; gap: 40px; padding: 28px 0; align-items: start; }
+  .landing-a .display { font-size: clamp(64px, 14vw, 104px); }
+  .landing-a .positioning { font-size: 30px; max-width: none; }
 }
