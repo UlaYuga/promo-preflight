@@ -19,7 +19,8 @@ const navRouteMap: Record<string, string> = {
   u: "/app/rules",
   o: "/app/owners",
   s: "/app/status",
-  a: "/app/api"
+  a: "/app/api",
+  e: "/app/evidence"
 };
 
 export function AppShell({

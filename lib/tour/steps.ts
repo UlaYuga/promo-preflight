@@ -101,6 +101,15 @@ export const productTourSteps: ProductTourStep[] = [
       "Screen 09 / API Contract shows REST endpoints, idempotency semantics, and a curl path for integration.",
     side: "bottom",
     align: "start"
+  },
+  {
+    selector: '[data-tour="evidence"]',
+    route: "/app/evidence",
+    title: "Read the evidence file",
+    description:
+      "Screen 10 / Evidence ties the UI, API, reliability fixes, CI, docs, and reviewer path into one technical narrative.",
+    side: "bottom",
+    align: "start"
   }
 ];
 
