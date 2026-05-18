@@ -83,6 +83,24 @@ export const productTourSteps: ProductTourStep[] = [
       "Screen 04 / Handoff turns the saved report into a Slack-ready internal Promo/CRM Ops update for launch owners.",
     side: "bottom",
     align: "start"
+  },
+  {
+    selector: '[data-tour="system-status"]',
+    route: "/app/status",
+    title: "Inspect System Status",
+    description:
+      "Screen 08 / System Status exposes health, run telemetry, audit events, reliability guarantees, and source links.",
+    side: "bottom",
+    align: "start"
+  },
+  {
+    selector: '[data-tour="api-contract"]',
+    route: "/app/api",
+    title: "Open the API contract",
+    description:
+      "Screen 09 / API Contract shows REST endpoints, idempotency semantics, and a curl path for integration.",
+    side: "bottom",
+    align: "start"
   }
 ];
 

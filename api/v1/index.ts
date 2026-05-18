@@ -41,6 +41,15 @@ export const RunResponseSchema = z.object({
 
 export type RunResponse = z.infer<typeof RunResponseSchema>;
 
+export const StatsResponseSchema = z.object({
+  totalRuns: z.number(),
+  totalEvents: z.number(),
+  lastEventAt: z.string().nullable(),
+  runP95LatencyMs: z.number().nullable(),
+});
+
+export type StatsResponse = z.infer<typeof StatsResponseSchema>;
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
