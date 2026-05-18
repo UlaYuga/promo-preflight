@@ -207,3 +207,272 @@ select {
     background-size: 56px 56px;
   }
 }
+
+/* ======================================================== */
+/* ===  Landing — Variant A "Refined Classic" (design)  === */
+/* Ported pixel-faithfully from the Claude Design handoff.   */
+/* Wrapper background is transparent so the project's        */
+/* existing animated Layers 1-4 show through (the design's   */
+/* own .atmos is intentionally not used).                    */
+/* ======================================================== */
+.landing-a {
+  --bg: #070708;
+  --paper: #0d0d0f;
+  --paper-2: #131318;
+  --hairline: #1d1d23;
+  --hairline-2: #272730;
+  --text: #ededee;
+  --subtle: #9b9ba3;
+  --muted: #5a5a62;
+  --accent: #c5ff3d;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: var(--text);
+  font-size: 16px;
+  font-family: var(--font-inter-tight), "Inter Tight", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11", "tnum";
+}
+.landing-a .frame {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 32px 56px;
+}
+.landing-a .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--hairline);
+}
+.landing-a .topbar-empty { min-height: 36px; }
+.landing-a .grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 56px;
+  align-items: center;
+  padding: 36px 0;
+  min-height: 0;
+}
+.landing-a .lcol { min-width: 0; }
+.landing-a .display {
+  margin: 22px 0 0;
+  font-size: clamp(72px, 8.4vw, 124px);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+}
+.landing-a .display span:first-child { color: var(--text); }
+.landing-a .display .display-accent {
+  color: var(--text);
+  text-shadow: 0 0 64px color-mix(in oklab, var(--accent) 28%, transparent),
+               0 0 18px color-mix(in oklab, var(--accent) 16%, transparent);
+}
+.landing-a .positioning {
+  margin: 26px 0 0;
+  max-width: 28ch;
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  font-weight: 500;
+  color: var(--text);
+}
+.landing-a .body {
+  margin: 18px 0 0;
+  max-width: 56ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--subtle);
+}
+.landing-a .cta-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+.landing-a .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  border: 1px solid transparent;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s, filter 0.2s;
+}
+.landing-a .btn-primary {
+  background: var(--accent);
+  color: #0a0a0c;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent),
+              0 0 32px color-mix(in oklab, var(--accent) 20%, transparent);
+}
+.landing-a .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.04); }
+.landing-a .btn-ghost {
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  border-color: var(--hairline);
+}
+.landing-a .btn-ghost:hover { border-color: var(--hairline-2); background: rgba(255, 255, 255, 0.04); }
+.landing-a .syslinks {
+  margin-top: 18px;
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.landing-a .syslink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--subtle);
+  border-bottom: 1px dashed var(--hairline);
+  padding-bottom: 2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.landing-a .syslink:hover { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 40%, transparent); }
+.landing-a .rcol { min-width: 0; display: flex; align-items: center; }
+
+/* HandoffPreview — Slack-style message */
+.landing-a .hp {
+  position: relative;
+  width: 100%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0) 50%),
+    rgba(13, 13, 16, 0.78);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 50px 100px -30px rgba(0, 0, 0, 0.8),
+    0 0 0 1px color-mix(in oklab, var(--accent) 5%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.landing-a .hp-head { display: flex; align-items: center; gap: 12px; padding: 18px 22px 14px; }
+.landing-a .hp-avatar {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(160deg, var(--accent), color-mix(in oklab, var(--accent) 60%, #0a0a0c));
+  color: #0a0a0c;
+  display: grid; place-items: center;
+  font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent),
+    0 0 24px color-mix(in oklab, var(--accent) 25%, transparent);
+}
+.landing-a .hp-id { min-width: 0; flex: 1; }
+.landing-a .hp-id-row { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.landing-a .hp-sender { font-weight: 700; color: var(--text); letter-spacing: -0.005em; }
+.landing-a .hp-app {
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--subtle);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+}
+.landing-a .hp-time { color: var(--muted); font-size: 12px; margin-left: auto; }
+.landing-a .hp-channel { margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+.landing-a .hp-msg {
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  margin: 0 22px 18px;
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.landing-a .hp-bar { background: #ff5d5d; box-shadow: 0 0 12px rgba(255, 93, 93, 0.4); }
+.landing-a .hp-body { padding: 18px 20px; }
+.landing-a .hp-status {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  background: color-mix(in oklab, #ff5d5d 14%, transparent);
+  border: 1px solid color-mix(in oklab, #ff5d5d 28%, transparent);
+}
+.landing-a .hp-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #ff5d5d;
+  box-shadow: 0 0 8px rgba(255, 93, 93, 0.7);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+.landing-a .hp-status-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffb5b5;
+}
+.landing-a .hp-campaign {
+  margin-top: 14px;
+  font-size: 22px; font-weight: 600; letter-spacing: -0.015em;
+  color: var(--text);
+}
+.landing-a .hp-meta { margin-top: 4px; font-size: 13px; color: var(--subtle); }
+.landing-a .hp-summary {
+  margin-top: 18px;
+  font-size: 13.5px; line-height: 1.5; font-weight: 500;
+  color: var(--text);
+}
+.landing-a .hp-issues { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.landing-a .hp-issue { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start; }
+.landing-a .hp-issue-num {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--hairline);
+  display: grid; place-items: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px; font-weight: 600;
+  color: var(--subtle);
+}
+.landing-a .hp-issue-body { min-width: 0; }
+.landing-a .hp-issue-text { font-size: 13.5px; line-height: 1.5; color: var(--text); }
+.landing-a .hp-issue-owner {
+  margin-top: 6px;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--subtle);
+}
+.landing-a .hp-owner-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 5px color-mix(in oklab, var(--accent) 60%, transparent);
+}
+.landing-a .hp-actions { margin-top: 18px; display: flex; gap: 8px; }
+.landing-a .hp-btn {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 7px;
+  font-size: 13px; font-weight: 600; letter-spacing: -0.005em;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.landing-a .hp-btn-primary {
+  background: var(--accent);
+  color: #0a0a0c;
+  box-shadow: 0 0 24px color-mix(in oklab, var(--accent) 20%, transparent);
+}
+.landing-a .hp-btn-primary:hover { transform: translateY(-1px); }
+.landing-a .hp-btn-ghost { background: transparent; color: var(--text); border-color: var(--hairline-2); }
+.landing-a .hp-btn-ghost:hover { border-color: var(--text); background: rgba(255, 255, 255, 0.04); }
+
+@media (max-width: 900px) {
+  .landing-a .frame { padding: 24px; overflow-y: auto; }
+  .landing-a .grid { grid-template-columns: 1fr; gap: 32px; padding: 24px 0; align-items: start; }
+  .landing-a .display { font-size: clamp(52px, 12vw, 84px); }
+  .landing-a .positioning { font-size: 22px; max-width: none; }
+}
