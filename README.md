@@ -42,8 +42,8 @@ The system accepts one canonical `CampaignBundle` in JSON — one format regardl
 
 <table>
 <tr>
-<td><strong>Before</strong><br>4 tabs, 8 chats, 0 versioning.<br><img src="./docs/assets/before.png" /></td>
-<td><strong>After</strong><br>One workspace. Verdict in 12 seconds.<br><img src="./docs/assets/after.png" /></td>
+<td width="50%" valign="top"><strong>Before</strong><br>4 tabs, 8 chats, 0 versioning.<br><img src="./docs/assets/before.png" width="100%" /></td>
+<td width="50%" valign="top"><strong>After</strong><br>One workspace. Verdict in 12 seconds.<br><img src="./docs/assets/after.png" width="100%" /></td>
 </tr>
 </table>
 
