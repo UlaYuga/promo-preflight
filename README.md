@@ -65,7 +65,7 @@ Each run follows a synchronous request path — validate, dispatch, check, persi
 sequenceDiagram
     autonumber
     actor Promo as Promo team
-    participant API as POST /v1/runs
+    participant API as POST /api/v1/runs
     participant Bus as Bus + Handlers
     participant Run as RunChecksUseCase
     participant Repo as PgRunRepository
