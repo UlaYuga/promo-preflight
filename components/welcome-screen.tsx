@@ -55,6 +55,24 @@ export function WelcomeScreen() {
   const workflow =
     get<Array<{ label: string; description: string }>>("welcome.workflowPreview") ?? [];
 
+  const systemLinks = [
+    { href: "/app/status", icon: Activity, label: t("welcome.systemLinks.status"), external: false },
+    { href: "/app/api", icon: Code2, label: t("welcome.systemLinks.api"), external: false },
+    { href: "/app/evidence", icon: GitPullRequestArrow, label: t("welcome.systemLinks.evidence"), external: false },
+    {
+      href: "https://github.com/UlaYuga/promo-preflight/blob/main/docs/API.md",
+      icon: BookOpen,
+      label: t("welcome.systemLinks.docs"),
+      external: true
+    },
+    {
+      href: "https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml",
+      icon: ServerCog,
+      label: t("welcome.systemLinks.github"),
+      external: true
+    }
+  ];
+
   return (
     <main className="relative h-screen overflow-hidden bg-background text-foreground">
       {/* ── Layer 1: Editorial blurred portrait backdrop ── */}
@@ -146,141 +164,148 @@ export function WelcomeScreen() {
         }}
       />
 
-      {/* ── Layer 5: Content ── */}
-      <div className="relative z-10 mx-auto flex h-screen w-full max-w-7xl flex-col px-6 py-5 sm:px-10 lg:px-12 lg:py-6">
-        <header className="flex items-center justify-between border-b border-[#1d1d23]/60 py-4">
-          <span />
-          <LanguageToggle className="scale-110 origin-top-right" />
+      {/* ── Layer 5: Content — refined editorial broadsheet ── */}
+      <div className="relative z-10 mx-auto flex h-screen w-full max-w-[1440px] flex-col px-6 sm:px-10 lg:px-14">
+        {/* Masthead */}
+        <header className="hairline-b flex items-baseline justify-between py-5">
+          <div className="flex items-baseline gap-4">
+            <span className="display text-[0.95rem] font-semibold tracking-[-0.01em] text-foreground">
+              Promo&nbsp;Preflight
+            </span>
+            <span className="hidden font-mono text-[10px] uppercase tracking-[0.3em] text-muted sm:inline">
+              {t("welcome.workflowTitle")}
+            </span>
+          </div>
+          <LanguageToggle className="origin-top-right" />
         </header>
 
-        <section className="grid flex-1 min-h-0 gap-8 py-6 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-center lg:gap-14">
-          <div data-tour="welcome-overview" className="max-h-full overflow-y-auto pr-1">
-            <h1 className="text-6xl font-medium leading-[0.90] tracking-[-0.03em] text-foreground sm:text-7xl lg:text-[5.5rem] text-glow-green">
+        <section className="grid flex-1 min-h-0 items-stretch gap-12 py-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:gap-16">
+          {/* Lede column */}
+          <div
+            data-tour="welcome-overview"
+            className="flex max-h-full min-w-0 flex-col overflow-y-auto pr-1"
+          >
+            <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-muted">
+              <span className="inline-block h-[5px] w-[5px] rounded-full bg-accent shadow-[0_0_10px_rgba(197,255,61,0.7)]" />
+              {t("welcome.eyebrow")}
+            </p>
+
+            <h1 className="display mt-6 text-[3.5rem] font-medium leading-[0.9] tracking-[-0.035em] text-foreground text-glow-green sm:text-7xl lg:text-[5.25rem]">
               Promo
               <br />
               <span className="text-subtle">Preflight</span>
             </h1>
 
-            <p className="mt-7 max-w-2xl text-[1.5rem] font-medium leading-[1.15] tracking-[-0.01em] text-foreground sm:text-[1.75rem]">
-              {t("welcome.positioning")}
-            </p>
+            <div className="mt-8 max-w-2xl border-l border-accent/30 pl-5">
+              <p className="text-[1.45rem] font-medium leading-[1.16] tracking-[-0.015em] text-foreground sm:text-[1.7rem]">
+                {t("welcome.positioning")}
+              </p>
+              <p className="mt-4 text-[0.95rem] leading-7 text-subtle">
+                {t("welcome.body")}
+              </p>
+            </div>
 
-            <p className="mt-5 max-w-xl text-lg leading-7 text-subtle">
-              {t("welcome.body")}
-            </p>
-
-            <p className="mt-5 max-w-2xl rounded-sm border border-white/[0.08] bg-surface/45 px-4 py-3 font-mono text-[11px] uppercase leading-5 tracking-[0.14em] text-subtle">
+            <p className="hairline-t hairline-b mt-8 py-3 font-mono text-[10.5px] uppercase leading-5 tracking-[0.2em] text-muted">
               {t("welcome.proofStrip")}
             </p>
 
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
               <TourLauncher />
               <Link
                 href="/app/intake?examples=1"
-                className="glass-surface inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-md border border-white/[0.08] px-7 py-3 text-base font-medium text-foreground transition-all duration-300 hover:border-white/[0.14] hover:bg-page/70 hover:shadow-[0_0_40px_rgba(197,255,61,0.06)]"
+                className="group inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-md border border-white/[0.1] px-7 py-3 font-mono text-[12px] uppercase tracking-[0.16em] text-foreground transition-all duration-300 hover:border-accent/40 hover:text-accent"
               >
                 {t("welcome.testCases")}
-                <BookOpen className="h-[18px] w-[18px] text-subtle" aria-hidden="true" />
+                <BookOpen
+                  className="h-[15px] w-[15px] text-muted transition-colors duration-300 group-hover:text-accent"
+                  aria-hidden="true"
+                />
               </Link>
             </div>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-subtle">
+            <p className="mt-4 max-w-xl text-[0.8rem] leading-6 text-muted">
               {t("welcome.ctaHint")}
             </p>
 
-            <div className="mt-5 flex flex-wrap gap-2 text-sm">
-              <Link
-                href="/app/status"
-                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-foreground transition hover:border-accent/30 hover:text-accent"
-              >
-                <Activity className="h-4 w-4" aria-hidden="true" />
-                {t("welcome.systemLinks.status")}
-              </Link>
-              <Link
-                href="/app/api"
-                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-foreground transition hover:border-accent/30 hover:text-accent"
-              >
-                <Code2 className="h-4 w-4" aria-hidden="true" />
-                {t("welcome.systemLinks.api")}
-              </Link>
-              <Link
-                href="/app/evidence"
-                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-foreground transition hover:border-accent/30 hover:text-accent"
-              >
-                <GitPullRequestArrow className="h-4 w-4" aria-hidden="true" />
-                {t("welcome.systemLinks.evidence")}
-              </Link>
-              <a
-                href="https://github.com/UlaYuga/promo-preflight/blob/main/docs/API.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-subtle transition hover:border-accent/30 hover:text-foreground"
-              >
-                <BookOpen className="h-4 w-4" aria-hidden="true" />
-                {t("welcome.systemLinks.docs")}
-              </a>
-              <a
-                href="https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-subtle transition hover:border-accent/30 hover:text-foreground"
-              >
-                <ServerCog className="h-4 w-4" aria-hidden="true" />
-                {t("welcome.systemLinks.github")}
-              </a>
-            </div>
+            <nav className="hairline-t mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 pt-5">
+              {systemLinks.map(({ href, icon: Icon, label, external }) => {
+                const cls =
+                  "group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-subtle transition-colors duration-200 hover:text-accent";
+                const inner = (
+                  <>
+                    <Icon
+                      className="h-[14px] w-[14px] text-muted transition-colors duration-200 group-hover:text-accent"
+                      aria-hidden="true"
+                    />
+                    {label}
+                  </>
+                );
+                return external ? (
+                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+                    {inner}
+                  </a>
+                ) : (
+                  <Link key={href} href={href} className={cls}>
+                    {inner}
+                  </Link>
+                );
+              })}
+            </nav>
 
-            <div className="mt-6 max-w-2xl border-l border-accent/30 pl-4">
-              <h3 className="text-sm font-semibold text-foreground">
+            <div className="mt-7 max-w-2xl border-l border-accent/30 pl-5">
+              <h3 className="display text-[0.95rem] font-semibold tracking-[-0.005em] text-foreground">
                 {t("welcome.architectureTitle")}
               </h3>
-              <p className="mt-2 text-sm leading-6 text-subtle">
+              <p className="mt-2 text-[0.85rem] leading-6 text-subtle">
                 {t("welcome.architectureBody")}
               </p>
             </div>
           </div>
 
-          <aside className="glass-surface flex flex-col overflow-hidden rounded-lg border border-white/[0.08] shadow-2xl shadow-black/60">
-            <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
+          {/* Editorial ledger card */}
+          <aside className="glass-surface flex max-h-full min-h-0 flex-col overflow-hidden rounded-lg border border-white/[0.08] shadow-2xl shadow-black/60">
+            <div className="hairline-b flex items-baseline justify-between px-6 py-5">
               <div>
-                <p className="font-mono text-xs uppercase tracking-[0.22em] text-muted">
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted">
                   {t("welcome.workflowTitle")}
                 </p>
-                <h2 className="mt-1 text-lg font-semibold tracking-[-0.01em] text-foreground">
+                <h2 className="display mt-1.5 text-[1.05rem] font-semibold tracking-[-0.01em] text-foreground">
                   {t("welcome.workflowSubtitle")}
                 </h2>
               </div>
-              <span className="flex h-10 w-10 items-center justify-center rounded-md border border-accent/20 bg-accent/[0.08] text-accent shadow-[0_0_24px_rgba(197,255,61,0.08)]">
-                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+              <span className="num text-[11px] tracking-[0.18em] text-muted">
+                {String(workflow.length).padStart(2, "0")}
               </span>
             </div>
 
-            <div className="flex-1 divide-y divide-white/[0.06] overflow-y-auto">
+            <ol className="min-h-0 flex-1 divide-y divide-white/[0.05] overflow-y-auto">
               {workflow.map((item, index) => {
                 const Icon = workflowIcons[index] ?? CheckCircle2;
-
                 return (
-                  <div
+                  <li
                     key={item.label}
-                    className="grid grid-cols-[52px_1fr_32px] items-start gap-3 px-6 py-3.5 transition-colors duration-200 hover:bg-white/[0.03]"
+                    className="group grid grid-cols-[34px_1fr_18px] items-baseline gap-4 px-6 py-3.5 transition-colors duration-200 hover:bg-white/[0.025]"
                   >
-                    <span className="font-mono text-sm font-medium text-muted">
+                    <span className="num text-[0.95rem] font-medium text-muted transition-colors duration-200 group-hover:text-accent">
                       {String(index + 1).padStart(2, "0")}
                     </span>
-                    <div>
-                      <p className="text-sm font-semibold leading-snug text-foreground">
+                    <div className="min-w-0">
+                      <p className="text-[0.88rem] font-semibold leading-snug tracking-[-0.005em] text-foreground">
                         {item.label}
                       </p>
-                      <p className="mt-1 text-[0.8rem] leading-5 text-subtle">
+                      <p className="mt-1 text-[0.78rem] leading-5 text-subtle">
                         {item.description}
                       </p>
                     </div>
-                    <Icon className="mt-0.5 h-5 w-5 text-accent/60" aria-hidden="true" />
-                  </div>
+                    <Icon
+                      className="mt-1 h-[15px] w-[15px] text-muted transition-colors duration-200 group-hover:text-accent/70"
+                      aria-hidden="true"
+                    />
+                  </li>
                 );
               })}
-            </div>
+            </ol>
 
-            <div className="grid grid-cols-4 border-t border-white/[0.06]">
+            <div className="hairline-t grid grid-cols-4">
               {[
                 ["08", t("welcome.metrics.checks")],
                 ["23", t("welcome.metrics.rules")],
@@ -291,10 +316,10 @@ export function WelcomeScreen() {
                   key={label}
                   className={`${idx < 3 ? "border-r border-white/[0.06]" : ""} px-5 py-4`}
                 >
-                  <p className="font-mono text-3xl font-medium leading-none tracking-[-0.02em] text-foreground">
+                  <p className="num text-[1.7rem] font-medium leading-none tracking-[-0.02em] text-foreground">
                     {value}
                   </p>
-                  <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                  <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-muted">
                     {label}
                   </p>
                 </div>
