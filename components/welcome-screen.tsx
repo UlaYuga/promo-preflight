@@ -2,12 +2,18 @@
 
 import Link from "next/link";
 import {
+  Activity,
+  BellRing,
   BookOpen,
   CheckCircle2,
+  ClipboardCheck,
+  Code2,
   DatabaseZap,
   FileSearch,
   GitCompareArrows,
   RadioTower,
+  Send,
+  ServerCog,
   ShieldCheck
 } from "lucide-react";
 import { TourLauncher } from "@/components/tour-launcher";
@@ -15,10 +21,15 @@ import { LanguageToggle, useI18n } from "@/lib/i18n";
 
 const workflowIcons = [
   DatabaseZap,
+  ShieldCheck,
   RadioTower,
+  ServerCog,
+  ClipboardCheck,
+  BellRing,
   FileSearch,
-  CheckCircle2,
-  GitCompareArrows
+  GitCompareArrows,
+  Send,
+  Activity
 ];
 
 const particles = Array.from({ length: 14 }, (_, i) => {
@@ -141,8 +152,8 @@ export function WelcomeScreen() {
           <LanguageToggle className="scale-110 origin-top-right" />
         </header>
 
-        <section className="grid flex-1 min-h-0 gap-10 py-6 lg:grid-cols-[1fr_500px] lg:items-center lg:gap-16">
-          <div data-tour="welcome-overview">
+        <section className="grid flex-1 min-h-0 gap-8 py-6 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-center lg:gap-14">
+          <div data-tour="welcome-overview" className="max-h-full overflow-y-auto pr-1">
             <h1 className="text-6xl font-medium leading-[0.90] tracking-[-0.03em] text-foreground sm:text-7xl lg:text-[5.5rem] text-glow-green">
               Promo
               <br />
@@ -157,7 +168,11 @@ export function WelcomeScreen() {
               {t("welcome.body")}
             </p>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+            <p className="mt-5 max-w-2xl rounded-sm border border-white/[0.08] bg-surface/45 px-4 py-3 font-mono text-[11px] uppercase leading-5 tracking-[0.14em] text-subtle">
+              {t("welcome.proofStrip")}
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <TourLauncher />
               <Link
                 href="/app/intake?examples=1"
@@ -170,6 +185,50 @@ export function WelcomeScreen() {
             <p className="mt-3 max-w-xl text-sm leading-6 text-subtle">
               {t("welcome.ctaHint")}
             </p>
+
+            <div className="mt-5 flex flex-wrap gap-2 text-sm">
+              <Link
+                href="/app/status"
+                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-foreground transition hover:border-accent/30 hover:text-accent"
+              >
+                <Activity className="h-4 w-4" aria-hidden="true" />
+                {t("welcome.systemLinks.status")}
+              </Link>
+              <Link
+                href="/app/api"
+                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-foreground transition hover:border-accent/30 hover:text-accent"
+              >
+                <Code2 className="h-4 w-4" aria-hidden="true" />
+                {t("welcome.systemLinks.api")}
+              </Link>
+              <a
+                href="https://github.com/UlaYuga/promo-preflight/blob/main/docs/API.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-subtle transition hover:border-accent/30 hover:text-foreground"
+              >
+                <BookOpen className="h-4 w-4" aria-hidden="true" />
+                {t("welcome.systemLinks.docs")}
+              </a>
+              <a
+                href="https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-sm border border-white/[0.08] bg-page/45 px-3 py-2 text-subtle transition hover:border-accent/30 hover:text-foreground"
+              >
+                <ServerCog className="h-4 w-4" aria-hidden="true" />
+                {t("welcome.systemLinks.github")}
+              </a>
+            </div>
+
+            <div className="mt-6 max-w-2xl border-l border-accent/30 pl-4">
+              <h3 className="text-sm font-semibold text-foreground">
+                {t("welcome.architectureTitle")}
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-subtle">
+                {t("welcome.architectureBody")}
+              </p>
+            </div>
           </div>
 
           <aside className="glass-surface flex flex-col overflow-hidden rounded-lg border border-white/[0.08] shadow-2xl shadow-black/60">
@@ -217,8 +276,8 @@ export function WelcomeScreen() {
               {[
                 ["08", t("welcome.metrics.checks")],
                 ["23", t("welcome.metrics.rules")],
-                ["06", t("welcome.metrics.owners")],
-                ["02", t("welcome.metrics.languages")]
+                ["10", t("welcome.metrics.endpoints")],
+                ["162", t("welcome.metrics.tests")]
               ].map(([value, label], idx) => (
                 <div
                   key={label}

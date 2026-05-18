@@ -10,10 +10,12 @@ All endpoints are prefixed `/api`. The versioned path is `/api/v1/...`.
 4. [GET /api/v1/campaigns/:id](#4-get-apiv1campaignsid)
 5. [GET /api/v1/campaigns/:id/versions](#5-get-apiv1campaignsidversions)
 6. [GET /api/v1/campaigns/:id/diff](#6-get-apiv1campaignsiddiff)
-7. [GET /api/health](#7-get-apihealth)
-8. [GET /api/ready](#8-get-apiready)
-9. [Error model](#error-model)
-10. [Versioning policy](#versioning-policy)
+7. [GET /api/v1/audit](#7-get-apiv1audit)
+8. [GET /api/v1/stats](#8-get-apiv1stats)
+9. [GET /api/health](#9-get-apihealth)
+10. [GET /api/ready](#10-get-apiready)
+11. [Error model](#error-model)
+12. [Versioning policy](#versioning-policy)
 
 ---
 
@@ -300,7 +302,58 @@ Returns the blocker diff between two campaign versions — which blockers were a
 
 ---
 
-## 7. GET /api/health
+## 7. GET /api/v1/audit
+
+Lists append-only audit events delivered by the outbox worker. The endpoint is queryable by event type and cursor, and is the same feed shown in `/app/status`.
+
+**Query params**
+
+| Param | Required | Description |
+|---|---|---|
+| `limit` | no | Integer `1..200`; defaults to `50`. |
+| `type` | no | One event type, e.g. `RunStarted`, `BlockerRaised`, `RunCompleted`. |
+| `cursor` | no | Opaque cursor returned as `nextCursor` from the previous response. |
+
+**Response — 200 OK**
+
+```ts
+{
+  items: Array<{
+    id: string
+    eventType: "RunStarted" | "BlockerRaised" | "RunCompleted"
+    payload: PreflightEvent
+    actor: string | null
+    createdAt: string
+  }>
+  nextCursor: string | null
+}
+```
+
+**Errors**:
+- `400` if `limit`, `type`, or `cursor` is invalid.
+
+---
+
+## 8. GET /api/v1/stats
+
+Returns aggregate run telemetry for the System Status dashboard.
+
+**Response — 200 OK**
+
+```ts
+{
+  totalRuns: number
+  totalEvents: number
+  lastEventAt: string | null
+  runP95LatencyMs: number | null
+}
+```
+
+`runP95LatencyMs` is computed from completed runs using Postgres `percentile_cont(0.95)` over `completed_at - created_at`.
+
+---
+
+## 9. GET /api/health
 
 Liveness probe. Used by Docker `HEALTHCHECK` and uptime monitors.
 
@@ -314,7 +367,7 @@ Always returns `200` as long as the process is running.
 
 ---
 
-## 8. GET /api/ready
+## 10. GET /api/ready
 
 Readiness probe. Returns `200` only when the database is reachable **and** all migrations have been applied. Returns `503` otherwise.
 

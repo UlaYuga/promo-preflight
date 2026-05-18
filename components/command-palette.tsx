@@ -16,9 +16,12 @@ const navItems = [
   { key: "campaigns", route: "/app/campaigns", num: "01", hint: "G C" },
   { key: "intake", route: "/app/intake", num: "02", hint: "G I" },
   { key: "riskReport", route: "/app/risk-report", num: "03", hint: "G R" },
-  { key: "readiness", route: "/app/readiness", num: "04", hint: "G L" },
-  { key: "rules", route: "/app/rules", num: "05", hint: "G U" },
-  { key: "owners", route: "/app/owners", num: "06", hint: "G O" },
+  { key: "handoff", route: "/app/handoff", num: "04", hint: "G H" },
+  { key: "readiness", route: "/app/readiness", num: "05", hint: "G L" },
+  { key: "rules", route: "/app/rules", num: "06", hint: "G U" },
+  { key: "owners", route: "/app/owners", num: "07", hint: "G O" },
+  { key: "systemStatus", route: "/app/status", num: "08", hint: "G S" },
+  { key: "apiContract", route: "/app/api", num: "09", hint: "G A" },
 ];
 
 export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
@@ -42,7 +45,7 @@ export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
       ...navItems.map((n) => ({
         kind: t("palette.go" as TranslationKey),
         label: t(`nav.${n.key}` as TranslationKey),
-        hint: n.hint,
+        hint: `${n.num} · ${n.hint}`,
         action: () => { router.push(n.route); onClose(); }
       })),
       {
@@ -132,8 +135,10 @@ export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
             value={query}
             onChange={(e) => handleQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
+            aria-label={t("palette.placeholder" as TranslationKey)}
+            name="command-palette-search"
             placeholder={t("palette.placeholder" as TranslationKey) || "Search · run · jump"}
-            className="flex-1 bg-transparent text-[15px] tracking-tight2 outline-none placeholder:text-muted"
+            className="flex-1 rounded-sm bg-transparent text-[15px] tracking-tight2 outline-none placeholder:text-muted focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent/40"
           />
           <kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">
             esc
