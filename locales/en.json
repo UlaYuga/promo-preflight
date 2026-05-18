@@ -70,7 +70,9 @@
     "ownersDescription": "Roles and defaults",
     "campaigns": "Campaigns",
     "campaignsDescription": "Version history",
-    "versiondiff": "Version comparison"
+    "versiondiff": "Version comparison",
+    "systemStatus": "System status",
+    "systemStatusDescription": "Health, audit feed, API"
   },
   "welcome": {
     "eyebrow": "Start here · 90-second tour",
@@ -545,6 +547,50 @@
     "viewVersionDetail": "View version details",
     "openCampaigns": "Open Campaigns",
     "openHandoff": "Open Handoff"
+  },
+  "systemStatus": {
+    "eyebrow": "08 / System status",
+    "title": "System status",
+    "subtitle": "Live health, audit feed, and the REST contract behind this workspace.",
+    "health": {
+      "title": "Health",
+      "subtitle": "Liveness and readiness probes refreshed every 10 s",
+      "ok": "All systems operational",
+      "degraded": "Database or migrations unhealthy",
+      "checking": "Checking…",
+      "liveness": "Liveness",
+      "readiness": "Readiness",
+      "env": "Environment",
+      "db": "Database",
+      "migrations": "Migrations"
+    },
+    "metrics": {
+      "title": "Run telemetry",
+      "subtitle": "Counts across the entire database",
+      "totalRuns": "Total runs persisted",
+      "totalEvents": "Audit events delivered",
+      "lastEventAt": "Last event",
+      "runP95LatencyMs": "Run p95 latency",
+      "ms": "ms",
+      "unknown": "—",
+      "never": "no events yet"
+    },
+    "feed": {
+      "title": "Live audit feed",
+      "subtitle": "Last 50 events from /api/v1/audit, polled every 2 s",
+      "empty": "No events yet — POST /api/v1/runs to trigger one.",
+      "time": "Time",
+      "type": "Event",
+      "actor": "Actor"
+    },
+    "links": {
+      "title": "Contract & code",
+      "subtitle": "What this workspace is wired to",
+      "apiDocs": "REST API contract (docs/API.md)",
+      "repo": "Source code on GitHub",
+      "auditJson": "Raw audit JSON",
+      "ci": "CI workflow"
+    }
   },
   "palette": {
     "placeholder": "Search, run, or jump",
