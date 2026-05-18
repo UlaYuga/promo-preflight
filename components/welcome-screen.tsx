@@ -7,20 +7,20 @@ import { getTourStepRoute } from "@/lib/tour/steps";
 import { startTour } from "@/lib/tour/storage";
 import { LanguageToggle, useI18n } from "@/lib/i18n";
 
-const particles = Array.from({ length: 14 }, (_, i) => {
+const particles = Array.from({ length: 26 }, (_, i) => {
   const seed = (i * 2654435761) >>> 0;
   const r1 = ((seed & 0xffff) / 0xffff);
   const r2 = (((seed >> 16) & 0xffff) / 0xffff);
   const r3 = (((seed * 3) >>> 0) & 0xffff) / 0xffff;
   const r4 = (((seed * 7) >>> 0) & 0xffff) / 0xffff;
   return {
-    size: 3 + r1 * 4,
-    left: 5 + r2 * 90,
-    top: 10 + r3 * 80,
-    alpha: 0.3 + r4 * 0.4,
-    glowSize: 4 + r1 * 8,
-    animDuration: 6 + r2 * 10,
-    animDelay: r3 * 8,
+    size: 4 + r1 * 6,
+    left: 4 + r2 * 92,
+    top: 8 + r3 * 84,
+    alpha: 0.45 + r4 * 0.45,
+    glowSize: 6 + r1 * 12,
+    animDuration: 5 + r2 * 7,
+    animDelay: r3 * 6,
   };
 });
 
@@ -136,16 +136,16 @@ export function WelcomeScreen() {
           className="absolute right-[-8%] top-[-5%] h-[120%] w-[55%] blur-[90px]"
           style={{
             background:
-              "radial-gradient(ellipse 70% 90% at 55% 45%, rgba(180,170,160,0.16), transparent 70%), radial-gradient(ellipse 50% 65% at 40% 35%, rgba(160,150,140,0.11), transparent 65%), radial-gradient(circle at 50% 50%, rgba(200,195,185,0.08), transparent 50%)",
-            animation: "fog-drift 28s ease-in-out infinite"
+              "radial-gradient(ellipse 70% 90% at 55% 45%, rgba(180,170,160,0.22), transparent 70%), radial-gradient(ellipse 50% 65% at 40% 35%, rgba(160,150,140,0.15), transparent 65%), radial-gradient(circle at 50% 50%, rgba(200,195,185,0.11), transparent 50%)",
+            animation: "fog-drift 18s ease-in-out infinite"
           }}
         />
         <div
           className="absolute left-[-5%] bottom-[-10%] h-[90%] w-[40%] blur-[80px]"
           style={{
             background:
-              "radial-gradient(ellipse 60% 80% at 50% 60%, rgba(60,60,65,0.12), transparent 70%)",
-            animation: "fog-drift 32s ease-in-out infinite 4s"
+              "radial-gradient(ellipse 60% 80% at 50% 60%, rgba(60,60,65,0.16), transparent 70%)",
+            animation: "fog-drift 22s ease-in-out infinite 3s"
           }}
         />
       </div>
@@ -156,32 +156,32 @@ export function WelcomeScreen() {
           className="absolute left-[10%] top-[-20%] h-[70%] w-[55%] blur-[90px]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 40%, rgba(197,255,61,0.18), transparent 70%)",
-            animation: "glow-pulse 8s ease-in-out infinite"
+              "radial-gradient(ellipse at 50% 40%, rgba(197,255,61,0.32), transparent 70%)",
+            animation: "glow-pulse 5s ease-in-out infinite"
           }}
         />
         <div
           className="absolute right-[-5%] top-[25%] h-[55%] w-[45%] blur-[80px]"
           style={{
             background:
-              "radial-gradient(circle at 50% 50%, rgba(197,255,61,0.14), transparent 70%)",
-            animation: "glow-pulse 10s ease-in-out infinite 3s"
+              "radial-gradient(circle at 50% 50%, rgba(197,255,61,0.24), transparent 70%)",
+            animation: "glow-pulse 6.5s ease-in-out infinite 2s"
           }}
         />
         <div
           className="absolute left-[35%] top-[5%] h-[45%] w-[35%] blur-[70px]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 50%, rgba(95,109,205,0.10), transparent 70%)",
-            animation: "fog-drift 22s ease-in-out infinite 1.5s"
+              "radial-gradient(ellipse at 50% 50%, rgba(95,109,205,0.18), transparent 70%)",
+            animation: "fog-drift 14s ease-in-out infinite 1s"
           }}
         />
         <div
           className="absolute bottom-0 left-0 h-[30%] w-full blur-[50px]"
           style={{
             background:
-              "linear-gradient(to top, rgba(197,255,61,0.10), transparent 75%)",
-            animation: "glow-pulse 12s ease-in-out infinite 2s"
+              "linear-gradient(to top, rgba(197,255,61,0.20), transparent 72%)",
+            animation: "glow-pulse 8s ease-in-out infinite 1.5s"
           }}
         />
       </div>
@@ -209,13 +209,13 @@ export function WelcomeScreen() {
 
       {/* ── Layer 4: Film grain / texture ── */}
       <div
-        className="pointer-events-none absolute inset-0 z-[2] opacity-[0.03] mix-blend-overlay"
+        className="pointer-events-none absolute inset-0 z-[2] opacity-[0.05] mix-blend-overlay"
         aria-hidden="true"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E\")",
           backgroundSize: "200px 200px",
-          animation: "grain-shift 8s steps(1) infinite"
+          animation: "grain-shift 6s steps(1) infinite"
         }}
       />
 
