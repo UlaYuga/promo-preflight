@@ -3,12 +3,6 @@
     "shadcn": {
       "command": "npx",
       "args": ["shadcn@latest", "mcp"]
-    },
-    "context7": {
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "<removed-context7-api-key>"
-      }
     }
   }
 }
