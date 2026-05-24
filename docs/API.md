@@ -31,7 +31,7 @@ Configure the server-side key through `PREFLIGHT_API_KEY`. If it is unset or the
 
 ## 1. POST /api/v1/runs
 
-Runs all enabled checks against a campaign bundle. Idempotent — submitting the same `Idempotency-Key` twice returns the same result.
+Runs the mandatory API check pipeline against a campaign bundle. Idempotent — submitting the same `Idempotency-Key` twice returns the same result.
 
 **Headers**
 
@@ -41,7 +41,7 @@ Runs all enabled checks against a campaign bundle. Idempotent — submitting the
 | `Content-Type` | yes | `application/json` |
 | `Idempotency-Key` | yes | Client-generated UUID (for example, `$(uuidgen)`). Same key + same body → same `runId`. Same key + different body → 409. |
 
-**Request body** — `{ campaign: CampaignBundle, options?: RunOptions }`
+**Request body** — `{ campaign: CampaignBundle, options?: Record<string, never> }`
 
 The `campaign` field matches [`CampaignBundleSchema`](../schemas/index.ts) exactly:
 
@@ -98,13 +98,13 @@ The `campaign` field matches [`CampaignBundleSchema`](../schemas/index.ts) exact
     targetJurisdiction?: string[]   // e.g. ["UK", "BR"] — use "UK", not "GB"
     paymentMethods?: string[]       // e.g. ["PIX", "VISA", "USDT"]
   }
-  options?: {
-    skipChecks?: string[]           // check IDs to skip, e.g. ["format_qa", "link_qa", "terms_robustness"]
-  }
+  options?: {}                      // reserved; no supported client settings
 }
 ```
 
-Valid `skipChecks` values are the eight check IDs: `channel_consistency`, `terms_robustness`, `offer_math_sanity`, `jurisdictional_risk_signals`, `localization_qa`, `launch_ownership`, `link_qa`, `format_qa`. Unknown IDs are silently ignored.
+Every API run executes all eight core offline checks: `channel_consistency`, `terms_robustness`, `offer_math_sanity`, `jurisdictional_risk_signals`, `localization_qa`, `launch_ownership`, `link_qa`, and `format_qa`.
+
+The API pipeline additionally executes mandatory policy checks for payment compatibility (`payment_compat`), crypto disclosure (`crypto_disclosure`), and jurisdictional risk (`jurisdictional_risk`). The API `format_qa` and `link_qa` wrappers overlap with the core pipeline; identical findings are de-duplicated in the run result. Clients cannot exclude mandatory checks. Unknown members in `options` are rejected with `400 BAD_REQUEST`.
 
 The complete JSON request body must not exceed `MAX_INPUT_CHARS` characters (default `50000`). Larger requests return `413 PAYLOAD_TOO_LARGE` before checks run or data is written.
 

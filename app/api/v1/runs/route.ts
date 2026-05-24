@@ -8,7 +8,14 @@ import { HandlerRegistry } from '../../../../application/bus/HandlerRegistry';
 import { handler as runChecksHandler } from '../../../../infrastructure/handler/checks/RunChecksHandler';
 import type { PreflightEvent } from '../../../../domain/event/PreflightEvent';
 import { CampaignBundleSchema } from '../../../../domain/model/Campaign';
-import { hashBody, countBlockers, errorResponse, badRequest, payloadTooLarge } from '../../../../api/v1/index';
+import {
+  RunsPostBodySchema,
+  hashBody,
+  countBlockers,
+  errorResponse,
+  badRequest,
+  payloadTooLarge,
+} from '../../../../api/v1/index';
 import type { RunResponse } from '../../../../api/v1/index';
 import type { RunChecksCommand } from '../../../../application/command/RunChecksCommand';
 import type { Run } from '../../../../domain/model/Run';
@@ -44,12 +51,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   // Validate outer shape
-  const outerParse = z
-    .object({
-      campaign: z.record(z.string(), z.unknown()),
-      options: z.object({ skipChecks: z.array(z.string()).optional() }).optional(),
-    })
-    .safeParse(rawBody);
+  const outerParse = RunsPostBodySchema.safeParse(rawBody);
 
   if (!outerParse.success) {
     return badRequest(`Invalid request body: ${outerParse.error.message}`);
@@ -62,7 +64,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const campaign = campaignParse.data;
-  const options = outerParse.data.options ?? {};
   const bodyHash = hashBody(rawBody);
   const db = getDb();
 
@@ -74,7 +75,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   const command: RunChecksCommand = {
     type: 'RunChecks',
     campaign,
-    options,
   };
 
   const result = await bus.dispatch<Run>(command);

@@ -1,13 +1,21 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
+import { getDb } from '../../../../infrastructure/db/client';
 import { POST } from './route';
 
 const VALID_IDEMPOTENCY_KEY = '2a099960-d864-4d93-954f-1886bd5e980c';
+
+vi.mock('../../../../infrastructure/db/client', () => ({
+  getDb: vi.fn(() => {
+    throw new Error('getDb must not be called for rejected requests');
+  }),
+}));
 
 describe('POST /api/v1/runs request boundary', () => {
   const previousMaxInputChars = process.env.MAX_INPUT_CHARS;
 
   afterEach(() => {
+    vi.mocked(getDb).mockClear();
     if (previousMaxInputChars === undefined) {
       delete process.env.MAX_INPUT_CHARS;
     } else {
@@ -61,5 +69,40 @@ describe('POST /api/v1/runs request boundary', () => {
       error: 'BAD_REQUEST',
       message: expect.stringContaining('Invalid request body'),
     });
+  });
+
+  it('rejects skipChecks before executing checks or writing to the database', async () => {
+    const response = await POST(
+      new NextRequest('http://localhost/api/v1/runs', {
+        method: 'POST',
+        headers: { 'Idempotency-Key': VALID_IDEMPOTENCY_KEY },
+        body: JSON.stringify({
+          campaign: {
+            metadata: {
+              campaignName: 'Mandatory checks contract',
+              promoType: 'welcome',
+              geo: 'UK',
+              locale: 'en-GB',
+              currency: 'GBP',
+              channelsIncluded: ['email'],
+            },
+            offer: {},
+            assets: [],
+            links: [],
+            owners: [],
+            termsText: 'Play responsibly. 18+ only.',
+            targetJurisdiction: ['UK'],
+          },
+          options: { skipChecks: ['terms_robustness'] },
+        }),
+      })
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      error: 'BAD_REQUEST',
+      message: expect.stringContaining('skipChecks'),
+    });
+    expect(getDb).not.toHaveBeenCalled();
   });
 });

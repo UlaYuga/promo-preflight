@@ -10,9 +10,7 @@ import type { RunBlocker } from '../../domain/model/Run';
 
 export const RunsPostBodySchema = z.object({
   campaign: z.record(z.string(), z.unknown()),
-  options: z
-    .object({ skipChecks: z.array(z.string()).optional() })
-    .optional(),
+  options: z.object({}).strict().optional(),
 });
 
 export const RunResponseSchema = z.object({

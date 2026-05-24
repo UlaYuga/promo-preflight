@@ -19,6 +19,6 @@ export const handler: CommandHandler<RunChecksCommand, Run> = {
       CryptoDisclosureCheck,
       JurisdictionalRiskCheck,
     ]);
-    return useCase.run(command.campaign, command.options);
+    return useCase.run(command.campaign);
   },
 };
