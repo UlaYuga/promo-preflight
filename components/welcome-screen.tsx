@@ -133,7 +133,7 @@ export function WelcomeScreen() {
       {/* ── Layer 1: Editorial blurred portrait backdrop ── */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div
-          className="absolute right-[-8%] top-[-5%] h-[120%] w-[55%] blur-[90px]"
+          className="motion-decorative absolute right-[-8%] top-[-5%] h-[120%] w-[55%] blur-[90px]"
           style={{
             background:
               "radial-gradient(ellipse 70% 90% at 55% 45%, rgba(180,170,160,0.22), transparent 70%), radial-gradient(ellipse 50% 65% at 40% 35%, rgba(160,150,140,0.15), transparent 65%), radial-gradient(circle at 50% 50%, rgba(200,195,185,0.11), transparent 50%)",
@@ -141,7 +141,7 @@ export function WelcomeScreen() {
           }}
         />
         <div
-          className="absolute left-[-5%] bottom-[-10%] h-[90%] w-[40%] blur-[80px]"
+          className="motion-decorative absolute left-[-5%] bottom-[-10%] h-[90%] w-[40%] blur-[80px]"
           style={{
             background:
               "radial-gradient(ellipse 60% 80% at 50% 60%, rgba(60,60,65,0.16), transparent 70%)",
@@ -153,7 +153,7 @@ export function WelcomeScreen() {
       {/* ── Layer 2: Green wave / glow atmosphere ── */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div
-          className="absolute left-[10%] top-[-20%] h-[70%] w-[55%] blur-[90px]"
+          className="motion-decorative absolute left-[10%] top-[-20%] h-[70%] w-[55%] blur-[90px]"
           style={{
             background:
               "radial-gradient(ellipse at 50% 40%, rgba(197,255,61,0.32), transparent 70%)",
@@ -161,7 +161,7 @@ export function WelcomeScreen() {
           }}
         />
         <div
-          className="absolute right-[-5%] top-[25%] h-[55%] w-[45%] blur-[80px]"
+          className="motion-decorative absolute right-[-5%] top-[25%] h-[55%] w-[45%] blur-[80px]"
           style={{
             background:
               "radial-gradient(circle at 50% 50%, rgba(197,255,61,0.24), transparent 70%)",
@@ -169,7 +169,7 @@ export function WelcomeScreen() {
           }}
         />
         <div
-          className="absolute left-[35%] top-[5%] h-[45%] w-[35%] blur-[70px]"
+          className="motion-decorative absolute left-[35%] top-[5%] h-[45%] w-[35%] blur-[70px]"
           style={{
             background:
               "radial-gradient(ellipse at 50% 50%, rgba(95,109,205,0.18), transparent 70%)",
@@ -177,7 +177,7 @@ export function WelcomeScreen() {
           }}
         />
         <div
-          className="absolute bottom-0 left-0 h-[30%] w-full blur-[50px]"
+          className="motion-decorative absolute bottom-0 left-0 h-[30%] w-full blur-[50px]"
           style={{
             background:
               "linear-gradient(to top, rgba(197,255,61,0.20), transparent 72%)",
@@ -191,7 +191,7 @@ export function WelcomeScreen() {
         {particles.map((p, i) => (
           <div
             key={i}
-            className="absolute rounded-full"
+            className="motion-decorative absolute rounded-full"
             style={{
               width: `${p.size}px`,
               height: `${p.size}px`,
@@ -209,7 +209,7 @@ export function WelcomeScreen() {
 
       {/* ── Layer 4: Film grain / texture ── */}
       <div
-        className="pointer-events-none absolute inset-0 z-[2] opacity-[0.05] mix-blend-overlay"
+        className="motion-decorative pointer-events-none absolute inset-0 z-[2] opacity-[0.05] mix-blend-overlay"
         aria-hidden="true"
         style={{
           backgroundImage:
