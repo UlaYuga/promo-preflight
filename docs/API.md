@@ -2,6 +2,16 @@
 
 All endpoints are prefixed `/api`. The versioned path is `/api/v1/...`.
 
+## Authentication
+
+Every endpoint under `/api/v1/*` requires:
+
+```http
+Authorization: Bearer <PREFLIGHT_API_KEY>
+```
+
+Configure the server-side key through `PREFLIGHT_API_KEY`. If it is unset or the bearer value is missing or invalid, the versioned API returns `401 UNAUTHORIZED`; it never falls back to public access. Liveness and readiness probes (`/api/health` and `/api/ready`) are intentionally public.
+
 ## Table of contents
 
 1. [POST /api/v1/runs](#1-post-apiv1runs)
@@ -27,8 +37,9 @@ Runs all enabled checks against a campaign bundle. Idempotent — submitting the
 
 | Header | Required | Description |
 |---|---|---|
+| `Authorization` | yes | `Bearer <PREFLIGHT_API_KEY>` |
 | `Content-Type` | yes | `application/json` |
-| `Idempotency-Key` | yes | Client-generated UUID. Same key + same body → same `runId`. Same key + different body → 409. |
+| `Idempotency-Key` | yes | Client-generated UUID (for example, `$(uuidgen)`). Same key + same body → same `runId`. Same key + different body → 409. |
 
 **Request body** — `{ campaign: CampaignBundle, options?: RunOptions }`
 
@@ -95,6 +106,8 @@ The `campaign` field matches [`CampaignBundleSchema`](../schemas/index.ts) exact
 
 Valid `skipChecks` values are the eight check IDs: `channel_consistency`, `terms_robustness`, `offer_math_sanity`, `jurisdictional_risk_signals`, `localization_qa`, `launch_ownership`, `link_qa`, `format_qa`. Unknown IDs are silently ignored.
 
+The complete JSON request body must not exceed `MAX_INPUT_CHARS` characters (default `50000`). Larger requests return `413 PAYLOAD_TOO_LARGE` before checks run or data is written.
+
 **Response — 200 OK**
 
 ```ts
@@ -125,7 +138,9 @@ Valid `skipChecks` values are the eight check IDs: `channel_consistency`, `terms
 
 ```bash
 # Export the sample bundle from schemas/fixtures.ts to JSON first, then POST it:
+export PREFLIGHT_API_KEY='replace-with-the-key-configured-on-the-server'
 curl -X POST http://localhost:3000/api/v1/runs \
+  -H "Authorization: Bearer $PREFLIGHT_API_KEY" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
   -d '{
@@ -412,7 +427,9 @@ All error responses share this flat shape:
 
 | HTTP status | Exception class | When it happens |
 |---|---|---|
-| 400 | `InvalidCampaignException` | Zod validation fails on request body |
+| 400 | `BAD_REQUEST` | Request body validation fails or `Idempotency-Key` is not a UUID |
+| 401 | `UNAUTHORIZED` | Missing or invalid `Authorization: Bearer <PREFLIGHT_API_KEY>` on `/api/v1/*`, including when the server key is unset |
+| 413 | `PAYLOAD_TOO_LARGE` | `POST /api/v1/runs` body exceeds `MAX_INPUT_CHARS` |
 | 404 | `CampaignNotFoundException` | `GET /api/v1/campaigns/:id` — unknown id |
 | 404 | `RunNotFoundException` | `GET /api/v1/runs/:id` — unknown id |
 | 409 | `IdempotencyConflictException` | Same `Idempotency-Key` submitted with a different request body |

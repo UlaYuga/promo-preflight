@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  hasValidApiAuthorization,
+  isProtectedApiPath,
+  unauthorizedResponse
+} from "@/lib/api-auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 const WINDOW_SECONDS = parseInt(
@@ -13,6 +18,16 @@ const MAX_REQUESTS = parseInt(
 export function proxy(request: NextRequest) {
   if (!request.nextUrl.pathname.startsWith("/api/")) {
     return NextResponse.next();
+  }
+
+  if (
+    isProtectedApiPath(request.nextUrl.pathname) &&
+    !hasValidApiAuthorization(
+      request.headers.get("authorization"),
+      process.env.PREFLIGHT_API_KEY
+    )
+  ) {
+    return unauthorizedResponse();
   }
 
   const ip =

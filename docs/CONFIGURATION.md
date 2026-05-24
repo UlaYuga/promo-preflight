@@ -5,6 +5,7 @@
 | Variable | Description | Example |
 |---|---|---|
 | `DATABASE_URL` | Postgres connection string | `postgresql://preflight:secret@localhost:5432/preflight` |
+| `PREFLIGHT_API_KEY` | Bearer token required for every `/api/v1/*` request. If unset, the protected API rejects all callers. | `<generated-api-key>` |
 | `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather | `<telegram-bot-token>` |
 | `TELEGRAM_CHAT_ID` | Target channel or chat ID (negative for channels) | `-1001234567890` |
 
@@ -24,6 +25,7 @@
 ```env
 # Required
 DATABASE_URL=postgresql://preflight:secret@localhost:5432/preflight
+PREFLIGHT_API_KEY=<generated-api-key>
 TELEGRAM_BOT_TOKEN=<telegram-bot-token>
 TELEGRAM_CHAT_ID=-1001234567890
 
@@ -42,7 +44,7 @@ Copy `.env.example` (provided in the repo) and fill in the required values.
 
 **Local development**
 - Use `PREFLIGHT_MODE=localStorage` to skip the database entirely and run the UI demo.
-- To test the full API flow locally, run `docker-compose up -d` to start Postgres, then set `PREFLIGHT_MODE=server` and `DATABASE_URL` pointing to the container.
+- To test the full API flow locally, run `docker-compose up -d` to start Postgres, then set `PREFLIGHT_MODE=server`, `DATABASE_URL` pointing to the container, and `PREFLIGHT_API_KEY`.
 - Set `USE_MOCK_AI=true` to avoid Anthropic API calls during development.
 
 **docker-compose**
@@ -51,5 +53,6 @@ Copy `.env.example` (provided in the repo) and fill in the required values.
 
 **Production**
 - Never commit `.env` to version control. Use your platform's secret manager (Railway environment variables, Render secret files, Kubernetes secrets, etc.).
+- Set `PREFLIGHT_API_KEY` in the secret manager before exposing `/api/v1/*`; an unset value fails closed with `401`.
 - `OUTBOX_POLL_INTERVAL_MS` can be raised to `5000` in production to reduce DB load; lower to `500` for near-real-time Telegram alerts.
 - `LOG_LEVEL=warn` is recommended in production to reduce log volume.

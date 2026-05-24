@@ -137,13 +137,15 @@ The fastest path to a production-ready instance:
 ```bash
 git clone https://github.com/UlaYuga/promo-preflight.git
 cd promo-preflight
-cp .env.example .env   # fill TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID if needed
+cp .env.example .env   # fill PREFLIGHT_API_KEY; fill TELEGRAM_* if needed
 docker compose up -d
+export PREFLIGHT_API_KEY='replace-with-the-same-key-as-in-.env'
 node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON \
   --experimental-strip-types \
   -e "import { workedExamples } from './schemas/worked-examples.ts'; console.log(JSON.stringify({ campaign: workedExamples.EX08.bundle }, null, 2));" \
   > /tmp/preflight-ex08.json
 curl -X POST http://localhost:3000/api/v1/runs \
+  -H "Authorization: Bearer $PREFLIGHT_API_KEY" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
   -d @/tmp/preflight-ex08.json | jq
