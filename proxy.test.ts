@@ -45,6 +45,24 @@ describe('API authentication proxy', () => {
     expect(await response.text()).not.toContain('configured-api-key');
   });
 
+  it('throttles repeated unauthorized protected API requests from one IP', () => {
+    const request = () =>
+      proxy(
+        new NextRequest('http://localhost/api/v1/audit', {
+          headers: {
+            authorization: 'Bearer wrong-rate-limited-key',
+            'x-real-ip': 'auth-rate-limit-invalid-bearer',
+          },
+        })
+      );
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      expect(request().status).toBe(401);
+    }
+
+    expect(request().status).toBe(429);
+  });
+
   it('fails closed when no API key is configured', () => {
     delete process.env.PREFLIGHT_API_KEY;
 

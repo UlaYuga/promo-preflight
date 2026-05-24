@@ -90,7 +90,7 @@
     "workflowSubtitle": "From campaign JSON to audit-proof launch handoff",
     "safetyNote": "Portfolio demo workspace.",
     "strip": "8 checks · 23 rules · 6 owners · EN/RU",
-    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 177 tests · Apache 2.0",
+    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 178 tests · Apache 2.0",
     "architectureTitle": "What happens after Run",
     "architectureBody": "The UI is only the front door. Each run goes through Zod validation, command bus dispatch, deterministic checks, Postgres persistence, outbox events, audit delivery, and best-effort Telegram notification.",
     "systemLinks": {
@@ -690,7 +690,7 @@
       "title": "Quality gates",
       "subtitle": "Checks that keep the portfolio build honest",
       "items": [
-        "177 Vitest tests across 27 files",
+        "178 Vitest tests across 27 files",
         "TypeScript strict mode",
         "ESLint and Next.js production build",
         "Schema, DB, rules, owners, and i18n checks in CI",
@@ -765,7 +765,7 @@
         {
           "area": "Risk engine",
           "visible": "Risk Report with blockers, warnings, owners, evidence, and export controls.",
-          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples, and 177 tests."
+          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples, and 178 tests."
         },
         {
           "area": "Persistence and versioning",
@@ -887,7 +887,7 @@
     "footer": {
       "move": "Move",
       "open": "Open",
-      "stats": "23 rules · 8 checks · 10 endpoints · 177 tests · 10 screens"
+      "stats": "23 rules · 8 checks · 10 endpoints · 178 tests · 10 screens"
     },
     "noMatches": "No results"
   },

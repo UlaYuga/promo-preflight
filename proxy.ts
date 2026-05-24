@@ -20,16 +20,6 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (
-    isProtectedApiPath(request.nextUrl.pathname) &&
-    !hasValidApiAuthorization(
-      request.headers.get("authorization"),
-      process.env.PREFLIGHT_API_KEY
-    )
-  ) {
-    return unauthorizedResponse();
-  }
-
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     request.headers.get("x-real-ip") ??
@@ -50,6 +40,16 @@ export function proxy(request: NextRequest) {
         }
       }
     );
+  }
+
+  if (
+    isProtectedApiPath(request.nextUrl.pathname) &&
+    !hasValidApiAuthorization(
+      request.headers.get("authorization"),
+      process.env.PREFLIGHT_API_KEY
+    )
+  ) {
+    return unauthorizedResponse();
   }
 
   return NextResponse.next();
