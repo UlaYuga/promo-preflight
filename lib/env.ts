@@ -14,6 +14,7 @@ const envSchema = z.object({
   ANTHROPIC_MODEL_CORE: z.string().optional(),
   ANTHROPIC_MODEL_FAST: z.string().optional(),
   ANTHROPIC_MODEL_AUDIT: z.string().optional(),
+  PREFLIGHT_API_KEY: z.string().optional(),
   DATABASE_URL: z.string().optional(),
   // Public origin used to build absolute links in outbound notifications
   // (e.g. Telegram run alerts). Unset → callers fall back to localhost,

@@ -76,3 +76,10 @@ export function errorResponse(ex: PreflightException): Response {
 export function badRequest(message: string): Response {
   return Response.json({ error: 'BAD_REQUEST', message }, { status: 400 });
 }
+
+export function payloadTooLarge(message: string): Response {
+  return Response.json(
+    { error: 'PAYLOAD_TOO_LARGE', message },
+    { status: 413 }
+  );
+}

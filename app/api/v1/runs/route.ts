@@ -8,13 +8,17 @@ import { HandlerRegistry } from '../../../../application/bus/HandlerRegistry';
 import { handler as runChecksHandler } from '../../../../infrastructure/handler/checks/RunChecksHandler';
 import type { PreflightEvent } from '../../../../domain/event/PreflightEvent';
 import { CampaignBundleSchema } from '../../../../domain/model/Campaign';
-import { hashBody, countBlockers, errorResponse, badRequest } from '../../../../api/v1/index';
+import { hashBody, countBlockers, errorResponse, badRequest, payloadTooLarge } from '../../../../api/v1/index';
 import type { RunResponse } from '../../../../api/v1/index';
 import type { RunChecksCommand } from '../../../../application/command/RunChecksCommand';
 import type { Run } from '../../../../domain/model/Run';
 import { OutboxEventPublisher } from '../../../../infrastructure/outbox';
+import { getEnv } from '../../../../lib/env';
+import { checkInputSize } from '../../../../lib/input-limit';
 
 export const runtime = 'nodejs';
+
+const IdempotencyKeySchema = z.uuid();
 
 export async function POST(req: NextRequest): Promise<Response> {
   // T-019: Require Idempotency-Key
@@ -22,10 +26,19 @@ export async function POST(req: NextRequest): Promise<Response> {
   if (!idempotencyKey) {
     return badRequest('Missing required header: Idempotency-Key');
   }
+  if (!IdempotencyKeySchema.safeParse(idempotencyKey).success) {
+    return badRequest('Idempotency-Key must be a UUID');
+  }
+
+  const rawText = await req.text();
+  const inputSize = checkInputSize(rawText, getEnv().MAX_INPUT_CHARS);
+  if (!inputSize.ok) {
+    return payloadTooLarge(inputSize.message);
+  }
 
   let rawBody: unknown;
   try {
-    rawBody = await req.json();
+    rawBody = JSON.parse(rawText) as unknown;
   } catch {
     return badRequest('Request body must be valid JSON');
   }
