@@ -646,3 +646,61 @@ select {
   .landing-a .display { font-size: clamp(64px, 14vw, 104px); }
   .landing-a .positioning { font-size: 30px; max-width: none; }
 }
+
+/* Cyrillic needs more open spacing than the compact English display treatment. */
+html[lang="ru"] .display,
+html[lang="ru"] .tracking-tight,
+html[lang="ru"] .tracking-tightest,
+html[lang="ru"] .tracking-tighter2,
+:lang(ru).display,
+:lang(ru).tracking-tight,
+:lang(ru).tracking-tightest,
+:lang(ru).tracking-tighter2 {
+  letter-spacing: -0.01em;
+}
+
+html[lang="ru"] .landing-a .display,
+html[lang="ru"] .landing-a .positioning,
+html[lang="ru"] .landing-a .hp-campaign,
+:lang(ru).landing-a .display,
+:lang(ru).landing-a .positioning,
+:lang(ru).landing-a .hp-campaign {
+  letter-spacing: -0.01em;
+}
+
+html[lang="ru"] .font-mono.uppercase,
+html[lang="ru"] .landing-a .hp-status-text,
+html[lang="ru"] .landing-a .hp-issue-owner,
+:lang(ru).font-mono.uppercase,
+:lang(ru).landing-a .hp-status-text,
+:lang(ru).landing-a .hp-issue-owner {
+  letter-spacing: 0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .motion-decorative,
+  .neon-pulse,
+  .palette-in,
+  .drawer-in,
+  .landing-a .hp-dot,
+  .animate-spin,
+  [class*="animate-["],
+  [class*="[animation:"] {
+    animation: none !important;
+  }
+
+  .landing-a .btn-primary:hover,
+  .landing-a .hp-btn-primary:hover {
+    transform: none;
+  }
+}

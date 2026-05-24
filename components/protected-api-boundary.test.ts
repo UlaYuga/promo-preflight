@@ -34,7 +34,7 @@ describe('client UI protected API boundary', () => {
     expect(statusSource).toContain('fetch("/api/health"');
     expect(statusSource).toContain('fetch("/api/ready"');
     expect(statusSource).not.toContain('process.env.PREFLIGHT_API_KEY');
-    expect(evidenceSource).toContain('["178", "evidence.summary.tests"]');
+    expect(evidenceSource).toContain('["180", "evidence.summary.tests"]');
     expect(evidenceSource).not.toContain('["164", "evidence.summary.tests"]');
   });
 
@@ -66,11 +66,43 @@ describe('client UI protected API boundary', () => {
       );
       expect(JSON.stringify(dictionary)).not.toContain('164');
       expect(JSON.stringify(dictionary)).toContain(
-        language === 'en' ? '178 tests' : '178 тестов'
+        language === 'en' ? '180 tests' : '180 тестов'
       );
       expect(JSON.stringify(dictionary)).toContain(
         language === 'en' ? '27 files' : '27 файлах'
       );
     }
   );
+});
+
+describe('accessibility presentation guarantees', () => {
+  it('caps Russian display and label tracking through centralized language-aware CSS', () => {
+    const styles = readSource('app/globals.css');
+    const tourSource = readSource('components/tour-provider.tsx');
+
+    expect(styles).toContain('html[lang="ru"] .display');
+    expect(styles).toContain('html[lang="ru"] .tracking-tight,');
+    expect(styles).toContain('html[lang="ru"] .tracking-tightest');
+    expect(styles).toContain('html[lang="ru"] .tracking-tighter2');
+    expect(styles).toContain('html[lang="ru"] .font-mono.uppercase');
+    expect(styles).toMatch(
+      /html\[lang="ru"\] \.display[\s\S]*?letter-spacing: -0\.01em;/
+    );
+    expect(styles).toMatch(
+      /html\[lang="ru"\] \.font-mono\.uppercase[\s\S]*?letter-spacing: 0\.08em;/
+    );
+    expect(tourSource).toContain('html[lang="ru"] .driver-popover::before');
+  });
+
+  it('stops decorative and incidental motion when reduced motion is requested', () => {
+    const styles = readSource('app/globals.css');
+    const backgroundSource = readSource('components/background-wave.tsx');
+    const welcomeSource = readSource('components/welcome-screen.tsx');
+
+    expect(styles).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(styles).toMatch(/\.motion-decorative[\s\S]*?animation: none !important;/);
+    expect(styles).toContain('transition-duration: 0.001ms !important;');
+    expect(backgroundSource).toContain('motion-decorative');
+    expect(welcomeSource).toContain('motion-decorative');
+  });
 });

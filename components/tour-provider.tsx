@@ -499,6 +499,12 @@ function TourStyles() {
         color: #c5ff3d;
       }
 
+      html[lang="ru"] .driver-popover::before,
+      html[lang="ru"] .driver-popover-close-btn,
+      html[lang="ru"] .driver-popover-progress-text {
+        letter-spacing: 0.08em;
+      }
+
       .driver-popover-navigation-btns {
         display: flex;
         justify-content: flex-end;
