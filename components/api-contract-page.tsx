@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Clipboard, Code2, ExternalLink, KeyRound, ServerCog } from "lucide-react";
+import { Check, Clipboard, ExternalLink, KeyRound, ServerCog } from "lucide-react";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
 
 const endpoints = [
@@ -69,6 +69,7 @@ const endpoints = [
 ];
 
 const curlExample = `curl -X POST https://promo-preflight-production.up.railway.app/api/v1/runs \\
+  -H "Authorization: Bearer $PREFLIGHT_API_KEY" \\
   -H "Content-Type: application/json" \\
   -H "Idempotency-Key: $(uuidgen)" \\
   -d @campaign-bundle.json`;
@@ -191,6 +192,21 @@ export function ApiContractPage() {
 
       <section className="rounded border border-white/[0.07] bg-surface/60">
         <div className="border-b border-white/[0.07] px-4 py-3">
+          <div className="flex items-center gap-2">
+            <KeyRound className="h-4 w-4 text-subtle" aria-hidden="true" />
+            <h2 className="text-sm font-semibold text-foreground">
+              {t("apiContract.auth.title")}
+            </h2>
+          </div>
+        </div>
+        <div className="space-y-2 px-4 py-4 text-sm leading-6 text-subtle">
+          <p>{t("apiContract.auth.protected")}</p>
+          <p>{t("apiContract.auth.public")}</p>
+        </div>
+      </section>
+
+      <section className="rounded border border-white/[0.07] bg-surface/60">
+        <div className="border-b border-white/[0.07] px-4 py-3">
           <h2 className="text-sm font-semibold text-foreground">
             {t("apiContract.endpoints.title")}
           </h2>
@@ -243,15 +259,6 @@ export function ApiContractPage() {
         />
       </section>
 
-      <a
-        href="/api/v1/audit?limit=50"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 text-sm text-subtle transition hover:text-accent"
-      >
-        <Code2 className="h-4 w-4" aria-hidden="true" />
-        {t("apiContract.links.audit")}
-      </a>
     </div>
   );
 }

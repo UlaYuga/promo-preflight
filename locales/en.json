@@ -72,7 +72,7 @@
     "campaignsDescription": "Version history",
     "versiondiff": "Version comparison",
     "systemStatus": "System status",
-    "systemStatusDescription": "Health, audit feed, API",
+    "systemStatusDescription": "Public probes, protected API",
     "apiContract": "API contract",
     "apiContractDescription": "REST endpoints and curl",
     "evidence": "Evidence",
@@ -139,7 +139,7 @@
       },
       {
         "label": "Inspect system proof",
-        "description": "System Status and API Contract expose health, stats, audit feed, endpoints, CI, and source links"
+        "description": "System Status exposes public probes, while API Contract documents authenticated stats, audit, endpoints, CI, and source links"
       }
     ],
     "metrics": {
@@ -213,11 +213,11 @@
       },
       {
         "title": "Inspect System Status",
-        "description": "Screen 08 / System Status exposes health, run telemetry, audit events, reliability guarantees, and source links."
+        "description": "Screen 08 / System Status exposes public health probes and documents authenticated telemetry and audit access."
       },
       {
         "title": "Open the API contract",
-        "description": "Screen 09 / API Contract shows REST endpoints, idempotency semantics, and a curl path for integration."
+        "description": "Screen 09 / API Contract shows protected REST endpoints, idempotency semantics, and an authenticated curl path."
       },
       {
         "title": "Read the evidence file",
@@ -614,7 +614,7 @@
   "systemStatus": {
     "eyebrow": "08 / System status",
     "title": "System status",
-    "subtitle": "Live health, audit feed, and the REST contract behind this workspace.",
+    "subtitle": "Live public probes and the authenticated REST contract behind this workspace.",
     "health": {
       "title": "Health",
       "subtitle": "Liveness and readiness probes refreshed every 30 s",
@@ -629,22 +629,15 @@
     },
     "metrics": {
       "title": "Run telemetry",
-      "subtitle": "Counts across the entire database",
-      "totalRuns": "Total runs persisted",
-      "totalEvents": "Audit events delivered",
-      "lastEventAt": "Last event",
-      "runP95LatencyMs": "Run p95 latency",
-      "ms": "ms",
-      "unknown": "—",
-      "never": "no events yet"
+      "subtitle": "Protected API endpoint",
+      "protected": "Operational telemetry is available to authenticated API clients. This browser screen does not request protected data.",
+      "endpoint": "GET /api/v1/stats · bearer authentication required"
     },
     "feed": {
-      "title": "Live audit feed",
-      "subtitle": "Last 50 events from /api/v1/audit, polled every 5 s",
-      "empty": "No events yet — POST /api/v1/runs to trigger one.",
-      "time": "Time",
-      "type": "Event",
-      "actor": "Actor"
+      "title": "Audit trail",
+      "subtitle": "Protected API endpoint",
+      "protected": "Audit events are available to authenticated API clients. This screen does not expose an anonymous audit feed.",
+      "endpoint": "GET /api/v1/audit · bearer authentication required"
     },
     "links": {
       "title": "Contract & code",
@@ -653,7 +646,6 @@
       "apiContract": "API Contract screen",
       "evidence": "Evidence screen",
       "repo": "Source code on GitHub",
-      "auditJson": "Raw audit JSON",
       "ci": "CI workflow"
     },
     "pipeline": {
@@ -680,7 +672,7 @@
     },
     "endpointCatalog": {
       "title": "Endpoint catalog",
-      "subtitle": "Live surfaces behind the workspace",
+      "subtitle": "Public probes and authenticated v1 surfaces",
       "items": [
         "POST /api/v1/runs",
         "GET /api/v1/runs/:id",
@@ -709,7 +701,7 @@
   "apiContract": {
     "eyebrow": "09 / API contract",
     "title": "API contract",
-    "subtitle": "The integration surface behind the product UI: idempotent runs, campaign versioning, audit reads, health probes, and operational stats.",
+    "subtitle": "The authenticated integration surface behind the product UI, plus public health and readiness probes.",
     "primary": {
       "title": "Primary write path",
       "subtitle": "POST /api/v1/runs",
@@ -724,13 +716,18 @@
         "Safe for client retries, webhook redelivery, and double-clicks"
       ]
     },
+    "auth": {
+      "title": "Authentication boundary",
+      "protected": "All /api/v1/* endpoints require Authorization: Bearer <key>. The configured key stays server-side and is never exposed by this UI.",
+      "public": "/api/health and /api/ready remain public for liveness and readiness probes."
+    },
     "endpoints": {
       "title": "Endpoints",
       "subtitle": "Everything exposed by the current REST surface"
     },
     "curl": {
       "title": "Try the run endpoint",
-      "subtitle": "Use a worked example bundle from the repository or paste your own CampaignBundle.",
+      "subtitle": "Export PREFLIGHT_API_KEY in your shell, then send a worked example bundle or your own CampaignBundle.",
       "copy": "Copy curl"
     },
     "response": {
@@ -740,8 +737,7 @@
     "links": {
       "docs": "Full docs/API.md",
       "status": "System Status",
-      "evidence": "Evidence",
-      "audit": "Raw audit JSON"
+      "evidence": "Evidence"
     }
   },
   "evidence": {
@@ -779,12 +775,12 @@
         {
           "area": "REST API",
           "visible": "API Contract screen with endpoints, curl, response shape, and idempotency semantics.",
-          "proof": "docs/API.md, Zod response schema, health/ready/stats/audit endpoints."
+          "proof": "docs/API.md, Zod response schema, public health/ready probes, and protected stats/audit endpoints."
         },
         {
           "area": "Operational pipeline",
-          "visible": "System Status shows health, telemetry, audit feed, delivery path, and quality gates.",
-          "proof": "Transactional outbox, audit subscriber, Telegram subscriber, and live stats endpoint."
+          "visible": "System Status shows public probes, protected telemetry/audit availability, delivery path, and quality gates.",
+          "proof": "Transactional outbox, audit subscriber, Telegram subscriber, and protected stats endpoint."
         },
         {
           "area": "Reviewer posture",
@@ -805,12 +801,12 @@
         {
           "label": "System Status",
           "href": "/app/status",
-          "note": "Check live health, DB readiness, telemetry, audit events, and reliability guarantees."
+          "note": "Check public health, DB readiness, authenticated telemetry/audit availability, and reliability guarantees."
         },
         {
           "label": "API Contract",
           "href": "/app/api",
-          "note": "Inspect endpoints, idempotency behavior, curl path, and response shape."
+          "note": "Inspect authentication, endpoints, idempotency behavior, curl path, and response shape."
         },
         {
           "label": "Campaigns",

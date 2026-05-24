@@ -12,22 +12,17 @@ import {
   FileCode2,
   Workflow
 } from "lucide-react";
-import type { StatsResponse } from "@api/v1";
-import { useI18n, type Language, type TranslationKey } from "@/lib/i18n";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 // External, stable URLs the system status surfaces. Hardcoded so the page works
 // without env-var coupling — the repo URL is public, the GitHub Actions URL is
-// derived from it, the audit JSON is a relative endpoint on the same origin.
+// derived from it.
 const REPO_URL = "https://github.com/UlaYuga/promo-preflight";
 const API_DOCS_URL = `${REPO_URL}/blob/main/docs/API.md`;
 const CI_URL = `${REPO_URL}/actions/workflows/ci.yml`;
-const AUDIT_JSON_URL = "/api/v1/audit?limit=50";
 
-// Polling cadence is constrained by the server-side rate limiter (default
-// 20 requests / 60s per IP). Audit at 5s + slow trio at 30s yields ≈18 req/min
-// per visitor, leaving headroom for the rest of the workspace.
-const POLL_FAST_MS = 5000;
+// Poll only the public liveness/readiness probes on this browser-rendered page.
 const POLL_SLOW_MS = 30000;
 
 type HealthState =
@@ -41,32 +36,12 @@ type ReadyState =
   | { kind: "not-ready"; checks: { env: string; db: string; migrations: string } }
   | { kind: "error" };
 
-interface AuditItem {
-  id: string;
-  eventType: string;
-  actor: string;
-  createdAt: string;
-}
-
-type StatsState =
-  | { kind: "loading" }
-  | { kind: "ok"; data: StatsResponse }
-  | { kind: "error" };
-
-type AuditState =
-  | { kind: "loading" }
-  | { kind: "ok"; items: AuditItem[] }
-  | { kind: "error" };
-
 export function SystemStatus() {
   const { t } = useI18n();
   const [health, setHealth] = useState<HealthState>({ kind: "checking" });
   const [ready, setReady] = useState<ReadyState>({ kind: "checking" });
-  const [stats, setStats] = useState<StatsState>({ kind: "loading" });
-  const [audit, setAudit] = useState<AuditState>({ kind: "loading" });
 
-  // Pause polling when the tab is hidden; the React state is preserved so the
-  // page resumes cleanly on focus without a flash of "checking…".
+  // Pause public probe polling when the tab is hidden.
   const visibleRef = useRef(true);
 
   const fetchHealth = useCallback(async () => {
@@ -107,73 +82,33 @@ export function SystemStatus() {
     }
   }, []);
 
-  const fetchStats = useCallback(async () => {
-    try {
-      const r = await fetch("/api/v1/stats", { cache: "no-store" });
-      if (!r.ok) {
-        setStats({ kind: "error" });
-        return;
-      }
-      const data = (await r.json()) as StatsResponse;
-      setStats({ kind: "ok", data });
-    } catch {
-      setStats({ kind: "error" });
-    }
-  }, []);
-
-  const fetchAudit = useCallback(async () => {
-    try {
-      const r = await fetch(AUDIT_JSON_URL, { cache: "no-store" });
-      if (!r.ok) {
-        setAudit({ kind: "error" });
-        return;
-      }
-      const body = (await r.json()) as { items?: AuditItem[] };
-      setAudit({ kind: "ok", items: body.items ?? [] });
-    } catch {
-      setAudit({ kind: "error" });
-    }
-  }, []);
-
-  // Initial fetch on mount + visibility tracking. Each fetch sets its own
-  // state slice via the useCallback above; the lint exception scopes the
-  // intentional set-in-effect to this block (same pattern as handoff-page).
+  // Initial public probe fetch on mount + refresh after tab focus.
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect */
     void fetchHealth();
     void fetchReady();
-    void fetchStats();
-    void fetchAudit();
 
     function onVisibility() {
       visibleRef.current = !document.hidden;
       if (visibleRef.current) {
-        void fetchAudit();
+        void fetchHealth();
+        void fetchReady();
       }
     }
     document.addEventListener("visibilitychange", onVisibility);
     return () => document.removeEventListener("visibilitychange", onVisibility);
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [fetchHealth, fetchReady, fetchStats, fetchAudit]);
+  }, [fetchHealth, fetchReady]);
 
-  // Fast poll: audit feed
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (visibleRef.current) void fetchAudit();
-    }, POLL_FAST_MS);
-    return () => clearInterval(id);
-  }, [fetchAudit]);
-
-  // Slow poll: health + ready + stats
+  // Public probes remain useful without sending a protected API credential to the browser.
   useEffect(() => {
     const id = setInterval(() => {
       if (!visibleRef.current) return;
       void fetchHealth();
       void fetchReady();
-      void fetchStats();
     }, POLL_SLOW_MS);
     return () => clearInterval(id);
-  }, [fetchHealth, fetchReady, fetchStats]);
+  }, [fetchHealth, fetchReady]);
 
   const overallOk = health.kind === "ok" && ready.kind === "ok";
 
@@ -224,7 +159,7 @@ export function SystemStatus() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <HealthCard health={health} ready={ready} />
-        <MetricsCard stats={stats} />
+        <ProtectedMetricsCard />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -258,7 +193,7 @@ export function SystemStatus() {
         />
       </div>
 
-      <AuditFeedCard audit={audit} />
+      <ProtectedAuditCard />
 
       <LinksCard />
     </div>
@@ -404,11 +339,11 @@ function CheckRow({
 }
 
 // ---------------------------------------------------------------------------
-// Metrics card
+// Protected API cards
 // ---------------------------------------------------------------------------
 
-function MetricsCard({ stats }: Readonly<{ stats: StatsState }>) {
-  const { t, language } = useI18n();
+function ProtectedMetricsCard() {
+  const { t } = useI18n();
 
   return (
     <section className="rounded border border-white/[0.07] bg-surface/60">
@@ -424,70 +359,20 @@ function MetricsCard({ stats }: Readonly<{ stats: StatsState }>) {
         </p>
       </div>
 
-      <dl className="grid grid-cols-2 gap-px bg-white/[0.05]">
-        <Metric
-          label={t("systemStatus.metrics.totalRuns")}
-          value={stats.kind === "ok" ? String(stats.data.totalRuns) : "—"}
-          loading={stats.kind === "loading"}
-        />
-        <Metric
-          label={t("systemStatus.metrics.totalEvents")}
-          value={stats.kind === "ok" ? String(stats.data.totalEvents) : "—"}
-          loading={stats.kind === "loading"}
-        />
-        <Metric
-          label={t("systemStatus.metrics.runP95LatencyMs")}
-          value={
-            stats.kind === "ok" && stats.data.runP95LatencyMs !== null
-              ? `${stats.data.runP95LatencyMs} ${t("systemStatus.metrics.ms")}`
-              : t("systemStatus.metrics.unknown")
-          }
-          loading={stats.kind === "loading"}
-        />
-        <Metric
-          label={t("systemStatus.metrics.lastEventAt")}
-          value={
-            stats.kind === "ok" && stats.data.lastEventAt
-              ? formatRelative(stats.data.lastEventAt, language)
-              : stats.kind === "ok"
-              ? t("systemStatus.metrics.never")
-              : t("systemStatus.metrics.unknown")
-          }
-          loading={stats.kind === "loading"}
-        />
-      </dl>
+      <div className="px-4 py-5">
+        <p className="max-w-[58ch] text-sm leading-6 text-subtle">
+          {t("systemStatus.metrics.protected")}
+        </p>
+        <p className="mt-3 rounded-sm bg-page px-3 py-2 font-mono text-xs text-foreground/80">
+          {t("systemStatus.metrics.endpoint")}
+        </p>
+      </div>
     </section>
   );
 }
 
-function Metric({
-  label,
-  value,
-  loading
-}: Readonly<{ label: string; value: string; loading: boolean }>) {
-  return (
-    <div className="bg-surface/60 px-4 py-3">
-      <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-        {label}
-      </dt>
-      <dd
-        className={cn(
-          "mt-1 font-mono text-lg text-foreground",
-          loading && "text-subtle"
-        )}
-      >
-        {loading ? "…" : value}
-      </dd>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Audit feed card
-// ---------------------------------------------------------------------------
-
-function AuditFeedCard({ audit }: Readonly<{ audit: AuditState }>) {
-  const { t, language } = useI18n();
+function ProtectedAuditCard() {
+  const { t } = useI18n();
 
   return (
     <section className="rounded border border-white/[0.07] bg-surface/60">
@@ -503,46 +388,14 @@ function AuditFeedCard({ audit }: Readonly<{ audit: AuditState }>) {
         </p>
       </div>
 
-      {audit.kind === "loading" ? (
-        <div className="px-4 py-6 text-center text-xs text-muted">…</div>
-      ) : audit.kind === "error" ? (
-        <div className="px-4 py-6 text-center text-xs text-fail">—</div>
-      ) : audit.items.length === 0 ? (
-        <div className="px-4 py-6 text-center text-xs text-muted">
-          {t("systemStatus.feed.empty")}
-        </div>
-      ) : (
-        <div className="max-h-96 overflow-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="sticky top-0 bg-surface/95 backdrop-blur">
-              <tr className="text-muted">
-                <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em]">
-                  {t("systemStatus.feed.time")}
-                </th>
-                <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em]">
-                  {t("systemStatus.feed.type")}
-                </th>
-                <th className="px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em]">
-                  {t("systemStatus.feed.actor")}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.05]">
-              {audit.items.map((item) => (
-                <tr key={item.id} className="hover:bg-white/[0.02]">
-                  <td className="px-4 py-2 font-mono text-foreground/80">
-                    {formatRelative(item.createdAt, language)}
-                  </td>
-                  <td className="px-4 py-2 font-mono text-foreground">
-                    {item.eventType}
-                  </td>
-                  <td className="px-4 py-2 text-subtle">{item.actor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div className="px-4 py-5">
+        <p className="max-w-[72ch] text-sm leading-6 text-subtle">
+          {t("systemStatus.feed.protected")}
+        </p>
+        <p className="mt-3 rounded-sm bg-page px-3 py-2 font-mono text-xs text-foreground/80">
+          {t("systemStatus.feed.endpoint")}
+        </p>
+      </div>
     </section>
   );
 }
@@ -559,7 +412,6 @@ function LinksCard() {
     { label: t("systemStatus.links.apiContract"), href: "/app/api", Icon: Code2 },
     { label: t("systemStatus.links.evidence"), href: "/app/evidence", Icon: CheckCircle2 },
     { label: t("systemStatus.links.repo"), href: REPO_URL, Icon: Code2 },
-    { label: t("systemStatus.links.auditJson"), href: AUDIT_JSON_URL, Icon: Database },
     { label: t("systemStatus.links.ci"), href: CI_URL, Icon: Workflow }
   ];
 
@@ -596,28 +448,4 @@ function LinksCard() {
       </ul>
     </section>
   );
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatRelative(iso: string, language: Language): string {
-  const ts = new Date(iso).getTime();
-  if (!Number.isFinite(ts)) return iso;
-  const diffMs = Date.now() - ts;
-  const locale = language === "ru" ? "ru" : "en";
-  const date = new Date(iso);
-  if (diffMs < 0) {
-    return new Intl.DateTimeFormat(locale, { timeStyle: "short" }).format(date);
-  }
-
-  const sec = Math.round(diffMs / 1000);
-  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
-  if (sec < 60) return formatter.format(-sec, "second");
-  const min = Math.round(sec / 60);
-  if (min < 60) return formatter.format(-min, "minute");
-  const hr = Math.round(min / 60);
-  if (hr < 24) return formatter.format(-hr, "hour");
-  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(date);
 }
