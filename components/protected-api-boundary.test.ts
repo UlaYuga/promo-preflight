@@ -64,7 +64,28 @@ describe('client UI protected API boundary', () => {
       expect(valueAt(dictionary, 'systemStatus', 'feed', 'protected')).toEqual(
         expect.any(String)
       );
+      expect(valueAt(dictionary, 'welcome', 'body')).toContain(
+        language === 'en' ? 'browser demo' : 'браузерное демо'
+      );
+      expect(valueAt(dictionary, 'welcome', 'heroA', 'positioning')).toContain(
+        language === 'en' ? 'browser demo' : 'браузерное демо'
+      );
+      expect(valueAt(dictionary, 'welcome', 'systemLinks', 'api')).toContain(
+        language === 'en' ? 'API evidence' : 'защищённого API'
+      );
+      expect(valueAt(dictionary, 'welcome', 'architectureBody')).toContain(
+        'localStorage'
+      );
+      expect(valueAt(dictionary, 'apiContract', 'subtitle')).toContain(
+        language === 'en' ? 'separate from the browser demo' : 'отдельная от браузерного демо'
+      );
+      expect(valueAt(dictionary, 'evidence', 'architecture', 'subtitle')).toContain(
+        language === 'en' ? 'stay separate' : 'остаются разделёнными'
+      );
       expect(JSON.stringify(dictionary)).not.toContain('164');
+      expect(JSON.stringify(dictionary)).not.toContain(
+        language === 'en' ? 'same underlying state' : 'одно underlying state'
+      );
       expect(JSON.stringify(dictionary)).toContain(
         language === 'en' ? '202 tests' : '202 теста'
       );

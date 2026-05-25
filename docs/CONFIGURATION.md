@@ -17,7 +17,6 @@
 | `USE_MOCK_AI` | `false` | Set `true` to short-circuit the Anthropic provider with deterministic stubs. Useful in CI and local dev without a key. |
 | `HTTP_PORT` | `3000` | Port the Next.js server listens on. |
 | `LOG_LEVEL` | `info` | Log verbosity: `debug` / `info` / `warn` / `error`. |
-| `PREFLIGHT_MODE` | `localStorage` | `localStorage` — client-side demo mode (no backend required). `server` — uses the Postgres-backed API. |
 | `OUTBOX_POLL_INTERVAL_MS` | `1000` | How often the outbox worker polls for undelivered events (milliseconds). |
 
 ## Example .env
@@ -34,7 +33,6 @@ ANTHROPIC_API_KEY=sk-ant-api03-...
 USE_MOCK_AI=false
 HTTP_PORT=3000
 LOG_LEVEL=info
-PREFLIGHT_MODE=server
 OUTBOX_POLL_INTERVAL_MS=1000
 ```
 
@@ -43,8 +41,8 @@ Copy `.env.example` (provided in the repo) and fill in the required values.
 ## Per-environment notes
 
 **Local development**
-- Use `PREFLIGHT_MODE=localStorage` to skip the database entirely and run the UI demo.
-- To test the full API flow locally, run `docker-compose up -d` to start Postgres, then set `PREFLIGHT_MODE=server`, `DATABASE_URL` pointing to the container, and `PREFLIGHT_API_KEY`.
+- Run the browser UI demo without database setup; its synthetic workflow keeps drafts and reports in browser `localStorage` and never sends `PREFLIGHT_API_KEY`.
+- To test the separate protected API flow locally, run `docker-compose up -d` to start Postgres, configure `DATABASE_URL` and `PREFLIGHT_API_KEY`, then send authenticated requests as described in [`docs/API.md`](./API.md).
 - Set `USE_MOCK_AI=true` to avoid Anthropic API calls during development.
 
 **docker-compose**

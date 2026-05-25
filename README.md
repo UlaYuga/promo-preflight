@@ -30,7 +30,7 @@ A mid-size operator runs 20-30 campaigns a month,\* spends an estimated 2-5 pers
 
 \*Illustrative industry estimate; no public operator metrics are published.
 
-Preflight runs 8 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. The API also runs 3 mandatory runtime policy checks for payment compatibility, crypto disclosure, and jurisdictional risk. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
+Preflight runs 8 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. The API also runs 3 mandatory runtime policy checks for payment compatibility, crypto disclosure, and jurisdictional risk. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. For authenticated API clients, events route via webhook (Telegram first) and every API run is written to an audit log.
 
 Built around the regulatory and operational realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026. Preflight closes the gap that report identifies as 2026's most underrated risk.
 
@@ -38,9 +38,16 @@ Built around the regulatory and operational realities described in the 01.tech �
 
 Promo Preflight runs 8 deterministic compliance checks against a campaign bundle before it goes live, then the API adds 3 mandatory runtime policy checks backed by validated YAML artifacts. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
 
+Promo Preflight exposes two deliberate surfaces:
+
+- **Interactive browser demo** — a guided workflow over synthetic sample data. Drafts, reports, campaign versions, and tour state remain in that browser's `localStorage`; the demo does not claim durable server persistence.
+- **Protected REST API evidence contract** — `/api/v1/*` accepts authenticated integration requests, persists API runs and policy provenance to Postgres, and supports audit/outbox evidence.
+
+The browser demo never sends `PREFLIGHT_API_KEY` and does not submit an authenticated API run. Use an authenticated API client or the documented `curl` path to exercise the persisted backend contract.
+
 Runtime policy provenance is part of the API evidence contract. `POST /api/v1/runs`, idempotency replay, `GET /api/v1/runs/:id`, and `GET /api/v1/campaigns/:id/versions` include `policyRuleVersions` for `paymentCompatibility`, `cryptoDisclosure`, and `jurisdictionalRisk`. These values come from `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`; changing one of those runtime artifacts must bump its top-level `version`. `rules/rules.yaml` remains documentation/catalog metadata for the 8 core offline checks, not the runtime source for these 3 API policy artifacts.
 
-The system accepts one canonical `CampaignBundle` in JSON — one format regardless of whether you're launching in Brazil, India, Mexico, or the UK — and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every run is persisted and logged; the audit trail holds up to regulatory review.
+The protected API accepts one canonical `CampaignBundle` in JSON — one format regardless of whether you're launching in Brazil, India, Mexico, or the UK — and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every authenticated API run is persisted and logged; the audit trail holds up to regulatory review.
 
 <table>
 <tr>
@@ -59,7 +66,7 @@ The system accepts one canonical `CampaignBundle` in JSON — one format regardl
 
 ## How it works
 
-Each run follows a synchronous request path — validate, dispatch, check, persist, respond — with side effects (Telegram notifications, audit events) handled asynchronously via the outbox pattern.
+Each authenticated API run follows a synchronous request path — validate, dispatch, check, persist, respond — with side effects (Telegram notifications, audit events) handled asynchronously via the outbox pattern. The interactive browser demo is a separate local workflow and is not the caller in this sequence.
 
 ### Mermaid: data flow sequence
 
@@ -226,7 +233,7 @@ Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 - No multi-tenant (org-scoped data) — out of scope for this sprint; can be added without changing core
 - No gRPC — REST + webhooks fit the consumer model (CRM/Promo Ops teams)
 - No live LLM in default checks path — checks must be deterministic and reproducible; AI is an optional augmentation only (see ADR-0003 + ADR-0005 for the planned augmentation roadmap)
-- No auth — out of scope for demo; production deployment expects auth at infra layer
+- No end-user accounts or browser sign-in — the browser workflow remains a credential-free demo, while every `/api/v1/*` endpoint requires bearer authentication
 - No microservices — one process: in production the outbox worker boots inside the Next server via `instrumentation.node.ts`; a standalone `bin/preflight-worker.ts` entrypoint exists for local docker-compose and tests
 - No "promo compliance score" magic number — verdicts are GO / WARN / BLOCK based on rule severity, not opaque AI
 
