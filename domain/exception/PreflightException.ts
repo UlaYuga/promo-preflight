@@ -60,6 +60,11 @@ export class SystemException extends PreflightException {
   override readonly httpStatus = 500;
 }
 
+export class PolicyArtifactInvalidException extends PreflightException {
+  override readonly code = 'POLICY_ARTIFACT_INVALID';
+  override readonly httpStatus = 500;
+}
+
 export class NotReadyException extends PreflightException {
   override readonly code = 'NOT_READY';
   override readonly httpStatus = 503;

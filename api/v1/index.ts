@@ -3,6 +3,11 @@ import { z } from 'zod';
 import { createHash } from 'crypto';
 import type { PreflightException } from '../../domain/exception/PreflightException';
 import type { RunBlocker } from '../../domain/model/Run';
+import { PolicyRuleVersionsSchema } from '../../infrastructure/policyRuleVersions';
+
+export { PolicyRuleVersionsSchema } from '../../infrastructure/policyRuleVersions';
+
+export type PolicyRuleVersionsResponse = z.infer<typeof PolicyRuleVersionsSchema>;
 
 // ---------------------------------------------------------------------------
 // Request/response Zod schemas
@@ -35,6 +40,7 @@ export const RunResponseSchema = z.object({
   ),
   createdAt: z.string(),
   completedAt: z.string().optional(),
+  policyRuleVersions: PolicyRuleVersionsSchema,
 });
 
 export type RunResponse = z.infer<typeof RunResponseSchema>;

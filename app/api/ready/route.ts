@@ -5,12 +5,15 @@ import { getDb } from '@infra/db/client';
 export const runtime = 'nodejs';
 
 export const REQUIRED_READY_TABLES = ['runs', 'outbox', 'audit_log'] as const;
+export const REQUIRED_RUN_COLUMNS = ['policy_rule_versions_json'] as const;
 
 type ReadyTableName = (typeof REQUIRED_READY_TABLES)[number];
+type ReadyRunColumnName = (typeof REQUIRED_RUN_COLUMNS)[number];
 type ReadyReason =
   | 'missing_database_url'
   | 'database_unreachable'
   | 'required_tables_missing'
+  | 'required_columns_missing'
   | 'readiness_check_failed';
 type ReadyCheckStatus = 'ok' | 'error';
 
@@ -23,6 +26,7 @@ type NotReadyPayload = {
     migrations: ReadyCheckStatus;
   };
   missingTables?: ReadyTableName[];
+  missingColumns?: ReadyRunColumnName[];
 };
 
 type ReadyPayload = {
@@ -67,6 +71,11 @@ const NOT_READY_CHECKS: Record<
     db: 'ok',
     migrations: 'error',
   },
+  required_columns_missing: {
+    env: 'ok',
+    db: 'ok',
+    migrations: 'error',
+  },
   readiness_check_failed: {
     env: 'ok',
     db: 'error',
@@ -75,6 +84,7 @@ const NOT_READY_CHECKS: Record<
 };
 
 type MissingTableRow = { table_name: string | null };
+type MissingColumnRow = { column_name: string | null };
 
 export function findMissingRequiredTables(rows: MissingTableRow[]): ReadyTableName[] {
   const existingTableNames = new Set<string>(
@@ -86,9 +96,19 @@ export function findMissingRequiredTables(rows: MissingTableRow[]): ReadyTableNa
   return REQUIRED_READY_TABLES.filter((tableName) => !existingTableNames.has(tableName));
 }
 
+export function findMissingRequiredRunColumns(rows: MissingColumnRow[]): ReadyRunColumnName[] {
+  const existingColumnNames = new Set<string>(
+    rows
+      .map((row) => row.column_name)
+      .filter((columnName): columnName is string => typeof columnName === 'string')
+  );
+
+  return REQUIRED_RUN_COLUMNS.filter((columnName) => !existingColumnNames.has(columnName));
+}
+
 export function buildNotReadyResponse(
   reason: ReadyReason,
-  missingTables?: ReadyTableName[]
+  details?: { missingTables?: ReadyTableName[]; missingColumns?: ReadyRunColumnName[] }
 ): NotReadyResponse {
   return {
     status: 503,
@@ -96,8 +116,11 @@ export function buildNotReadyResponse(
       status: 'not-ready',
       reason,
       checks: NOT_READY_CHECKS[reason],
-      ...(missingTables && missingTables.length > 0
-        ? { missingTables }
+      ...(details?.missingTables && details.missingTables.length > 0
+        ? { missingTables: details.missingTables }
+        : {}),
+      ...(details?.missingColumns && details.missingColumns.length > 0
+        ? { missingColumns: details.missingColumns }
         : {}),
     },
   };
@@ -147,7 +170,30 @@ export async function GET(): Promise<Response> {
     );
     if (missingTables.length > 0) {
       return toResponse(
-        buildNotReadyResponse('required_tables_missing', missingTables)
+        buildNotReadyResponse('required_tables_missing', { missingTables })
+      );
+    }
+  } catch {
+    return toResponse(buildNotReadyResponse('readiness_check_failed'));
+  }
+
+  try {
+    const existingColumnRows = await db.execute<MissingColumnRow>(sql`
+      SELECT required.column_name
+      FROM (
+        VALUES ('policy_rule_versions_json')
+      ) AS required(column_name)
+      LEFT JOIN information_schema.columns existing
+        ON existing.table_schema = 'public'
+       AND existing.table_name = 'runs'
+       AND existing.column_name = required.column_name
+      WHERE existing.column_name IS NOT NULL
+    `);
+
+    const missingColumns = findMissingRequiredRunColumns(existingColumnRows.rows ?? []);
+    if (missingColumns.length > 0) {
+      return toResponse(
+        buildNotReadyResponse('required_columns_missing', { missingColumns })
       );
     }
   } catch {

@@ -254,6 +254,19 @@ describe('RunChecksUseCase', () => {
     expect(Number.isNaN(Date.parse(result.value.completedAt ?? ''))).toBe(false);
   });
 
+  it('attaches runtime policy rule versions to each successful run', async () => {
+    const useCase = new RunChecksUseCase([]);
+    const result = await useCase.run(CLEAN_CAMPAIGN);
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.policyRuleVersions).toEqual({
+      paymentCompatibility: 1,
+      cryptoDisclosure: 1,
+      jurisdictionalRisk: 1,
+    });
+  });
+
   it('preserves new-style blocker mapping fields exactly', async () => {
     const blocker: RunBlocker = {
       ruleId: 'rule-123',

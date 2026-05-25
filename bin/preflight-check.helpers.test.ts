@@ -39,6 +39,11 @@ describe('run summary formatting', () => {
     status: 'completed',
     createdAt: '2026-05-17T00:00:00.000Z',
     completedAt: '2026-05-17T00:00:01.000Z',
+    policyRuleVersions: {
+      paymentCompatibility: 1,
+      cryptoDisclosure: 1,
+      jurisdictionalRisk: 1,
+    },
     blockers: [
       {
         ruleId: 'rule.block',

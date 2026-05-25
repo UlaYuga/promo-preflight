@@ -8,6 +8,13 @@
       "when": 1763323200000,
       "tag": "0001_block4_complete_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779722400000,
+      "tag": "0002_policy_rule_versions",
+      "breakpoints": true
     }
   ]
 }

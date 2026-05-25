@@ -1,5 +1,5 @@
 import type { CampaignBundle } from '../../domain/model/Campaign';
-import type { RunBlocker } from '../../domain/model/Run';
+import type { PolicyRuleVersions, RunBlocker } from '../../domain/model/Run';
 
 export interface CampaignRecord {
   id: string;
@@ -20,6 +20,8 @@ export interface CampaignVersionRecord {
   createdAt: string;
   blockers: RunBlocker[];
   readinessState: string;
+  runId?: string;
+  policyRuleVersions?: PolicyRuleVersions;
 }
 
 export interface ICampaignRepository {

@@ -1,46 +1,7 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { parse as parseYaml } from 'yaml';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { RunBlocker } from '../../domain/model/Run';
 import type { ICheck } from './ICheck';
-
-interface PhraseRule {
-  phrase: string;
-  rule_ref: string;
-  severity: 'block' | 'warn';
-}
-
-interface MandatoryRule {
-  text: string;
-  rule_ref: string;
-  severity: 'block' | 'warn';
-}
-
-interface RegionPhraseRules {
-  forbidden: PhraseRule[];
-  mandatory: MandatoryRule[];
-}
-
-interface ForbiddenPhrasesYaml {
-  version: number;
-  regions: Record<string, RegionPhraseRules>;
-}
-
-function loadRules(): ForbiddenPhrasesYaml {
-  const yamlPath = join(process.cwd(), 'rules', 'forbidden-phrases-by-region.yaml');
-  const content = readFileSync(yamlPath, 'utf-8');
-  return parseYaml(content) as ForbiddenPhrasesYaml;
-}
-
-let cachedRules: ForbiddenPhrasesYaml | null = null;
-
-function getRules(): ForbiddenPhrasesYaml {
-  if (!cachedRules) {
-    cachedRules = loadRules();
-  }
-  return cachedRules;
-}
+import { getForbiddenPhrasesRules } from './runtimePolicy';
 
 function collectAllText(campaign: CampaignBundle): string {
   const parts: string[] = [campaign.termsText];
@@ -66,7 +27,7 @@ export const JurisdictionalRiskCheck: ICheck = {
       return [];
     }
 
-    const rules = getRules();
+    const rules = getForbiddenPhrasesRules();
     const allText = collectAllText(campaign);
     const blockers: RunBlocker[] = [];
 

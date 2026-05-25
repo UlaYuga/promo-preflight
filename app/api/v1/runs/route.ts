@@ -8,6 +8,7 @@ import { HandlerRegistry } from '../../../../application/bus/HandlerRegistry';
 import { handler as runChecksHandler } from '../../../../infrastructure/handler/checks/RunChecksHandler';
 import type { PreflightEvent } from '../../../../domain/event/PreflightEvent';
 import { CampaignBundleSchema } from '../../../../domain/model/Campaign';
+import { SystemException } from '../../../../domain/exception/PreflightException';
 import {
   RunsPostBodySchema,
   hashBody,
@@ -15,6 +16,7 @@ import {
   errorResponse,
   badRequest,
   payloadTooLarge,
+  RunResponseSchema,
 } from '../../../../api/v1/index';
 import type { RunResponse } from '../../../../api/v1/index';
 import type { RunChecksCommand } from '../../../../application/command/RunChecksCommand';
@@ -66,6 +68,23 @@ export async function POST(req: NextRequest): Promise<Response> {
   const campaign = campaignParse.data;
   const bodyHash = hashBody(rawBody);
   const db = getDb();
+  const persistence = new RunPersistenceService(db);
+
+  try {
+    const replay = await persistence.findCompletedIdempotencyReplay(
+      idempotencyKey,
+      bodyHash,
+      normalizeRunResponseSnapshot
+    );
+    if (replay.replayed) {
+      return Response.json(replay.response, { status: 200 });
+    }
+  } catch (e) {
+    if (e instanceof Error && 'code' in e) {
+      return errorResponse(e as Parameters<typeof errorResponse>[0]);
+    }
+    throw e;
+  }
 
   // Run checks via Bus
   const registry = new HandlerRegistry();
@@ -90,7 +109,6 @@ export async function POST(req: NextRequest): Promise<Response> {
     verdictStr === 'BLOCK' ? 'BLOCKED' : verdictStr === 'WARN' ? 'READY_WITH_WARNINGS' : 'READY';
 
   try {
-    const persistence = new RunPersistenceService(db);
     const eventPublisher = new OutboxEventPublisher(db);
     const persisted = await persistence.persistIdempotentRun<RunResponse>({
       idempotencyKey,
@@ -109,6 +127,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         blockers: savedRun.blockers,
         createdAt: savedRun.createdAt,
         completedAt: savedRun.completedAt,
+        policyRuleVersions: savedRun.policyRuleVersions,
       }),
       buildEvents: ({ campaignId, campaignVersionId, run: savedRun }) =>
         buildRunEvents(campaignId, campaignVersionId, savedRun),
@@ -121,6 +140,15 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
     throw e;
   }
+}
+
+function normalizeRunResponseSnapshot(snapshot: unknown): RunResponse {
+  const parsed = RunResponseSchema.safeParse(snapshot);
+  if (parsed.success) {
+    return parsed.data;
+  }
+
+  throw new SystemException('Invalid idempotency response snapshot: persisted run response does not match the current API contract');
 }
 
 function buildRunEvents(campaignId: string, versionId: string, run: Run): PreflightEvent[] {

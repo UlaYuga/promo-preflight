@@ -75,3 +75,19 @@ describe('db/migrations/0001_block4_complete_schema.sql', () => {
     expect(sql).not.toContain('@import');
   });
 });
+
+const policyRuleVersionsSql = readFileSync(
+  join(process.cwd(), 'db/migrations/0002_policy_rule_versions.sql'),
+  'utf-8'
+);
+
+describe('db/migrations/0002_policy_rule_versions.sql', () => {
+  it('adds policy_rule_versions_json to historical runs without editing 0001', () => {
+    expect(policyRuleVersionsSql).toContain('alter table runs');
+    expect(policyRuleVersionsSql).toContain('policy_rule_versions_json');
+    expect(policyRuleVersionsSql).toContain('jsonb');
+    expect(policyRuleVersionsSql).toContain('update idempotency_keys');
+    expect(policyRuleVersionsSql).toContain('response_snapshot');
+    expect(sql).not.toContain('policy_rule_versions_json');
+  });
+});
