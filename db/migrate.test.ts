@@ -91,4 +91,104 @@ describe('db migration runner', () => {
       }
     }
   );
+
+  it.skipIf(!databaseUrl)(
+    '0002 backfills legacy idempotency snapshots to the new policy provenance contract',
+    async () => {
+      const marker = `policy_snapshot_${process.pid}_${Date.now()}`;
+      const migrationsSchema = `drizzle_${marker}`;
+      const migrationsFolder = mkdtempSync(join(tmpdir(), 'preflight-migrations-'));
+      const client = new Client({ connectionString: databaseUrl });
+
+      mkdirSync(join(migrationsFolder, 'meta'));
+      writeFileSync(
+        join(migrationsFolder, 'meta', '_journal.json'),
+        JSON.stringify({
+          version: '7',
+          dialect: 'postgresql',
+          entries: [
+            {
+              idx: 0,
+              version: '7',
+              when: Date.now(),
+              tag: '0000_schema',
+              breakpoints: true,
+            },
+            {
+              idx: 1,
+              version: '7',
+              when: Date.now() + 1,
+              tag: '0001_policy_rule_versions',
+              breakpoints: true,
+            },
+          ],
+        })
+      );
+      writeFileSync(
+        join(migrationsFolder, '0000_schema.sql'),
+        `create table runs (id uuid primary key);
+create table idempotency_keys (
+  key text primary key,
+  request_hash text not null,
+  response_snapshot jsonb not null default '{}'::jsonb,
+  status text not null default 'pending'
+);
+insert into idempotency_keys (key, request_hash, response_snapshot, status)
+values ('${marker}', 'hash', '{"runId":"run-1","verdict":"GO","status":"completed","counts":{"block":0,"warn":0,"info":0},"blockers":[],"createdAt":"2026-05-25T12:00:00.000Z"}'::jsonb, 'completed');`
+      );
+      writeFileSync(
+        join(migrationsFolder, '0001_policy_rule_versions.sql'),
+        `alter table runs
+  add column if not exists policy_rule_versions_json jsonb not null default '{"paymentCompatibility":1,"cryptoDisclosure":1,"jurisdictionalRisk":1}'::jsonb;
+
+update idempotency_keys
+set response_snapshot = jsonb_set(
+  response_snapshot,
+  '{policyRuleVersions}',
+  '{"paymentCompatibility":1,"cryptoDisclosure":1,"jurisdictionalRisk":1}'::jsonb,
+  true
+)
+where status = 'completed'
+  and not response_snapshot ? 'policyRuleVersions';`
+      );
+
+      try {
+        const env = {
+          DATABASE_URL: databaseUrl,
+          DRIZZLE_MIGRATIONS_FOLDER: migrationsFolder,
+          DRIZZLE_MIGRATIONS_SCHEMA: migrationsSchema,
+        };
+
+        const first = runMigrate(env);
+        const second = runMigrate(env);
+
+        expect(first.stderr).toBe('');
+        expect(first.status).toBe(0);
+        expect(second.stderr).toBe('');
+        expect(second.status).toBe(0);
+
+        await client.connect();
+        const result = await client.query<{ response_snapshot: unknown }>(
+          'select response_snapshot from idempotency_keys where key = $1',
+          [marker]
+        );
+
+        expect(result.rows[0].response_snapshot).toMatchObject({
+          policyRuleVersions: {
+            paymentCompatibility: 1,
+            cryptoDisclosure: 1,
+            jurisdictionalRisk: 1,
+          },
+        });
+      } finally {
+        await client.query('drop table if exists idempotency_keys').catch(() => undefined);
+        await client.query('drop table if exists runs').catch(() => undefined);
+        await client
+          .query(`drop schema if exists "${migrationsSchema}" cascade`)
+          .catch(() => undefined);
+        await client.end().catch(() => undefined);
+        rmSync(migrationsFolder, { recursive: true, force: true });
+      }
+    }
+  );
 });

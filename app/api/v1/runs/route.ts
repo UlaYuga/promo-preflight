@@ -8,6 +8,7 @@ import { HandlerRegistry } from '../../../../application/bus/HandlerRegistry';
 import { handler as runChecksHandler } from '../../../../infrastructure/handler/checks/RunChecksHandler';
 import type { PreflightEvent } from '../../../../domain/event/PreflightEvent';
 import { CampaignBundleSchema } from '../../../../domain/model/Campaign';
+import { SystemException } from '../../../../domain/exception/PreflightException';
 import {
   RunsPostBodySchema,
   hashBody,
@@ -147,14 +148,7 @@ function normalizeRunResponseSnapshot(snapshot: unknown): RunResponse {
     return parsed.data;
   }
 
-  return {
-    ...(snapshot as Omit<RunResponse, 'policyRuleVersions'>),
-    policyRuleVersions: {
-      paymentCompatibility: 1,
-      cryptoDisclosure: 1,
-      jurisdictionalRisk: 1,
-    },
-  };
+  throw new SystemException('Invalid idempotency response snapshot: persisted run response does not match the current API contract');
 }
 
 function buildRunEvents(campaignId: string, versionId: string, run: Run): PreflightEvent[] {
