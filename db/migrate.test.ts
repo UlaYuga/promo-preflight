@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Client } from 'pg';
@@ -150,20 +150,14 @@ create table idempotency_keys (
 insert into idempotency_keys (key, request_hash, response_snapshot, status)
 values ('${marker}', 'hash', '{"runId":"run-1","verdict":"GO","status":"completed","counts":{"block":0,"warn":0,"info":0},"blockers":[],"createdAt":"2026-05-25T12:00:00.000Z"}'::jsonb, 'completed');`
       );
+      const shippingPolicyRuleVersionsMigration = readFileSync(
+        join(process.cwd(), 'db/migrations/0002_policy_rule_versions.sql'),
+        'utf8'
+      );
+
       writeFileSync(
         join(migrationsFolder, '0001_policy_rule_versions.sql'),
-        `alter table runs
-  add column if not exists policy_rule_versions_json jsonb not null default '{"paymentCompatibility":1,"cryptoDisclosure":1,"jurisdictionalRisk":1}'::jsonb;
-
-update idempotency_keys
-set response_snapshot = jsonb_set(
-  response_snapshot,
-  '{policyRuleVersions}',
-  '{"paymentCompatibility":1,"cryptoDisclosure":1,"jurisdictionalRisk":1}'::jsonb,
-  true
-)
-where status = 'completed'
-  and not response_snapshot ? 'policyRuleVersions';`
+        shippingPolicyRuleVersionsMigration
       );
 
       try {
