@@ -52,7 +52,7 @@ Versioned under `/api/v1/`. Single canonical request shape; response shapes docu
 ### CI
 
 - GitHub Actions `.github/workflows/ci.yml` on Node 22 with a Postgres 16 service.
-- Quality gates per PR: typecheck, lint, schema check, db migrate, db check, vitest (198 tests / 34 files), rules check, owners check, i18n parity, versioning check, AI check, checks regression smoke. Docker build runs in a separate job.
+- Quality gates per PR: typecheck, lint, schema check, db migrate, db check, vitest (202 tests / 35 files), rules check, owners check, i18n parity, versioning check, AI check, checks regression smoke. Docker build runs in a separate job.
 - Action versions kept current: `actions/checkout@v5`, `actions/setup-node@v5`, `docker/setup-buildx-action@v4` (T-068).
 
 ## What Is Not Implemented

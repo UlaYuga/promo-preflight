@@ -6,6 +6,13 @@ import { Client } from 'pg';
 import { describe, expect, it } from 'vitest';
 
 const databaseUrl = process.env.DATABASE_URL?.trim();
+const POSTGRES_INTEGRATION_TIMEOUT_MS = 30_000;
+
+function databaseUrlForDatabase(baseUrl: string, databaseName: string): string {
+  const url = new URL(baseUrl);
+  url.pathname = `/${databaseName}`;
+  return url.toString();
+}
 
 function runMigrate(env: Partial<NodeJS.ProcessEnv>): ReturnType<typeof spawnSync> {
   return spawnSync(process.execPath, [join('db', 'migrate.mjs')], {
@@ -32,6 +39,7 @@ describe('db migration runner', () => {
   it.skipIf(!databaseUrl)(
     'does not reapply an already recorded non-idempotent Drizzle migration',
     async () => {
+      if (!databaseUrl) return;
       const marker = `predeploy_once_${process.pid}_${Date.now()}`;
       const migrationsSchema = `drizzle_${marker}`;
       const migrationsFolder = mkdtempSync(join(tmpdir(), 'preflight-migrations-'));
@@ -89,16 +97,22 @@ describe('db migration runner', () => {
         await client.end().catch(() => undefined);
         rmSync(migrationsFolder, { recursive: true, force: true });
       }
-    }
+    },
+    POSTGRES_INTEGRATION_TIMEOUT_MS
   );
 
   it.skipIf(!databaseUrl)(
     '0002 backfills legacy idempotency snapshots to the new policy provenance contract',
     async () => {
+      if (!databaseUrl) return;
       const marker = `policy_snapshot_${process.pid}_${Date.now()}`;
+      const databaseName = marker;
       const migrationsSchema = `drizzle_${marker}`;
       const migrationsFolder = mkdtempSync(join(tmpdir(), 'preflight-migrations-'));
-      const client = new Client({ connectionString: databaseUrl });
+      const adminClient = new Client({ connectionString: databaseUrl });
+      let adminConnected = false;
+      const isolatedDatabaseUrl = databaseUrlForDatabase(databaseUrl, databaseName);
+      const client = new Client({ connectionString: isolatedDatabaseUrl });
 
       mkdirSync(join(migrationsFolder, 'meta'));
       writeFileSync(
@@ -153,8 +167,12 @@ where status = 'completed'
       );
 
       try {
+        await adminClient.connect();
+        adminConnected = true;
+        await adminClient.query(`create database "${databaseName}"`);
+
         const env = {
-          DATABASE_URL: databaseUrl,
+          DATABASE_URL: isolatedDatabaseUrl,
           DRIZZLE_MIGRATIONS_FOLDER: migrationsFolder,
           DRIZZLE_MIGRATIONS_SCHEMA: migrationsSchema,
         };
@@ -187,8 +205,15 @@ where status = 'completed'
           .query(`drop schema if exists "${migrationsSchema}" cascade`)
           .catch(() => undefined);
         await client.end().catch(() => undefined);
+        if (adminConnected) {
+          await adminClient
+            .query(`drop database if exists "${databaseName}" with (force)`)
+            .catch(() => undefined);
+        }
+        await adminClient.end().catch(() => undefined);
         rmSync(migrationsFolder, { recursive: true, force: true });
       }
-    }
+    },
+    POSTGRES_INTEGRATION_TIMEOUT_MS
   );
 });
