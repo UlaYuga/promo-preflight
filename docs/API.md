@@ -356,7 +356,7 @@ Returns the blocker diff between two campaign versions — which blockers were a
 
 ## 7. GET /api/v1/audit
 
-Lists append-only audit events delivered by the outbox worker. The endpoint is queryable by event type and cursor, and is the same feed shown in `/app/status`.
+Lists append-only audit events delivered by the outbox worker to authenticated API clients. The endpoint is queryable by event type and cursor. The browser System Status screen documents this protected endpoint but does not fetch its data.
 
 **Query params**
 

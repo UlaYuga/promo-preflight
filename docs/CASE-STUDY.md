@@ -75,32 +75,11 @@ The CRM team submitted the following campaign bundle to Preflight:
 
 ## Step 2 — Running Preflight
 
-```bash
-curl -X POST http://localhost:3000/api/v1/campaigns \
-  -H "Content-Type: application/json" \
-  -d @acme-casino-br-welcome-v1.json | jq
-```
+This walkthrough describes the interactive browser demo over synthetic data. The expanded bundle above is narrative input for that demo, not a runnable `/api/v1/*` request payload or an API response example. Browser-demo drafts and review state remain in `localStorage`.
 
-Response:
+For the separate authenticated integration contract, including the current `CampaignBundle` request shape, bearer authentication, required UUID `Idempotency-Key`, and persisted response schema, use [`docs/API.md`](./API.md).
 
-```json
-{
-  "runId": "run_br_001",
-  "campaignId": "acme-br-welcome-v1",
-  "version": 1,
-  "verdict": "BLOCK",
-  "summary": {
-    "block": 8,
-    "warn": 2,
-    "pass": 3
-  },
-  "checkedAt": "2026-05-17T09:14:32Z",
-  "jurisdiction": "BR",
-  "durationMs": 12
-}
-```
-
-Verdict: **BLOCK**. 8 hard blockers, 2 warnings, 3 passes. Duration: 12 ms.
+Demo verdict: **BLOCK**. The synthetic scenario illustrates 8 hard blockers, 2 warnings, and 3 passes.
 
 ## Step 3 — What Preflight caught
 
@@ -149,20 +128,7 @@ After applying all fixes, the team submitted v2:
 + "utm": "utm_source=email_welcome&utm_medium=email&utm_campaign=welcome_br_q2"
 ```
 
-Diff via API:
-
-```bash
-curl "http://localhost:3000/api/v1/campaigns/acme-br/diff?from=1&to=2" | jq
-```
-
-```json
-{
-  "resolved": 10,
-  "new": 0,
-  "stillOpen": 0,
-  "verdict": "GO"
-}
-```
+In the browser demo, the local version comparison illustrates the fixed outcome: all 10 findings resolved, no new findings, and a **GO** verdict. This is demo narrative, not a protected API response example. Authenticated clients can inspect persisted API-run versions and diffs only through the protected endpoints documented in [`docs/API.md`](./API.md).
 
 ## Step 6 — Why this matters in 2026
 
