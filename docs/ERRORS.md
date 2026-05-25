@@ -12,7 +12,7 @@ PreflightException (abstract)
 │   └── RunNotFoundException
 ├── ConflictException
 │   └── IdempotencyConflictException   # Same key, different body
-├── ForbiddenException                 # Used when auth is added in a later sprint
+├── ForbiddenException                 # Reserved for application-level authorization; /api/v1/* bearer auth runs at the proxy boundary
 └── SystemException
     └── NotReadyException              # DB unreachable or migrations not applied
 ```
