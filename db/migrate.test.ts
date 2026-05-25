@@ -41,9 +41,12 @@ describe('db migration runner', () => {
     async () => {
       if (!databaseUrl) return;
       const marker = `predeploy_once_${process.pid}_${Date.now()}`;
+      const fixtureSchema = marker;
       const migrationsSchema = `drizzle_${marker}`;
       const migrationsFolder = mkdtempSync(join(tmpdir(), 'preflight-migrations-'));
+      const isolatedDatabaseUrl = databaseUrlWithSearchPath(databaseUrl, fixtureSchema);
       const client = new Client({ connectionString: databaseUrl });
+      let clientConnected = false;
 
       mkdirSync(join(migrationsFolder, 'meta'));
       writeFileSync(
@@ -68,8 +71,12 @@ describe('db migration runner', () => {
       );
 
       try {
+        await client.connect();
+        clientConnected = true;
+        await client.query(`create schema "${fixtureSchema}"`);
+
         const env = {
-          DATABASE_URL: databaseUrl,
+          DATABASE_URL: isolatedDatabaseUrl,
           DRIZZLE_MIGRATIONS_FOLDER: migrationsFolder,
           DRIZZLE_MIGRATIONS_SCHEMA: migrationsSchema,
         };
@@ -81,19 +88,20 @@ describe('db migration runner', () => {
         expect(second.stderr).toBe('');
         expect(second.status).toBe(0);
 
-        await client.connect();
         const markerResult = await client.query<{ table_name: string }>(
           'select table_name from information_schema.tables where table_schema = $1 and table_name = $2',
-          ['public', marker]
+          [fixtureSchema, marker]
         );
         expect(markerResult.rows).toEqual([{ table_name: marker }]);
       } finally {
-        await client
-          .query(`drop table if exists "${marker}"`)
-          .catch(() => undefined);
-        await client
-          .query(`drop schema if exists "${migrationsSchema}" cascade`)
-          .catch(() => undefined);
+        if (clientConnected) {
+          await client
+            .query(`drop schema if exists "${fixtureSchema}" cascade`)
+            .catch(() => undefined);
+          await client
+            .query(`drop schema if exists "${migrationsSchema}" cascade`)
+            .catch(() => undefined);
+        }
         await client.end().catch(() => undefined);
         rmSync(migrationsFolder, { recursive: true, force: true });
       }
