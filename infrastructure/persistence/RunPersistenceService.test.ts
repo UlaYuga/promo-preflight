@@ -46,6 +46,11 @@ const BASE_RUN: Run = {
   status: 'completed',
   createdAt: '2026-05-16T10:00:00.000Z',
   completedAt: '2026-05-16T10:00:01.000Z',
+  policyRuleVersions: {
+    paymentCompatibility: 1,
+    cryptoDisclosure: 2,
+    jurisdictionalRisk: 3,
+  },
 };
 
 describe('RunPersistenceService', () => {
@@ -53,6 +58,7 @@ describe('RunPersistenceService', () => {
     const callOrder: string[] = [];
     let insertedRunCampaignId: string | null = null;
     let insertedRunVersion: number | null = null;
+    let insertedPolicyRuleVersions: unknown = null;
 
     const tx = {
       execute: async () => {
@@ -96,10 +102,12 @@ describe('RunPersistenceService', () => {
             values: async (value: {
               campaignId: string | null;
               campaignVersion: number | null;
+              policyRuleVersionsJson: unknown;
             }) => {
               callOrder.push('run.insert');
               insertedRunCampaignId = value.campaignId;
               insertedRunVersion = value.campaignVersion;
+              insertedPolicyRuleVersions = value.policyRuleVersionsJson;
             },
           };
         }
@@ -160,6 +168,7 @@ describe('RunPersistenceService', () => {
         expect(txArg).toBe(tx);
         expect(insertedRunCampaignId).toBe('campaign-1');
         expect(insertedRunVersion).toBe(1);
+        expect(insertedPolicyRuleVersions).toEqual(BASE_RUN.policyRuleVersions);
       }),
     };
 

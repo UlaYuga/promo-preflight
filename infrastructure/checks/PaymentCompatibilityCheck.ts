@@ -1,10 +1,8 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { parse as parseYaml } from 'yaml';
 import { InvalidCampaignException } from '../../domain/exception/PreflightException';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { RunBlocker } from '../../domain/model/Run';
 import type { ICheck } from './ICheck';
+import { getPaymentRules } from './runtimePolicy';
 
 interface RegionRules {
   allowed: string[];
@@ -12,26 +10,6 @@ interface RegionRules {
   forbidden: string[];
   rule_refs: string[];
   notes?: string;
-}
-
-interface PaymentRulesYaml {
-  version: number;
-  regions: Record<string, RegionRules>;
-}
-
-function loadRules(): PaymentRulesYaml {
-  const yamlPath = join(process.cwd(), 'rules', 'payment-methods-by-region.yaml');
-  const content = readFileSync(yamlPath, 'utf-8');
-  return parseYaml(content) as PaymentRulesYaml;
-}
-
-let cachedRules: PaymentRulesYaml | null = null;
-
-function getRules(): PaymentRulesYaml {
-  if (!cachedRules) {
-    cachedRules = loadRules();
-  }
-  return cachedRules;
 }
 
 export const PaymentCompatibilityCheck: ICheck = {
@@ -45,7 +23,7 @@ export const PaymentCompatibilityCheck: ICheck = {
       return [];
     }
 
-    const rules = getRules();
+    const rules = getPaymentRules();
     const blockers: RunBlocker[] = [];
 
     for (const jur of jurisdictions) {

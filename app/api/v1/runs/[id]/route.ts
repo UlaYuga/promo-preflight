@@ -31,5 +31,6 @@ export async function GET(
     blockers: run.blockers,
     createdAt: run.createdAt,
     completedAt: run.completedAt,
+    policyRuleVersions: run.policyRuleVersions,
   });
 }

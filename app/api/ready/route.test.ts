@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildNotReadyResponse,
+  findMissingRequiredRunColumns,
   findMissingRequiredTables,
+  REQUIRED_RUN_COLUMNS,
   REQUIRED_READY_TABLES,
 } from './route';
 
@@ -29,5 +31,10 @@ describe('ready route helpers', () => {
         },
       },
     });
+  });
+
+  it('requires the policy provenance run column for readiness', () => {
+    expect(findMissingRequiredRunColumns([])).toEqual([...REQUIRED_RUN_COLUMNS]);
+    expect(findMissingRequiredRunColumns([{ column_name: 'policy_rule_versions_json' }])).toEqual([]);
   });
 });

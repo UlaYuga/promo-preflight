@@ -1,11 +1,12 @@
 import { eq, and, desc } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 import type { Db } from '../db/client';
-import { campaigns, campaignVersions } from '../db/schema';
+import { campaigns, campaignVersions, runs } from '../db/schema';
 import type { ICampaignRepository, CampaignRecord, CampaignVersionRecord } from '../../application/port/ICampaignRepository';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { RunBlocker } from '../../domain/model/Run';
 import { isUuid } from './uuid';
+import { parsePolicyRuleVersions } from '../policyRuleVersions';
 
 export class CampaignRepository implements ICampaignRepository {
   constructor(private readonly db: Db) {}
@@ -94,8 +95,19 @@ export class CampaignRepository implements ICampaignRepository {
 
   async listVersions(campaignId: string): Promise<CampaignVersionRecord[]> {
     const rows = await this.db
-      .select()
+      .select({
+        version: campaignVersions,
+        runId: runs.id,
+        policyRuleVersionsJson: runs.policyRuleVersionsJson,
+      })
       .from(campaignVersions)
+      .leftJoin(
+        runs,
+        and(
+          eq(runs.campaignId, campaignVersions.campaignId),
+          eq(runs.campaignVersion, campaignVersions.n)
+        )
+      )
       .where(eq(campaignVersions.campaignId, campaignId))
       .orderBy(desc(campaignVersions.n));
     return rows.map((r) => this.toVersionRecord(r));
@@ -135,15 +147,28 @@ export class CampaignRepository implements ICampaignRepository {
   }
 
   private toVersionRecord(
-    row: typeof campaignVersions.$inferSelect
+    row:
+      | typeof campaignVersions.$inferSelect
+      | {
+          version: typeof campaignVersions.$inferSelect;
+          runId: string | null;
+          policyRuleVersionsJson: unknown;
+        }
   ): CampaignVersionRecord {
+    const versionRow = 'version' in row ? row.version : row;
     return {
-      id: row.id,
-      campaignId: row.campaignId,
-      n: row.n,
-      createdAt: row.createdAt.toISOString(),
-      blockers: (row.blockersJson ?? []) as RunBlocker[],
-      readinessState: row.readinessState,
+      id: versionRow.id,
+      campaignId: versionRow.campaignId,
+      n: versionRow.n,
+      createdAt: versionRow.createdAt.toISOString(),
+      blockers: (versionRow.blockersJson ?? []) as RunBlocker[],
+      readinessState: versionRow.readinessState,
+      ...('version' in row && row.runId && row.policyRuleVersionsJson
+        ? {
+            runId: row.runId,
+            policyRuleVersions: parsePolicyRuleVersions(row.policyRuleVersionsJson),
+          }
+        : {}),
     };
   }
 }

@@ -65,6 +65,7 @@ export const runs = pgTable(
     campaignVersion: integer('campaign_version'),
     verdict: text('verdict').notNull(),
     status: text('status').notNull(),
+    policyRuleVersionsJson: jsonb('policy_rule_versions_json').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     completedAt: timestamp('completed_at', { withTimezone: true }),
   },

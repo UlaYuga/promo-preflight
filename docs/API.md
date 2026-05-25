@@ -131,8 +131,15 @@ The complete JSON request body must not exceed `MAX_INPUT_CHARS` characters (def
   }>
   createdAt: string               // ISO 8601
   completedAt?: string            // ISO 8601
+  policyRuleVersions: {
+    paymentCompatibility: number  // rules/payment-methods-by-region.yaml version
+    cryptoDisclosure: number      // rules/crypto-disclosure-rules.yaml version
+    jurisdictionalRisk: number    // rules/forbidden-phrases-by-region.yaml version
+  }
 }
 ```
+
+`policyRuleVersions` is run evidence. The values are read from the validated runtime YAML artifacts loaded by the mandatory API policy checks. They are persisted on the historical run row, so an idempotency replay and later reads return the same snapshot even if a YAML artifact is changed afterwards.
 
 **curl example**
 
@@ -197,7 +204,12 @@ curl -X POST http://localhost:3000/api/v1/runs \
     }
   ],
   "createdAt": "2026-05-17T20:48:00.000Z",
-  "completedAt": "2026-05-17T20:48:00.100Z"
+  "completedAt": "2026-05-17T20:48:00.100Z",
+  "policyRuleVersions": {
+    "paymentCompatibility": 1,
+    "cryptoDisclosure": 1,
+    "jurisdictionalRisk": 1
+  }
 }
 ```
 
@@ -281,9 +293,30 @@ Lists all saved versions of a campaign, newest first. Versions are created when 
     createdAt: string                   // ISO 8601
     blockers: Blocker[]                 // same blocker shape as POST /runs response
     readinessState: string              // e.g. "BLOCKED", "READY"
+    runId?: string                       // present for API-created versions
+    policyRuleVersions?: {               // persisted run evidence when a run is attached
+      paymentCompatibility: number
+      cryptoDisclosure: number
+      jurisdictionalRisk: number
+    }
   }>
 }
 ```
+
+## Policy rule provenance
+
+The API combines two related but separate rule systems:
+
+- The eight core offline checks are the deterministic check kernel documented in `rules/rules.yaml` and executed by the legacy runner.
+- The three mandatory API policy artifacts are runtime YAML inputs loaded by supplemental checks: `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`.
+
+`rules/rules.yaml` is documentation and catalog metadata for the core offline checks. It is not the runtime source for `payment_compat`, `crypto_disclosure`, or `jurisdictional_risk`.
+
+Whenever one of the three runtime policy YAML files changes in a way that can affect check output, increment its top-level `version`. Each successful `POST /api/v1/runs` persists the loaded versions as `policyRuleVersions`, and `GET /api/v1/runs/:id` plus `GET /api/v1/campaigns/:id/versions` return that persisted snapshot.
+
+Malformed runtime policy YAML fails closed with `POLICY_ARTIFACT_INVALID`; the run does not silently continue with partial or invalid rules.
+
+---
 
 **Errors**: `404 CampaignNotFoundException` if the campaign id is unknown or not a UUID.
 
@@ -434,6 +467,7 @@ All error responses share this flat shape:
 | 404 | `RunNotFoundException` | `GET /api/v1/runs/:id` — unknown id |
 | 409 | `IdempotencyConflictException` | Same `Idempotency-Key` submitted with a different request body |
 | 422 | `UnprocessableEntityException` | Domain rule violation (e.g. `bonusAmount` = 0, `wageringRequirement` < 1) |
+| 500 | `POLICY_ARTIFACT_INVALID` | A runtime policy YAML artifact is missing, malformed, or fails schema validation |
 | 500 | `PreflightSystemException` | Unexpected internal failure |
 | 503 | `NotReadyException` | DB unreachable or migrations not applied (readiness endpoint only) |
 

@@ -4,6 +4,7 @@ import { runs, runBlockers } from '../db/schema';
 import type { IRunRepository } from '../../application/port/IRunRepository';
 import type { Run, RunBlocker } from '../../domain/model/Run';
 import { isUuid } from './uuid';
+import { parsePolicyRuleVersions } from '../policyRuleVersions';
 
 export class RunRepository implements IRunRepository {
   constructor(private readonly db: Db) {}
@@ -16,6 +17,7 @@ export class RunRepository implements IRunRepository {
         campaignVersion: run.version ?? null,
         verdict: run.verdict,
         status: run.status,
+        policyRuleVersionsJson: run.policyRuleVersions,
         createdAt: new Date(run.createdAt),
         completedAt: run.completedAt ? new Date(run.completedAt) : null,
       });
@@ -68,6 +70,7 @@ export class RunRepository implements IRunRepository {
       status: row.status as Run['status'],
       createdAt: row.createdAt.toISOString(),
       completedAt: row.completedAt?.toISOString(),
+      policyRuleVersions: parsePolicyRuleVersions(row.policyRuleVersionsJson),
     };
   }
 }

@@ -8,6 +8,12 @@ export interface RunBlocker {
   ownerHint?: string;
 }
 
+export interface PolicyRuleVersions {
+  paymentCompatibility: number;
+  cryptoDisclosure: number;
+  jurisdictionalRisk: number;
+}
+
 export interface Run {
   id: string;
   campaignId?: string;
@@ -17,4 +23,5 @@ export interface Run {
   status: RunStatus;
   createdAt: string;
   completedAt?: string;
+  policyRuleVersions: PolicyRuleVersions;
 }

@@ -1,38 +1,9 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { parse as parseYaml } from 'yaml';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { RunBlocker } from '../../domain/model/Run';
 import type { ICheck } from './ICheck';
-
-interface RegionCryptoRule {
-  status: 'forbidden' | 'restricted' | 'permitted_with_disclosure' | 'permitted';
-  required_disclaimer?: string;
-  rule_refs: string[];
-  notes?: string;
-}
-
-interface CryptoDisclosureYaml {
-  version: number;
-  regions: Record<string, RegionCryptoRule>;
-}
+import { getCryptoDisclosureRules } from './runtimePolicy';
 
 const CRYPTO_REGEX = /usdt|btc|bitcoin|кр[иы]пт|crypto|tether|tron|trc20|erc20|stablecoin|ethereum|eth\b|litecoin|ltc\b/i;
-
-function loadRules(): CryptoDisclosureYaml {
-  const yamlPath = join(process.cwd(), 'rules', 'crypto-disclosure-rules.yaml');
-  const content = readFileSync(yamlPath, 'utf-8');
-  return parseYaml(content) as CryptoDisclosureYaml;
-}
-
-let cachedRules: CryptoDisclosureYaml | null = null;
-
-function getRules(): CryptoDisclosureYaml {
-  if (!cachedRules) {
-    cachedRules = loadRules();
-  }
-  return cachedRules;
-}
 
 function collectAllText(campaign: CampaignBundle): string {
   const parts: string[] = [campaign.termsText];
@@ -49,7 +20,7 @@ export const CryptoDisclosureCheck: ICheck = {
     const jurisdictions = campaign.targetJurisdiction ?? [];
     const allText = collectAllText(campaign);
     const hasCryptoMention = CRYPTO_REGEX.test(allText);
-    const rules = getRules();
+    const rules = getCryptoDisclosureRules();
     const blockers: RunBlocker[] = [];
 
     // Special case: RU with no crypto mention is an info-level warning

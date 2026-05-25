@@ -30,13 +30,15 @@ A mid-size operator runs 20-30 campaigns a month,\* spends an estimated 2-5 pers
 
 \*Illustrative industry estimate; no public operator metrics are published.
 
-Preflight runs 8 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
+Preflight runs 8 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. The API also runs 3 mandatory runtime policy checks for payment compatibility, crypto disclosure, and jurisdictional risk. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. Events route via webhook (Telegram first); every run is written to an audit log.
 
 Built around the regulatory and operational realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026. Preflight closes the gap that report identifies as 2026's most underrated risk.
 
 ## What this is
 
-Promo Preflight runs 8 deterministic compliance checks against a campaign bundle before it goes live. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
+Promo Preflight runs 8 deterministic compliance checks against a campaign bundle before it goes live, then the API adds 3 mandatory runtime policy checks backed by validated YAML artifacts. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
+
+Runtime policy provenance is part of the API evidence contract. `POST /api/v1/runs`, idempotency replay, `GET /api/v1/runs/:id`, and `GET /api/v1/campaigns/:id/versions` include `policyRuleVersions` for `paymentCompatibility`, `cryptoDisclosure`, and `jurisdictionalRisk`. These values come from `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`; changing one of those runtime artifacts must bump its top-level `version`. `rules/rules.yaml` remains documentation/catalog metadata for the 8 core offline checks, not the runtime source for these 3 API policy artifacts.
 
 The system accepts one canonical `CampaignBundle` in JSON — one format regardless of whether you're launching in Brazil, India, Mexico, or the UK — and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every run is persisted and logged; the audit trail holds up to regulatory review.
 
@@ -80,7 +82,7 @@ sequenceDiagram
     Run->>Run: 8 deterministic checks per targetJurisdiction
     Run->>Repo: save Run + Blockers (transaction)
     Run->>Outbox: write events (same transaction)
-    Run-->>API: { runId, verdict, counts, blockers }
+    Run-->>API: { runId, verdict, counts, blockers, policyRuleVersions }
     API-->>Promo: 200 OK
     par async
         Worker->>Outbox: poll undelivered

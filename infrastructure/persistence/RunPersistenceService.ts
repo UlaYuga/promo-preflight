@@ -34,6 +34,10 @@ export interface PersistRunResult<TResponse> {
   response: TResponse;
 }
 
+export type IdempotencyReplayResult<TResponse> =
+  | { replayed: true; response: TResponse }
+  | { replayed: false };
+
 /**
  * Persists an entire run workflow in a single database transaction:
  *
@@ -54,6 +58,40 @@ export interface PersistRunResult<TResponse> {
  */
 export class RunPersistenceService {
   constructor(private readonly db: Db) {}
+
+  async findCompletedIdempotencyReplay<TResponse>(
+    idempotencyKey: string,
+    requestHash: string,
+    normalizeResponse: (snapshot: unknown) => TResponse
+  ): Promise<IdempotencyReplayResult<TResponse>> {
+    const rows = await this.db
+      .select({
+        requestHash: idempotencyKeys.requestHash,
+        status: idempotencyKeys.status,
+        responseSnapshot: idempotencyKeys.responseSnapshot,
+      })
+      .from(idempotencyKeys)
+      .where(eq(idempotencyKeys.key, idempotencyKey))
+      .limit(1);
+
+    if (rows.length === 0) {
+      return { replayed: false };
+    }
+
+    const decision = decideIdempotency(0, rows[0], requestHash);
+    if (decision.type === 'conflict') {
+      throw new IdempotencyConflictException(
+        'Idempotency-Key reused with different request body'
+      );
+    }
+    if (decision.type === 'replay') {
+      return { replayed: true, response: normalizeResponse(decision.responseBody) };
+    }
+
+    throw new SystemException(
+      'A concurrent request is already processing this Idempotency-Key; please retry shortly'
+    );
+  }
 
   async persistIdempotentRun<TResponse>(
     input: PersistRunInput<TResponse>
@@ -240,6 +278,7 @@ export class RunPersistenceService {
       campaignVersion: run.version ?? null,
       verdict: run.verdict,
       status: run.status,
+      policyRuleVersionsJson: run.policyRuleVersions,
       createdAt: new Date(run.createdAt),
       completedAt: run.completedAt ? new Date(run.completedAt) : null,
     });

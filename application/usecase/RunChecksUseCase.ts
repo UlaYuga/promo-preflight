@@ -3,6 +3,7 @@ import { runChecks } from '../../lib/checks/runner';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { Run, RunBlocker } from '../../domain/model/Run';
 import type { ICheck } from '../../infrastructure/checks/ICheck';
+import { getPolicyRuleVersions } from '../../infrastructure/checks/runtimePolicy';
 import { ok } from '../bus/types';
 import type { Result } from '../bus/types';
 import type { PreflightException } from '../../domain/exception/PreflightException';
@@ -67,6 +68,7 @@ export class RunChecksUseCase {
         status: 'completed',
         createdAt,
         completedAt: new Date().toISOString(),
+        policyRuleVersions: getPolicyRuleVersions(),
       };
 
       return ok(run);
