@@ -7,10 +7,10 @@
 
 Promo Preflight v1 stored everything — campaigns, runs, blockers — in browser `localStorage`. This was enough for a single-user demo: no infrastructure, instant startup, zero ops cost.
 
-As the project evolved toward a real operator use case, four requirements broke the localStorage model:
+As the project evolved toward an authenticated integration use case, four workflow requirements broke the localStorage model:
 
-1. **Cross-user sharing** — a compliance officer and a promo manager must both see the same run result without copy-pasting JSON.
-2. **Audit log** — regulators expect a durable, tamper-evident record of "we checked this campaign before launch." localStorage is cleared by users and not court-admissible.
+1. **Cross-user sharing** — review owners need to inspect the same run result without copy-pasting JSON.
+2. **Retained run record** — authenticated integrations need a durable record of submitted bundles, artifact versions, and returned findings; browser `localStorage` can be cleared by a user.
 3. **Version history** — campaigns are edited iteratively; operators need to diff v1 vs v3 of a campaign bundle to see which blockers were resolved.
 4. **API consumption** — CI/CD pipelines, CRM platforms, and the Telegram outbox worker all need a backend API backed by persistent storage, not a browser tab.
 
@@ -24,7 +24,7 @@ Keep the interactive browser workflow as a synthetic demo that stores its draft,
 
 **Positive**
 - Durable history that survives browser clears and multi-user sessions.
-- Queryable audit log per jurisdiction, per campaign, per run — suitable for showing to a regulator.
+- Queryable run and audit records per jurisdiction, per campaign, per run for responsible-owner review.
 - Foundation for multi-tenant isolation (adding `org_id` + Row-Level Security later requires no domain changes).
 - Enables the outbox pattern: events written to the same DB transaction as the run, delivered atomically.
 
@@ -34,4 +34,4 @@ Keep the interactive browser workflow as a synthetic demo that stores its draft,
 - Migrations must be applied before the API starts; the readiness probe (`GET /api/ready`) enforces this.
 
 **Neutral**
-- The demo UI and authenticated API provide separate evidence: browser-local usability on one side, durable integration/audit behavior on the other.
+- The demo UI and authenticated API demonstrate separate behavior: browser-local usability on one side, durable integration/audit storage on the other.

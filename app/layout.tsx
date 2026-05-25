@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | Promo Preflight"
   },
   description:
-    "Deterministic pre-launch gate with REST API, audit trail, version diff, and Telegram alerts for regulated promo campaigns.",
+    "Deterministic pre-launch review workflow for synthetic campaign scenarios, with a separate authenticated API contract.",
   applicationName: "Promo Preflight",
   robots: {
     index: false,
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Promo Preflight",
     description:
-      "Deterministic pre-launch gate with REST API, audit trail, version diff, and Telegram alerts for regulated promo campaigns.",
+      "Deterministic pre-launch review workflow for synthetic campaign scenarios, with a separate authenticated API contract.",
     url: "https://promo-preflight-production.up.railway.app/",
     siteName: "Promo Preflight",
     type: "website"

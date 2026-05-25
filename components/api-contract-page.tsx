@@ -86,7 +86,7 @@ const responseExample = `{
       "ruleId": "terms_robustness.TERMS_ROBUSTNESS-002",
       "severity": "block",
       "evidence": "termsText: missing max bet clause",
-      "suggestion": "Add the missing required clauses before launch.",
+      "suggestion": "Add the terms fields expected by the configured artifact before launch.",
       "ownerHint": "legal"
     }
   ],

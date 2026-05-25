@@ -1,8 +1,8 @@
 # Promo Preflight
 
-*Pre-launch readiness checks for iGaming operators expanding into emerging markets. Built by a PM over a weekend with Claude Code.*
+*Deterministic pre-launch workflow checks for campaign bundles. Built by a PM over a weekend with Claude Code.*
 
-*Built around the regulatory realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026.*
+*Portfolio demonstration over synthetic campaign scenarios and versioned policy/rule artifacts.*
 
 [![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)](https://www.typescriptlang.org/) [![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/UlaYuga/promo-preflight/actions) [![CI](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml/badge.svg)](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml)
 
@@ -16,43 +16,33 @@
 
 ## The problem
 
-Every quarter, another regulator updates its rules. Your promo team is still reviewing T&C across eight locales in Google Docs.
+This portfolio scenario models a promo team reviewing campaign copy, terms, links, owners, and localized channel assets across several markets. When those inputs live in separate documents and chats, reviewers have no single repeatable preflight run to inspect.
 
-- "The key and very underrated trend in 2026, in my view, is not AI or core updates, but the increasing local blockings and regulatory pressure in Latin America and Asia. These began last year and have hit not just products but webmasters too. Infrastructure resilience and tight processes for tracking and reacting to local-operator blocks will be the competitive advantage of this year." — **Stanislav, SEO Product Manager, 01.tech**, *Global iGaming Report 2026*
+The sample operator, markets, review process, and operating impact described here are illustrative. They are not observed operator metrics, enforcement precedents, or statements of applicable law.
 
-- "Gamble responsibly as a footer link no longer satisfies several jurisdictions." — **Emmanuel Omoloyin, SEO Content Writer**
+Preflight runs 8 deterministic checks per target jurisdiction against versioned YAML policy/rule artifacts before a launch decision. The API also runs 3 runtime policy checks for payment compatibility, crypto disclosure, and jurisdictional-risk labels. One canonical `CampaignBundle` produces `GO` / `WARN` / `BLOCK` findings with an artifact reference and a suggested owner. For authenticated API clients, events route via webhook (Telegram first) and each API run is persisted in an audit log.
 
-- **Perfect Storm B.V.**: €5M fine + 2-year ban, DGOJ Spain (Apr 2026). **Sky Betting & Gaming**: £1.17M, UKGC (2022) — welcome bonus emails sent to self-excluded players. **Kindred (Spooniker)**: SEK 100M, Spelinspektionen (2020) — single-bonus-rule violation. Real money lost when promo compliance fails.
-
-No dedicated tool exists for multi-jurisdiction promo compliance in iGaming. Reviews happen across Slack, Google Docs, Excel, and Notion — one chain per locale, none of it audit-defensible. As Adam Mateja put it: "Promotions in iGaming are one of those things that look simple on paper, and then turn into a lot of manual work."
-
-A mid-size operator runs 20-30 campaigns a month,\* spends an estimated 2-5 person-hours per campaign on compliance review,\* and still pulls or corrects 5-10% of campaigns post-launch.\*
-
-\*Illustrative industry estimate; no public operator metrics are published.
-
-Preflight runs 8 deterministic checks per target jurisdiction against versioned YAML rule artifacts — before launch. The API also runs 3 mandatory runtime policy checks for payment compatibility, crypto disclosure, and jurisdictional risk. One canonical `CampaignBundle`, one JSON format. Each check returns `GO` / `WARN` / `BLOCK` with a specific rule reference and a suggested owner. For authenticated API clients, events route via webhook (Telegram first) and every API run is written to an audit log.
-
-Built around the regulatory and operational realities described in the 01.tech × G GATE MEDIA Global iGaming Report 2026. Preflight closes the gap that report identifies as 2026's most underrated risk.
+Preflight does not determine legal compliance. Qualified compliance and legal owners must review the policy/rule artifacts and any resulting launch decision before production use.
 
 ## What this is
 
-Promo Preflight runs 8 deterministic compliance checks against a campaign bundle before it goes live, then the API adds 3 mandatory runtime policy checks backed by validated YAML artifacts. Each check targets a specific risk category: T&C completeness per jurisdiction, forbidden phrases, offer math, payment method compatibility, crypto disclosure rules, link health, format requirements, launch ownership, and localization depth. Checks run against versioned YAML rule artifacts — same input, same output, every time.
+Promo Preflight runs 8 deterministic preflight checks against a campaign bundle, then the API adds 3 runtime policy checks backed by validated YAML artifacts. Each check targets a configured review category: terms completeness, flagged phrases, offer math, payment method compatibility, crypto-disclosure text, link health, format constraints, launch ownership, and localization depth. Checks run against versioned YAML policy/rule artifacts: same input and artifact version, same output.
 
 Promo Preflight exposes two deliberate surfaces:
 
 - **Interactive browser demo** — a guided workflow over synthetic sample data. Drafts, reports, campaign versions, and tour state remain in that browser's `localStorage`; the demo does not claim durable server persistence.
-- **Protected REST API evidence contract** — `/api/v1/*` accepts authenticated integration requests, persists API runs and policy provenance to Postgres, and supports audit/outbox evidence.
+- **Protected REST API persistence contract** — `/api/v1/*` accepts authenticated integration requests, persists API runs and policy provenance to Postgres, and supports audit/outbox records.
 
 The browser demo never sends `PREFLIGHT_API_KEY` and does not submit an authenticated API run. Use an authenticated API client or the documented `curl` path to exercise the persisted backend contract.
 
-Runtime policy provenance is part of the API evidence contract. `POST /api/v1/runs`, idempotency replay, `GET /api/v1/runs/:id`, and `GET /api/v1/campaigns/:id/versions` include `policyRuleVersions` for `paymentCompatibility`, `cryptoDisclosure`, and `jurisdictionalRisk`. These values come from `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`; changing one of those runtime artifacts must bump its top-level `version`. `rules/rules.yaml` remains documentation/catalog metadata for the 8 core offline checks, not the runtime source for these 3 API policy artifacts.
+Runtime policy provenance is part of the persisted API contract. `POST /api/v1/runs`, idempotency replay, `GET /api/v1/runs/:id`, and `GET /api/v1/campaigns/:id/versions` include `policyRuleVersions` for `paymentCompatibility`, `cryptoDisclosure`, and `jurisdictionalRisk`. These values come from `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`; changing one of those runtime artifacts must bump its top-level `version`. `rules/rules.yaml` remains documentation/catalog metadata for the 8 core offline checks, not the runtime source for these 3 API policy artifacts.
 
-The protected API accepts one canonical `CampaignBundle` in JSON — one format regardless of whether you're launching in Brazil, India, Mexico, or the UK — and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every authenticated API run is persisted and logged; the audit trail holds up to regulatory review.
+The protected API accepts one canonical `CampaignBundle` in JSON and returns a `GO` / `WARN` / `BLOCK` verdict with blockers, each tied to a rule ID and a suggested owner role. Every authenticated API run is persisted and logged so responsible owners can review the input, artifact version, and result.
 
 <table>
 <tr>
 <td width="50%" valign="top"><strong>Before</strong><br>4 tabs, 8 chats, 0 versioning.<br><img src="./docs/assets/before.png" width="100%" /></td>
-<td width="50%" valign="top"><strong>After</strong><br>One workspace. Verdict in 12 seconds.<br><img src="./docs/assets/after.png" width="100%" /></td>
+<td width="50%" valign="top"><strong>After</strong><br>One workspace. Repeatable artifact-based verdict.<br><img src="./docs/assets/after.png" width="100%" /></td>
 </tr>
 </table>
 
@@ -60,8 +50,8 @@ The protected API accepts one canonical `CampaignBundle` in JSON — one format 
 
 | You are | What this gives you |
 |---|---|
-| A multi-jurisdiction iGaming operator (lic. EU + LATAM + offshore) | Catch jurisdictional risks before promo launches — Brazilian SPA, Indian UPI ban, Mexican SPEI rules, Algerian crypto prohibition |
-| A platform / white-label engineer at a B2B iGaming infrastructure provider (01.tech, SoftSwiss, BetConstruct, EveryMatrix tier) | Drop-in pre-launch gate your operator customers can add to their CRM / Promo workflow without your platform team owning compliance |
+| A multi-jurisdiction iGaming operator | Surface jurisdiction-tagged policy-artifact findings before a promo launch decision |
+| A platform / white-label engineer at a B2B iGaming infrastructure provider | Add a deterministic pre-launch gate to a CRM / Promo workflow while policy ownership stays outside the platform team |
 | A CRM / Promo Ops lead launching campaigns across 8-15 locales every month | Replace the Notion → Slack → Google Doc → Excel review chain with one deterministic check and one Telegram alert with assignable owners |
 
 ## How it works
@@ -98,7 +88,7 @@ sequenceDiagram
     end
 ```
 
-Preflight slots into the existing compliance workflow as the final pre-launch gate. The upstream process stays owned by the promo and compliance team; Preflight replaces the manual final check with one deterministic API call.
+Preflight slots into an existing review workflow as a deterministic pre-launch gate. The promo, compliance, and legal owners remain responsible for approving the artifacts and the launch decision.
 
 ### Mermaid: Preflight in your workflow
 
@@ -133,7 +123,7 @@ sequenceDiagram
     Launch->>Launch: launch only when GO
 ```
 
-Here's what the Telegram notification looks like in production:
+Here's an example Telegram notification from the authenticated API workflow:
 
 <img src="./docs/assets/telegram-screenshot.png" width="500" />
 
@@ -141,7 +131,7 @@ Here's what the Telegram notification looks like in production:
 
 ### 1. Self-host via docker-compose
 
-The fastest path to a production-ready instance:
+The shortest path to a self-hosted integration instance:
 
 ```bash
 git clone https://github.com/UlaYuga/promo-preflight.git
@@ -193,7 +183,7 @@ Coming soon. [Email for early access](mailto:alex@marlerino.group).
 | `vitest` | Fast unit + integration tests; ESM-native, TypeScript path alias support |
 | `@anthropic-ai/sdk` | Optional AI augmentation layer; stubbed when `USE_MOCK_AI=true` |
 | `yaml` | Parses jurisdiction rule artifacts (`rules/*.yaml`) at boot |
-| Telegram Bot API | Outbound compliance alerts to the team channel via the outbox worker |
+| Telegram Bot API | Outbound run-result alerts to the team channel via the outbox worker |
 
 ## Architecture
 
@@ -235,21 +225,19 @@ Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 - No live LLM in default checks path — checks must be deterministic and reproducible; AI is an optional augmentation only (see ADR-0003 + ADR-0005 for the planned augmentation roadmap)
 - No end-user accounts or browser sign-in — the browser workflow remains a credential-free demo, while every `/api/v1/*` endpoint requires bearer authentication
 - No microservices — one process: in production the outbox worker boots inside the Next server via `instrumentation.node.ts`; a standalone `bin/preflight-worker.ts` entrypoint exists for local docker-compose and tests
-- No "promo compliance score" magic number — verdicts are GO / WARN / BLOCK based on rule severity, not opaque AI
+- No opaque policy score — verdicts are GO / WARN / BLOCK based on configured rule severity, not AI inference
 
 ## AI augmentation roadmap
 
-Preflight ships a deterministic-first compliance core. AI is the planned augmentation layer on top — never the decision-maker.
+Preflight ships a deterministic-first preflight engine. AI is the planned augmentation layer on top, never the decision-maker.
 
 Five augmentations are scoped for v1.x:
 
 - **PDF / text extraction** — drop a T&C PDF or a free-text campaign brief; AI extracts a structured `CampaignBundle`; the deterministic checks run as normal.
 - **Fix suggestion per blocker** — for each `BLOCK`, AI generates 3 locale-aware replacement copy variants that preserve marketing intent.
-- **Cultural localization audit** — catches culture-specific mismatches that regex rules miss: alcohol references in Malaysia, religious imagery in MENA, gender-coded financial promises.
-- **Plain-language explanation per blocker** — why this was flagged, which regulator, which article, in the marketer's language rather than the lawyer's.
-- **Compliance Q&A** — ask "can I say 'risk-free' in UK copy?" and get an answer grounded in the rule artifacts.
-
-> "Ecosystem solutions that unify traffic, product, analytics, payments, and infrastructure into a single growth model gain the most value." — **Alexander Romanov, Head of White Label, 01.tech**, *Global iGaming Report 2026*
+- **Cultural localization review** — suggests candidate text mismatches for human review where regex rules are insufficient.
+- **Plain-language explanation per blocker** — explains why an artifact matched and which rule label produced the finding.
+- **Policy-artifact Q&A** — retrieves answers grounded in versioned rule artifacts for responsible-owner review.
 
 See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for full reasoning. None of these ship in v1.0; the deterministic kernel does. AI lands incrementally in v1.x.
 
