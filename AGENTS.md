@@ -1,40 +1,164 @@
-# AGENTS.md — Promo Preflight
+# AGENTS.md - Promo Preflight
 
-> Единый источник контекста для AI-агентов (OpenCode, Claude, Cursor и др.)
+> Рабочий источник контекста для AI-агентов (Codex, OpenCode, Claude, Cursor и др.).
+> Цель файла - не красивая документация, а максимальная эффективность агента: правильный skill, маленький scope, проверяемый результат.
 
-## ЖЁСТКОЕ ПРАВИЛО: Skills
+## ЖЕСТКОЕ ПРАВИЛО: skill routing
 
-**Перед ЛЮБЫМ действием** (включая ответ на вопрос, чтение файла, запуск команды, поиск) ты ОБЯЗАН проверить ВСЕ навыки из `available_skills` — не только superpowers, но и project-level навыки (docx, figma-*, frontend-design, code-review, debugging, pdf, xlsx, и т.д.). Если есть хотя бы 1% шанс, что навык применим — ВЫЗОВИ `Skill` tool.
+Перед стартом задачи определи тип работы и выбери релевантный workflow/skill. Не начинай реализацию, пока не выбран маршрут.
 
-Вот полный список навыков, которые нужно всегда держать в уме и проверять:
-- **integration-artifacts группы**: docx, pdf, pptx, xlsx — для любых операций с офисными файлами
-- **figma-группа**: figma-use, figma-implement-design, figma-generate-design, figma-generate-library, figma-create-design-system-rules
-- **design/frontend-группа**: frontend-design, frontend-design-review, frontend-ui-engineering, web-design-guidelines, brand-guidelines, canvas-design, theme-factory
-- **engineering-группа**: code-review-and-quality, code-simplification, debugging-and-error-recovery, systematic-debugging, performance-optimization, security-and-hardening, api-and-interface-design, vercel-composition-patterns, vercel-react-best-practices, vercel-react-view-transitions, source-driven-development
-- **process-группа**: brainstorming, spec-driven-development, test-driven-development, writing-plans, executing-plans, planning-and-task-breakdown, incremental-implementation, dispatching-parallel-agents, subagent-driven-development, finishing-a-development-branch
-- **testing-группа**: browser-testing-with-devtools, webapp-testing, verification-before-completion
-- **infra-группа**: ci-cd-and-automation, shipping-and-launch, deprecation-and-migration, documentation-and-adrs, git-workflow-and-versioning, using-git-worktrees, context-engineering
-- **meta-группа**: skill-creator, writing-skills, using-superpowers
+### Routing table
 
-Это не опционально. Это не обсуждается. Даже «простой» вопрос требует проверки. Никаких рационализаций вроде «это слишком просто», «я уже знаю этот навык», «давай сначала посмотрю код».
+- UI / visual design / layout / responsiveness:
+  use `frontend-design`, `frontend-design-review`, `web-design-guidelines`, `frontend-ui-engineering`, `canvas-design`, `theme-factory`.
 
-Навыки определяют КАК подходить к задаче. Игнорирование навыков = неправильный подход = зря потраченное время.
+- Runtime error / failing build / failing tests / broken deploy:
+  use `debugging-and-error-recovery` or `systematic-debugging`.
 
-## Стек
+- Refactor / risky code change / code quality / review:
+  use `code-review-and-quality`, `code-simplification`, `verification-before-completion`.
 
-- **Next.js 16** (App Router, React 19)
-- **TypeScript 6** — strict mode, no `any`
-- **Tailwind CSS 3.4** + `tailwindcss-animate`
-- **Zod** — валидация всех внешних границ
-- **PostgreSQL** (pg, Railway-ready)
-- **Anthropic SDK** — AI-ассистирование (опционально, есть mock-режим)
-- **YAML** — rules/rules.yaml, config/owners.yaml
-- **Lucide React** — иконки
-- **driver.js** — desktop product tour
+- New feature / unclear task / multi-step implementation:
+  use `spec-driven-development`, `writing-plans`, `executing-plans`, `planning-and-task-breakdown`, `incremental-implementation`.
 
-## Архитектура
+- Browser behavior / visual QA / user flow testing:
+  use `browser-testing-with-devtools` or `webapp-testing`.
 
+- CI / deploy / migrations / Railway / release work:
+  use `ci-cd-and-automation`, `shipping-and-launch`, `deprecation-and-migration`, `git-workflow-and-versioning`, `finishing-a-development-branch`.
+
+- Docs / office artifacts:
+  use `docx`, `pdf`, `pptx`, `xlsx` when touching those artifact types.
+
+- Figma / Refero / design references:
+  use `figma-use`, `figma-implement-design`, `figma-generate-design`, `figma-generate-library`, `figma-create-design-system-rules`.
+
+- Parallel exploration / subagents / large repo analysis:
+  use `dispatching-parallel-agents`, `subagent-driven-development`, `context-engineering`, `using-git-worktrees`.
+
+- Creating or improving skills:
+  use `skill-creator`, `writing-skills`, `using-superpowers`.
+
+If the task clearly matches a category above, use the relevant skill before implementation. If several categories apply, use the narrowest skill first, then escalate only if needed.
+
+If no skill applies, state briefly: `No specific skill applies` and continue. Do not waste time checking every skill for trivial read-only tasks.
+
+## Operating mode
+
+- Prefer small, PR-sized changes.
+- For non-trivial work, start with a short plan before editing.
+- Treat user requests as product tickets: goal, files, constraints, acceptance criteria.
+- Do not rewrite unrelated files.
+- Do not change public product claims, metrics, test counts, or architecture docs unless the task explicitly asks for it.
+- Do not hide uncertainty. If something cannot be verified locally, say so.
+
+## Done means
+
+A task is not complete until all relevant checks are done.
+
+### Always
+
+1. The change is scoped to the requested task.
+2. No unrelated files were rewritten.
+3. The final response lists:
+   - files changed
+   - commands run
+   - checks passed/failed
+   - risks or follow-ups
+
+### Code changes
+
+Run the relevant subset:
+
+```bash
+npm run typecheck
+npm run lint
+npm run test
 ```
+
+Use targeted tests when the full suite is too expensive, but state what was not run.
+
+### Production/deploy changes
+
+Also run or account for:
+
+```bash
+npm run build
+npm run db:check
+```
+
+For Railway changes, verify `railway.toml`, pre-deploy behavior, env vars, and `/api/ready` expectations.
+
+### Checks/rules changes
+
+Also run:
+
+```bash
+npm run checks:run
+npm run rules:check
+```
+
+Worked examples must still produce expected severity classes and owner/blocker output.
+
+### i18n changes
+
+Also run:
+
+```bash
+npm run i18n:check
+```
+
+`locales/en.json` and `locales/ru.json` must keep identical keys.
+
+### UI changes
+
+Verify the changed flow in browser:
+
+- desktop layout
+- mobile layout
+- dark UI contrast
+- hover/focus states if interactive
+- Intake -> Risk Report -> Launch Readiness flow if affected
+
+## Product context
+
+Promo Preflight is an agent-assisted launch-readiness workspace for regulated iGaming promo campaigns. It is a portfolio MVP and proof-of-work for AI-assisted delivery, not a gambling product.
+
+Core product flow:
+
+1. Intake - paste or load a campaign bundle
+2. Risk Report - run deterministic checks and AI-assisted extraction
+3. Launch Readiness - show go/no-go, owners, blockers, audit handoff
+
+Post-Campaign Review is roadmap/stub only unless explicitly requested.
+
+## Product constraints
+
+- No auth, payments, SaaS onboarding, player accounts, casino mechanics, or affiliate flows.
+- No gambling visual language, operator logos, real casino brands, or SEO targeting.
+- Use generic operators and synthetic worked examples only.
+- Draft data should stay in `localStorage` unless persistence is explicitly part of the task.
+- Request bodies must not be logged.
+- All pages should remain `noindex` / `nofollow`.
+- Rate limit behavior matters: default is 20 req/min per IP.
+- Deterministic checks first, AI second.
+- AI output must be structured operational output, not generic prose.
+
+## Stack
+
+- Next.js 16 (App Router, React 19)
+- TypeScript 6 - strict mode, no `any` without explicit justification
+- Tailwind CSS 3.4 + `tailwindcss-animate`
+- Zod - validation for external boundaries
+- PostgreSQL (pg, Railway-ready)
+- Anthropic SDK - optional AI assistance, mock mode supported
+- YAML - `rules/rules.yaml`, `config/owners.yaml`
+- Lucide React - icons
+- driver.js - desktop product tour
+
+## Architecture
+
+```text
 app/                  Next.js App Router
   app/intake/         Campaign bundle intake form
   app/risk-report/    Structured check results
@@ -64,60 +188,61 @@ locales/
   en.json             English translations
   ru.json             Russian translations
 schemas/
-  index.ts            Zod contracts for all product types
-  worked-examples.ts  EX01–EX11 synthetic test bundles
+  index.ts            Zod contracts for product types
+  worked-examples.ts  EX01-EX11 synthetic test bundles
   fixtures.ts         Offline sample bundle
 ```
 
-## Tailwind CSS — кастомная палитра
+## Tailwind CSS - custom palette
 
-**Не использовать стандартные Tailwind цвета** для основного UI. Использовать только кастомные:
+Do not use standard Tailwind colors for the main UI. Use the custom palette:
 
-| Токен | Значение | Назначение |
+| Token | Value | Purpose |
 |---|---|---|
-| `bg-background` | `#0b0b0c` | Глобальный фон |
-| `bg-page` | `#111113` | Фон страницы |
-| `bg-surface` | `#1e1e22` | Карточки, панели |
-| `bg-overlay` | `#26262b` | Ховеры, оверлеи |
-| `text-foreground` | `#e4e4e5` | Основной текст |
-| `text-subtle` | `#9e9fa0` | Вторичный текст |
-| `text-muted` | `#5f6060` | Третичный текст |
-| `text-accent` | `#5f6dcd` | Акцентные элементы |
-| `bg-accent-muted` | `rgba(95,109,205,0.15)` | Акцентный фон |
-| `text-pass` | `#3dd68c` | Успех |
-| `text-warn` | `#e5a00d` | Предупреждение |
-| `text-fail` | `#e5534b` | Ошибка |
-| `text-info` | `#4d9cf4` | Информация |
+| `bg-background` | `#0b0b0c` | Global background |
+| `bg-page` | `#111113` | Page background |
+| `bg-surface` | `#1e1e22` | Cards, panels |
+| `bg-overlay` | `#26262b` | Hover, overlays |
+| `text-foreground` | `#e4e4e5` | Main text |
+| `text-subtle` | `#9e9fa0` | Secondary text |
+| `text-muted` | `#5f6060` | Tertiary text |
+| `text-accent` | `#5f6dcd` | Accent elements |
+| `bg-accent-muted` | `rgba(95,109,205,0.15)` | Accent background |
+| `text-pass` | `#3dd68c` | Success |
+| `text-warn` | `#e5a00d` | Warning |
+| `text-fail` | `#e5534b` | Error |
+| `text-info` | `#4d9cf4` | Info |
 
-Радиусы: `rounded-sm` (5px), `rounded` / `rounded-md` (8px), `rounded-lg` (10px), `rounded-xl` (14px), `rounded-2xl` (18px).
+Radius scale: `rounded-sm` (5px), `rounded` / `rounded-md` (8px), `rounded-lg` (10px), `rounded-xl` (14px), `rounded-2xl` (18px).
 
-## TypeScript правила
+## TypeScript rules
 
-- Strict mode включен
-- Никаких `any` без явного комментария
-- Все API-границы валидируются Zod
-- Типы выводятся из Zod: `type Foo = z.infer<typeof FooSchema>`
-- React Server Components по умолчанию, `'use client'` только при необходимости (useState, useEffect, browser APIs)
+- Strict mode is enabled.
+- No `any` without explicit comment.
+- Validate all API boundaries with Zod.
+- Prefer inferred types from Zod: `type Foo = z.infer<typeof FooSchema>`.
+- React Server Components by default.
+- Use `'use client'` only for state, effects, or browser APIs.
 
-## i18n (EN/RU)
+## i18n EN/RU
 
-- Файлы: `locales/en.json`, `locales/ru.json`
-- Ключи должны быть идентичны в обоих файлах
-- Проверка: `npm run i18n:check`
-- Перевод через точечную нотацию: `t('risk_report.severity.high')`
+- Files: `locales/en.json`, `locales/ru.json`.
+- Keys must be identical in both files.
+- Check: `npm run i18n:check`.
+- Use dot notation: `t('risk_report.severity.high')`.
 
-## 8 офлайн-чеков
+## 8 offline checks
 
-1. **Channel consistency** — copy vs offer value mismatch
-2. **Terms robustness** — max bet, wagering, cashout clauses
-3. **Offer math sanity** — математические противоречия
-4. **Jurisdictional risk** — risk phrases, missing RG wording
-5. **Localization QA** — locale/currency mismatch, ambiguous dates
-6. **Launch ownership** — approvers assigned and approved
-7. **Link QA** — URL validity, UTM params, domain consistency
-8. **Format QA** — channel-specific character limits
+1. Channel consistency - copy vs offer value mismatch
+2. Terms robustness - max bet, wagering, cashout clauses
+3. Offer math sanity - mathematical contradictions
+4. Jurisdictional risk - risk phrases, missing RG wording
+5. Localization QA - locale/currency mismatch, ambiguous dates
+6. Launch ownership - approvers assigned and approved
+7. Link QA - URL validity, UTM params, domain consistency
+8. Format QA - channel-specific character limits
 
-## Команды
+## Commands
 
 ```bash
 npm run dev              # Dev server
@@ -132,17 +257,8 @@ npm run i18n:check       # Validate translations
 npm run db:check         # Validate DB schema/seed
 ```
 
-## Safety conventions
-
-- No auth, payments, SaaS onboarding
-- No gambling visual language or operator logos
-- Draft data only in `localStorage`
-- Request bodies not logged
-- `noindex` / `nofollow` on all pages
-- Rate limit: 20 req/min per IP
-
 ## Deployment
 
 - Railway via `railway.toml` (Nixpacks)
-- `ANTHROPIC_API_KEY` опционально — без него все чеки работают офлайн
-- `USE_MOCK_AI=true` для локальной разработки без API ключа
+- `ANTHROPIC_API_KEY` is optional - without it, offline checks still work
+- `USE_MOCK_AI=true` for local development without an API key
