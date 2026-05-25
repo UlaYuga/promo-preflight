@@ -11,7 +11,7 @@ When a run completes, Preflight publishes `PreflightEvent`s (`RunCompleted`, `Bl
 
 **Publish after DB commit (in the same request handler)** — if the publish fails (network error, Telegram API down, broker outage), the run is persisted but the events are silently lost. Operators get no Telegram alert.
 
-Either failure mode produces a compliance process gap: operators assume events are delivered reliably, and build workflows (Telegram-based owner assignment, audit entries) on that assumption.
+Either failure mode produces a review-workflow delivery gap: owners assume events are delivered reliably, and build workflows (Telegram-based assignment, audit entries) on that assumption.
 
 ## Decision
 
@@ -34,7 +34,7 @@ Poll interval is configurable via `OUTBOX_POLL_INTERVAL_MS` (default 1000ms).
 - Decoupled: adding a new subscriber (Slack, Jira) requires no changes to the run use case — only a new `IHandoffAdapter` implementation.
 
 **Negative**
-- Small delivery delay: events are delivered after the next poll cycle, not within the same request (default ~1 second lag).
+- Small delivery delay: events are delivered after the next configured poll cycle, not within the same request (`OUTBOX_POLL_INTERVAL_MS` defaults to `1000`).
 - The outbox table grows unboundedly — periodic cleanup (`DELETE WHERE delivered_at < now() - interval '30 days'`) is required in production.
 - The outbox worker is a separate process entrypoint (`npm run worker`) that must be kept alive.
 

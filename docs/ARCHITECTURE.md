@@ -105,14 +105,14 @@ sequenceDiagram
 | `zod` | Runtime validation at all system boundaries; types derived from schemas via `z.infer<>` |
 | `vitest` | Fast unit + integration tests; compatible with ESM and TypeScript path aliases |
 | `@anthropic-ai/sdk` | Optional AI augmentation layer; swapped for stubs when `USE_MOCK_AI=true` |
-| `yaml` | Parses jurisdiction rule artifacts (`rules/*.yaml`) at boot — no runtime YAML parsing |
-| Telegram Bot API | Outbound notifications to the compliance team channel via outbox worker |
+| `yaml` | Parses configured policy/rule artifacts (`rules/*.yaml`) at boot — no runtime YAML parsing |
+| Telegram Bot API | Outbound run-result notifications to the review channel via outbox worker |
 
 ## What we deliberately don't do
 
 - **No multi-tenant / RLS** — out of scope for this sprint; adding `org_id` to all tables plus Row-Level Security is the natural extension, no domain changes needed.
 - **No gRPC** — REST + Telegram webhook fit the consumer model (CRM / Promo Ops teams don't run gRPC clients).
-- **No live LLM in the default checks path** — checks must be deterministic and reproducible; a regulator asking "why was this flagged" cannot accept "the LLM said so." AI is an optional augmentation layer (see [ADR-0003](./adr/0003-deterministic-first-ai-second.md) and [ADR-0005](./adr/0005-ai-augmentation-roadmap.md)).
+- **No live LLM in the default checks path** — findings must be reproducible from a submitted bundle and a versioned policy/rule artifact. AI is an optional augmentation layer (see [ADR-0003](./adr/0003-deterministic-first-ai-second.md) and [ADR-0005](./adr/0005-ai-augmentation-roadmap.md)).
 - **No end-user accounts or browser sign-in** — the synthetic browser demo stays credential-free, while the `/api/v1/*` integration surface requires bearer authentication.
 - **No microservices** — one process for now; the outbox worker is a separate entrypoint of the same binary, not a separate service.
-- **No opaque "compliance score"** — verdicts are `GO` / `WARN` / `BLOCK` based on rule severity, not an aggregate number.
+- **No opaque policy score** — verdicts are `GO` / `WARN` / `BLOCK` based on configured rule severity, not an aggregate number.

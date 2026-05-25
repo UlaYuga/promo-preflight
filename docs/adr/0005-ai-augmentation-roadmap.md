@@ -5,43 +5,38 @@
 
 ## Context
 
-The 8 deterministic checks form a defensible compliance core (see ADR-0003): same input, same verdict, audit-friendly, reproducible. This is the contract Preflight makes with operators.
+The 8 deterministic checks form an artifact-based preflight workflow (see ADR-0003): the same input and artifact version produce the same finding set. This is the behavior Preflight demonstrates.
 
 At the same time, an Anthropic SDK wrapper already exists at `infrastructure/ai/` but is not wired into the main flow. AI offers a genuine UX multiplier on top of the deterministic core — not as a decision-maker, but as the layer that helps marketers understand, act on, and fix what the deterministic engine flagged.
 
-The 01.tech Global iGaming Report 2026 puts this plainly:
-
-> "Ecosystem solutions that unify traffic, product, analytics, payments, and infrastructure into a single growth model gain the most value." — **Alexander Romanov, Head of White Label, 01.tech**
-
-Five high-leverage AI augmentations have been scoped, prototyped conceptually, and explicitly *not* built in v1. They are documented here so contributors understand the roadmap and do not inadvertently block it.
+Five potential AI augmentations are documented here and explicitly *not* built in v1. They describe possible UX work above the deterministic workflow, not product capabilities that ship today.
 
 ## Decision
 
 Document AI augmentation as a planned v1.x roadmap. AI is the planned augmentation layer on top — never the decision-maker. Five augmentations are scoped for v1.x, in priority order:
 
-1. **PDF / text extraction** — Operator drops a 5-page T&C PDF or pastes a free-text campaign brief. AI extracts structured `CampaignBundle` fields. The deterministic check flow then runs as normal. This eliminates the manual data-entry step that currently precedes every run.
+1. **PDF / text extraction** — An operator drops a T&C PDF or pastes a free-text campaign brief. AI extracts candidate `CampaignBundle` fields for review. The deterministic check flow then runs as normal.
 
-2. **Fix suggestion per blocker** — For each `BLOCK` or `WARN` verdict, AI generates 3 locale-aware replacement copy variants that preserve marketing intent while removing the offending phrase or missing clause. Operator picks one, edits, re-runs.
+2. **Fix suggestion per blocker** — For a `BLOCK` or `WARN` verdict, AI can draft locale-aware replacement copy for responsible-owner review before a re-run.
 
-3. **Cultural localization audit** — AI detects culture-specific mismatches that regex rules cannot catch: alcohol references in Malaysia (dual-age-gate market), religious imagery in MENA, gender-coded financial promises in markets where these are considered predatory. Supplements, never replaces, the YAML rule artifacts.
+3. **Cultural localization review** — AI can suggest candidate text mismatches that regex rules cannot capture. It supplements, never replaces, the YAML policy/rule artifacts or human review.
 
-4. **Plain-language explanation per blocker** — Each blocker currently surfaces a `ruleId` and a technical message. AI rewrites this as a marketer-facing explanation: *why* this matters, which regulator, which article, what the practical consequence is. Reduces the compliance-to-marketing translation round-trip.
+4. **Plain-language explanation per blocker** — Each blocker currently surfaces a `ruleId` and a technical message. AI can explain which artifact label matched and what copy or input field a reviewer should inspect.
 
-5. **Compliance Q&A** — Operator asks "Can I say 'risk-free' in the UK copy?" or "What does Brazil require in the T&C for a welcome bonus?" AI answers grounded in the `rules/*.yaml` artifacts and the jurisdiction rule knowledge base. Reduces dependency on legal counsel for routine questions.
+5. **Policy-artifact Q&A** — An operator asks which configured artifact would flag a phrase or missing field. AI answers from `rules/*.yaml` for responsible-owner review, without issuing legal guidance.
 
 All five remain "AI on top of deterministic core." The deterministic verdict is always computed first. AI never overrides or bypasses it.
 
 ## Consequences
 
 **Positive**
-- Clear architectural separation between the defensible compliance kernel (v1, ships now) and the UX-multiplier layer (v1.x, ships incrementally).
+- Clear architectural separation between the deterministic preflight workflow (v1, ships now) and the optional UX layer (v1.x, planned).
 - Each augmentation can be shipped independently without touching the domain layer or the deterministic check engine.
 - The `ANTHROPIC_API_KEY` / `USE_MOCK_AI` toggle is already in place; augmentations activate behind this gate.
-- Operators get a clear roadmap: deterministic is the contract, AI is the experience layer on top.
+- Contributors get a clear roadmap: deterministic findings are the shipped behavior, while AI remains an optional experience layer.
 
 **Negative**
-- Until v1.x ships, marketers read raw `ruleId` strings and must manually rephrase blocked copy — no guided fix suggestions yet.
-- Some operators evaluating "AI-powered compliance" tools may undervalue the deterministic-first approach without seeing the AI layer.
+- Until v1.x ships, reviewers read raw `ruleId` strings and manually revise flagged copy; no guided fix suggestions are shipped.
 - PDF extraction (augmentation #1) requires careful prompt engineering to avoid hallucinated structured fields — needs an evaluation harness before production use.
 
 **Neutral**

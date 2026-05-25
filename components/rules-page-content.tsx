@@ -23,8 +23,8 @@ export function RulesPageContent({
   const lines = heroLines.split("\n");
   const heroLabel = lines.join(" ");
   const subtitle = isRu
-    ? "Полный список правил, по которым Preflight проверяет кампанию перед запуском."
-    : "The full set of rules Preflight checks against before a campaign goes live.";
+    ? "Справочный каталог только для чтения: синтетические метки правил для демо-ревью, а не подтверждённые правовые требования."
+    : "Read-only reference catalog: synthetic rule labels for the demo review, not verified legal requirements.";
 
   return (
     <div>

@@ -14,7 +14,7 @@ Configure the server-side key through `PREFLIGHT_API_KEY`. If it is unset or the
 
 ## Browser demo boundary
 
-The interactive browser workflow is a separate demo surface over synthetic data and browser `localStorage`. It does not call `/api/v1/*`, does not receive `PREFLIGHT_API_KEY`, and does not claim that its drafts or saved demo reviews are durably persisted on the server. This document specifies the authenticated integration/evidence contract exercised by server-side clients or `curl`.
+The interactive browser workflow is a separate demo surface over synthetic data and browser `localStorage`. It does not call `/api/v1/*`, does not receive `PREFLIGHT_API_KEY`, and does not claim that its drafts or saved demo reviews are durably persisted on the server. This document specifies the authenticated integration/persistence contract exercised by server-side clients or `curl`.
 
 ## Table of contents
 
@@ -35,7 +35,7 @@ The interactive browser workflow is a separate demo surface over synthetic data 
 
 ## 1. POST /api/v1/runs
 
-Runs the mandatory API check pipeline against a campaign bundle. Idempotent — submitting the same `Idempotency-Key` twice returns the same result.
+Runs the configured API preflight pipeline against a campaign bundle. Idempotent — submitting the same `Idempotency-Key` twice returns the same result.
 
 **Headers**
 
@@ -108,7 +108,7 @@ The `campaign` field matches [`CampaignBundleSchema`](../schemas/index.ts) exact
 
 Every API run executes all eight core offline checks: `channel_consistency`, `terms_robustness`, `offer_math_sanity`, `jurisdictional_risk_signals`, `localization_qa`, `launch_ownership`, `link_qa`, and `format_qa`.
 
-The API pipeline additionally executes mandatory policy checks for payment compatibility (`payment_compat`), crypto disclosure (`crypto_disclosure`), and jurisdictional risk (`jurisdictional_risk`). The API `format_qa` and `link_qa` wrappers overlap with the core pipeline; identical findings are de-duplicated in the run result. Clients cannot exclude mandatory checks. Unknown members in `options` are rejected with `400 BAD_REQUEST`.
+The API pipeline additionally executes configured policy-artifact checks for payment compatibility (`payment_compat`), crypto disclosure (`crypto_disclosure`), and jurisdictional-risk labels (`jurisdictional_risk`). The API `format_qa` and `link_qa` wrappers overlap with the core pipeline; identical findings are de-duplicated in the run result. Clients cannot exclude these configured runtime checks. Unknown members in `options` are rejected with `400 BAD_REQUEST`.
 
 The complete JSON request body must not exceed `MAX_INPUT_CHARS` characters (default `50000`). Larger requests return `413 PAYLOAD_TOO_LARGE` before checks run or data is written.
 
@@ -143,7 +143,7 @@ The complete JSON request body must not exceed `MAX_INPUT_CHARS` characters (def
 }
 ```
 
-`policyRuleVersions` is run evidence. The values are read from the validated runtime YAML artifacts loaded by the mandatory API policy checks. They are persisted on the historical run row, so an idempotency replay and later reads return the same snapshot even if a YAML artifact is changed afterwards.
+`policyRuleVersions` records run provenance. The values are read from the validated runtime YAML artifacts loaded by the configured API policy checks. They are persisted on the historical run row, so an idempotency replay and later reads return the same snapshot even if a YAML artifact is changed afterwards.
 
 **curl example**
 
@@ -196,7 +196,7 @@ curl -X POST http://localhost:3000/api/v1/runs \
       "ruleId": "terms_robustness.TERMS_ROBUSTNESS-002",
       "severity": "block",
       "evidence": "termsText: 100% welcome bonus up to 200 EUR. 30x wagering on bonus.…",
-      "suggestion": "Add the missing required clauses to the terms before launch.",
+      "suggestion": "Add the terms fields expected by the configured artifact before launch.",
       "ownerHint": "legal"
     },
     {
@@ -298,7 +298,7 @@ Lists all saved versions of a campaign, newest first. Versions are created when 
     blockers: Blocker[]                 // same blocker shape as POST /runs response
     readinessState: string              // e.g. "BLOCKED", "READY"
     runId?: string                       // present for API-created versions
-    policyRuleVersions?: {               // persisted run evidence when a run is attached
+    policyRuleVersions?: {               // persisted run provenance when a run is attached
       paymentCompatibility: number
       cryptoDisclosure: number
       jurisdictionalRisk: number
@@ -312,7 +312,7 @@ Lists all saved versions of a campaign, newest first. Versions are created when 
 The API combines two related but separate rule systems:
 
 - The eight core offline checks are the deterministic check kernel documented in `rules/rules.yaml` and executed by the legacy runner.
-- The three mandatory API policy artifacts are runtime YAML inputs loaded by supplemental checks: `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`.
+- The three configured API policy artifacts are runtime YAML inputs loaded by supplemental checks: `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`.
 
 `rules/rules.yaml` is documentation and catalog metadata for the core offline checks. It is not the runtime source for `payment_compat`, `crypto_disclosure`, or `jurisdictional_risk`.
 

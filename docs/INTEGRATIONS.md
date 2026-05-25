@@ -81,16 +81,16 @@ curl -X POST http://localhost:3000/api/v1/runs \
   -d @/tmp/preflight-ex08.json
 ```
 
-Confirm the run returns `verdict: "BLOCK"` and, within ~1 outbox poll interval, a Telegram message appears in the channel. A `BLOCK` verdict message looks like:
+Confirm the run returns `verdict: "BLOCK"` and, within one configured outbox poll interval, a Telegram message appears in the channel. The following is illustrative output for a synthetic bundle and synthetic policy-artifact labels; it is not a statement of applicable law:
 
 ```
 🚨 Run abc-123 BLOCKED (3 blockers, 2 warnings)
-Campaign: BR Welcome Q2 2026 (BR)
+Campaign: Synthetic BR Welcome (BR)
 Owners to notify: legal, compliance, payments
 Top blockers:
-• [BLOCK] BR-SPA-LICENSE-REQUIRED — T&C for BR must include the SPA/MF license number
-• [BLOCK] BR-FORBIDDEN-PHRASE-GARANTIDO — 'bônus garantido' prohibited by CONAR 2024
-• [BLOCK] IN-UPI-GAMING-BLOCKED — UPI blocked for gaming by NPCI since Q3 2022
+• [BLOCK] DEMO-BR-LICENSE-FIELD — Demo artifact expects a license-number field in T&C
+• [BLOCK] DEMO-BR-RISK-PHRASE — Copy matches the demo artifact's flagged-phrase list
+• [BLOCK] DEMO-IN-PAYMENT-REVIEW — Payment method matches the demo artifact's review rule
 View: http://localhost:3000/runs/abc-123
 ```
 

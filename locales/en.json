@@ -79,20 +79,20 @@
     "evidenceDescription": "Technical proof file"
   },
   "welcome": {
-    "eyebrow": "Start here · 90-second tour",
+    "eyebrow": "Start here · guided tour",
     "headline": "Promo Preflight",
-    "positioning": "Deterministic pre-launch gate for regulated promo campaigns",
-    "body": "Interactive browser demo for synthetic campaign bundles, with draft and report state stored locally. A protected REST API evidence contract is available separately for integrations.",
+    "positioning": "Deterministic pre-launch review for synthetic promo scenarios",
+    "body": "Interactive browser demo for synthetic campaign bundles, with draft and report state stored locally. A protected REST API persistence contract is available separately for integrations.",
     "openIntake": "Open campaign bundle",
     "testCases": "Start with Sample Case",
-    "ctaHint": "Use a sample case to follow the browser demo, then open System Status and API Contract to inspect the separate backend evidence path.",
+    "ctaHint": "Use a sample case to follow the browser demo, then open System Status and API Contract to inspect the separate persisted backend path.",
     "workflowTitle": "Workflow at a glance",
-    "workflowSubtitle": "Browser demo first; authenticated API evidence separately",
+    "workflowSubtitle": "Browser demo first; authenticated API records separately",
     "safetyNote": "Portfolio demo workspace · synthetic data · browser-local drafts.",
     "strip": "8 checks · 23 rules · 6 owners · EN/RU",
     "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 202 tests · Apache 2.0",
     "architectureTitle": "Two deliberate paths",
-    "architectureBody": "The browser demo runs checks over synthetic data and stores draft and report state in localStorage. Separately, authenticated /api/v1/* clients create persisted Postgres runs with audit and outbox evidence.",
+    "architectureBody": "The browser demo runs checks over synthetic data and stores draft and report state in localStorage. Separately, authenticated /api/v1/* clients create persisted Postgres runs with audit and outbox records.",
     "systemLinks": {
       "status": "Open System Status",
       "api": "Protected API evidence",
@@ -134,7 +134,7 @@
         "description": "RunStarted, BlockerRaised, and RunCompleted are written transactionally for the API run"
       },
       {
-        "label": "Deliver API evidence",
+        "label": "Deliver API records",
         "description": "The worker drains API outbox rows into audit records and best-effort Telegram notifications"
       },
       {
@@ -150,7 +150,7 @@
     },
     "heroA": {
       "positioning": "Interactive browser demo for synthetic promo checks",
-      "ctaPrimary": "Start 90-second tour",
+      "ctaPrimary": "Start guided tour",
       "ctaSecondary": "Sample case"
     },
     "handoff": {
@@ -158,7 +158,7 @@
       "launchIn": "launches in 3 days · pt-BR",
       "summary": "Three issues need to clear before launch:",
       "issues": [
-        "T&C and Email body are missing responsible-gambling wording. Required for Portuguese promos.",
+        "T&C and Email body are missing wording expected by the configured pt-BR demo artifact.",
         "Maximum-bet limit for bonus funds is not specified.",
         "Email title is 62 characters. The hard limit is 55."
       ],
@@ -168,7 +168,7 @@
   },
   "tour": {
     "eyebrow": "Guided tour",
-    "takeTour": "Start 90-second tour",
+    "takeTour": "Start guided tour",
     "restartTour": "Restart tour",
     "continueFromStep": "Continue tour · {step} / 11",
     "desktopOnly": "Tour works best on desktop.",
@@ -614,7 +614,7 @@
   "systemStatus": {
     "eyebrow": "08 / System status",
     "title": "System status",
-    "subtitle": "Live public probes and a protected REST evidence contract separate from the browser demo.",
+    "subtitle": "Live public probes and a protected REST persistence contract separate from the browser demo.",
     "health": {
       "title": "Health",
       "subtitle": "Liveness and readiness probes refreshed every 30 s",
@@ -641,7 +641,7 @@
     },
     "links": {
       "title": "Contract & code",
-      "subtitle": "Documentation for the demo and the separate API evidence surface",
+      "subtitle": "Documentation for the demo and the separate persisted API surface",
       "apiDocs": "REST API contract (docs/API.md)",
       "apiContract": "API Contract screen",
       "evidence": "Evidence screen",
@@ -661,7 +661,7 @@
     },
     "reliability": {
       "title": "Reliability guarantees",
-      "subtitle": "Guarantees of the protected API evidence contract",
+      "subtitle": "Guarantees of the protected API persistence contract",
       "items": [
         "Required Idempotency-Key for POST /api/v1/runs",
         "Same key + same body returns the same run",
@@ -796,7 +796,7 @@
         {
           "label": "Landing",
           "href": "/",
-          "note": "Start with the synthetic browser demo, then follow links to the separate authenticated API evidence contract."
+          "note": "Start with the synthetic browser demo, then follow links to the separate authenticated API persistence contract."
         },
         {
           "label": "System Status",
@@ -852,7 +852,7 @@
     },
     "architecture": {
       "title": "System story",
-      "subtitle": "The interactive browser demo and protected API evidence stay separate.",
+      "subtitle": "The interactive browser demo and protected API records stay separate.",
       "steps": [
         "The browser demo starts from synthetic data, validates locally, and runs the deterministic check workflow.",
         "Demo drafts, reports, campaign versions, and handoff previews remain in browser localStorage.",
