@@ -12,6 +12,10 @@ Authorization: Bearer <PREFLIGHT_API_KEY>
 
 Configure the server-side key through `PREFLIGHT_API_KEY`. If it is unset or the bearer value is missing or invalid, the versioned API returns `401 UNAUTHORIZED`; it never falls back to public access. Liveness and readiness probes (`/api/health` and `/api/ready`) are intentionally public.
 
+## Browser demo boundary
+
+The interactive browser workflow is a separate demo surface over synthetic data and browser `localStorage`. It does not call `/api/v1/*`, does not receive `PREFLIGHT_API_KEY`, and does not claim that its drafts or saved demo reviews are durably persisted on the server. This document specifies the authenticated integration/evidence contract exercised by server-side clients or `curl`.
+
 ## Table of contents
 
 1. [POST /api/v1/runs](#1-post-apiv1runs)
@@ -384,7 +388,7 @@ Lists append-only audit events delivered by the outbox worker. The endpoint is q
 
 ## 8. GET /api/v1/stats
 
-Returns aggregate run telemetry for the System Status dashboard.
+Returns aggregate run telemetry to authenticated API clients. The browser System Status screen documents this protected endpoint but does not fetch its data.
 
 **Response — 200 OK**
 

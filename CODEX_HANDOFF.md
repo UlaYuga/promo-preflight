@@ -3,7 +3,7 @@
 **Date:** 2026-05-18
 **Branch:** main
 **Production:** <https://promo-preflight-production.up.railway.app/>
-**Status:** Live on Railway. Deterministic offline check kernel + REST API + Postgres persistence + outbox→audit pipeline. Portfolio-grade, single-tenant.
+**Status:** Live on Railway. Browser-local synthetic demo plus a separate authenticated REST API with Postgres persistence and outbox→audit evidence. Portfolio-grade, single-tenant.
 
 ## What Is Implemented
 
@@ -21,7 +21,7 @@
 
 ### REST API (`docs/API.md`)
 
-Versioned under `/api/v1/`. Single canonical request shape; response shapes documented to match implementation (T-059).
+Versioned under `/api/v1/`. This is an authenticated integration surface separate from the localStorage-backed browser demo; all versioned endpoints require `Authorization: Bearer <PREFLIGHT_API_KEY>`. Single canonical request shape; response shapes documented to match implementation (T-059).
 
 - `POST /api/v1/runs` — runs all enabled checks, persists, returns `{runId, campaignId, campaignVersion, verdict, status, counts, blockers, createdAt, completedAt, policyRuleVersions}`. Requires `Idempotency-Key` header. Same key + same body → same persisted response snapshot; same key + different body → `409 IDEMPOTENCY_CONFLICT`.
 - `GET /api/v1/runs/:id` — same shape as POST, including persisted `policyRuleVersions`. Non-UUID id → 404.
@@ -57,7 +57,7 @@ Versioned under `/api/v1/`. Single canonical request shape; response shapes docu
 
 ## What Is Not Implemented
 
-- No auth, user accounts, billing, SaaS onboarding, payments. Out of scope for a portfolio MVP.
+- No end-user auth/accounts, billing, SaaS onboarding, or payments. The protected `/api/v1/*` integration surface does enforce bearer authentication.
 - No durable campaign persistence in the running **UI**; saved reports, campaigns, owner overrides, and tour state use `localStorage`. The REST API persists to Postgres separately — these are two different stores by design.
 - No live LLM call in the default check path; Anthropic provider wiring exists for the planned augmentation roadmap (ADR-0005).
 - No raw campaign / T&C storage by default (`STORE_RAW_INPUT=false`).
@@ -81,6 +81,7 @@ Versioned under `/api/v1/`. Single canonical request shape; response shapes docu
 Required:
 
 - `DATABASE_URL` — Postgres connection string.
+- `PREFLIGHT_API_KEY` — server-side bearer key required for `/api/v1/*`; it is never sent to the browser demo.
 
 Recommended:
 
@@ -121,7 +122,7 @@ B=https://promo-preflight-production.up.railway.app
 curl -s $B/api/health        # {"status":"ok"}
 curl -s $B/api/ready         # {"status":"ok","checks":{"env":"ok","db":"ok","migrations":"ok"}}
 KEY=$(uuidgen)
-curl -s -X POST $B/api/v1/runs -H 'Content-Type: application/json' -H "Idempotency-Key: $KEY" -d @bundle.json
+curl -s -X POST $B/api/v1/runs -H "Authorization: Bearer $PREFLIGHT_API_KEY" -H 'Content-Type: application/json' -H "Idempotency-Key: $KEY" -d @bundle.json
 sleep 2
-curl -s "$B/api/v1/audit?limit=10"   # event types RunStarted / BlockerRaised / RunCompleted
+curl -s "$B/api/v1/audit?limit=10" -H "Authorization: Bearer $PREFLIGHT_API_KEY"   # event types RunStarted / BlockerRaised / RunCompleted
 ```

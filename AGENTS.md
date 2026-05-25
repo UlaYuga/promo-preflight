@@ -134,7 +134,7 @@ npm run db:check         # Validate DB schema/seed
 
 ## Safety conventions
 
-- No auth, payments, SaaS onboarding
+- No end-user accounts, payments, SaaS onboarding; `/api/v1/*` is protected by server-side bearer auth
 - No gambling visual language or operator logos
 - Draft data only in `localStorage`
 - Request bodies not logged

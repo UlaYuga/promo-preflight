@@ -52,7 +52,7 @@ api/
 
 ## Data flow
 
-Full lifecycle of `POST /api/v1/runs`:
+Full lifecycle of an authenticated `POST /api/v1/runs` integration request. The browser demo is a separate synthetic `localStorage` workflow; it does not call this protected route or carry `PREFLIGHT_API_KEY`.
 
 ```mermaid
 sequenceDiagram
@@ -113,6 +113,6 @@ sequenceDiagram
 - **No multi-tenant / RLS** — out of scope for this sprint; adding `org_id` to all tables plus Row-Level Security is the natural extension, no domain changes needed.
 - **No gRPC** — REST + Telegram webhook fit the consumer model (CRM / Promo Ops teams don't run gRPC clients).
 - **No live LLM in the default checks path** — checks must be deterministic and reproducible; a regulator asking "why was this flagged" cannot accept "the LLM said so." AI is an optional augmentation layer (see [ADR-0003](./adr/0003-deterministic-first-ai-second.md) and [ADR-0005](./adr/0005-ai-augmentation-roadmap.md)).
-- **No auth** — out of scope for the demo; production deployments expect auth at the infrastructure layer (Cloudflare Access, nginx basic-auth, or API gateway).
+- **No end-user accounts or browser sign-in** — the synthetic browser demo stays credential-free, while the `/api/v1/*` integration surface requires bearer authentication.
 - **No microservices** — one process for now; the outbox worker is a separate entrypoint of the same binary, not a separate service.
 - **No opaque "compliance score"** — verdicts are `GO` / `WARN` / `BLOCK` based on rule severity, not an aggregate number.

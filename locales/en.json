@@ -82,60 +82,60 @@
     "eyebrow": "Start here · 90-second tour",
     "headline": "Promo Preflight",
     "positioning": "Deterministic pre-launch gate for regulated promo campaigns",
-    "body": "One workspace and one REST contract for campaign intake, 8 deterministic checks, idempotent run persistence, audit events, Telegram alerts, version diff, and launch handoff.",
+    "body": "Interactive browser demo for synthetic campaign bundles, with draft and report state stored locally. A protected REST API evidence contract is available separately for integrations.",
     "openIntake": "Open campaign bundle",
     "testCases": "Start with Sample Case",
-    "ctaHint": "Use a sample case to follow the visible path, then open System Status and API Contract to inspect the backend path.",
+    "ctaHint": "Use a sample case to follow the browser demo, then open System Status and API Contract to inspect the separate backend evidence path.",
     "workflowTitle": "Workflow at a glance",
-    "workflowSubtitle": "From campaign JSON to audit-proof launch handoff",
-    "safetyNote": "Portfolio demo workspace.",
+    "workflowSubtitle": "Browser demo first; authenticated API evidence separately",
+    "safetyNote": "Portfolio demo workspace · synthetic data · browser-local drafts.",
     "strip": "8 checks · 23 rules · 6 owners · EN/RU",
     "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 202 tests · Apache 2.0",
-    "architectureTitle": "What happens after Run",
-    "architectureBody": "The UI is only the front door. Each run goes through Zod validation, command bus dispatch, deterministic checks, Postgres persistence, outbox events, audit delivery, and best-effort Telegram notification.",
+    "architectureTitle": "Two deliberate paths",
+    "architectureBody": "The browser demo runs checks over synthetic data and stores draft and report state in localStorage. Separately, authenticated /api/v1/* clients create persisted Postgres runs with audit and outbox evidence.",
     "systemLinks": {
       "status": "Open System Status",
-      "api": "Open API Contract",
+      "api": "Protected API evidence",
       "evidence": "Open Evidence",
       "docs": "Read API docs",
       "github": "GitHub + CI"
     },
     "workflowPreview": [
       {
-        "label": "Load campaign bundle",
-        "description": "Start from sample data or one canonical JSON shape for promo, CRM, terms, links, owners, and GEO"
+        "label": "Try a synthetic bundle",
+        "description": "Start the interactive browser demo from sample promo, CRM, terms, links, owners, and GEO data"
       },
       {
-        "label": "Validate API boundary",
-        "description": "Zod validates request shape, campaign schema, input limits, and the required Idempotency-Key"
+        "label": "Run browser-demo checks",
+        "description": "The local workflow validates the bundle and runs 8 deterministic checks without an API credential"
       },
       {
-        "label": "Run 8 deterministic checks",
-        "description": "Rule-backed checks evaluate channel consistency, terms, offer math, GEO risk, localization, ownership, links, and formats"
+        "label": "Review blockers locally",
+        "description": "Risk Report shows deterministic findings and owner guidance from the synthetic demo case"
       },
       {
-        "label": "Persist idempotent run",
-        "description": "Postgres stores the run, campaign version, blockers, and replay-safe idempotency record"
+        "label": "Save browser demo state",
+        "description": "Drafts, saved reviews, and demo version comparisons remain in this browser's localStorage"
       },
       {
-        "label": "Emit outbox events",
-        "description": "RunStarted, BlockerRaised, and RunCompleted are written transactionally before async delivery"
+        "label": "Prepare demo handoff",
+        "description": "Turn browser-local findings into a previewable launch update without claiming server persistence"
       },
       {
-        "label": "Deliver audit + Telegram",
-        "description": "The worker drains outbox rows into the append-only audit log and Telegram notification pipeline"
+        "label": "Call the protected API",
+        "description": "Authenticated integrations submit a CampaignBundle and Idempotency-Key through /api/v1/runs"
       },
       {
-        "label": "Review blockers",
-        "description": "Risk Report shows what blocks launch, why it was flagged, and which owner should act"
+        "label": "Persist an API run",
+        "description": "Postgres stores the authenticated run, campaign version, blockers, policy provenance, and idempotency record"
       },
       {
-        "label": "Save and compare versions",
-        "description": "Campaigns keeps version history and highlights added, resolved, reopened, and still-open blockers"
+        "label": "Emit API outbox events",
+        "description": "RunStarted, BlockerRaised, and RunCompleted are written transactionally for the API run"
       },
       {
-        "label": "Prepare handoff",
-        "description": "Handoff turns the saved report into a Slack-ready internal update for launch owners"
+        "label": "Deliver API evidence",
+        "description": "The worker drains API outbox rows into audit records and best-effort Telegram notifications"
       },
       {
         "label": "Inspect system proof",
@@ -149,7 +149,7 @@
       "tests": "tests"
     },
     "heroA": {
-      "positioning": "Systematic pre-launch checks for promo campaigns",
+      "positioning": "Interactive browser demo for synthetic promo checks",
       "ctaPrimary": "Start 90-second tour",
       "ctaSecondary": "Sample case"
     },
@@ -614,7 +614,7 @@
   "systemStatus": {
     "eyebrow": "08 / System status",
     "title": "System status",
-    "subtitle": "Live public probes and the authenticated REST contract behind this workspace.",
+    "subtitle": "Live public probes and a protected REST evidence contract separate from the browser demo.",
     "health": {
       "title": "Health",
       "subtitle": "Liveness and readiness probes refreshed every 30 s",
@@ -641,7 +641,7 @@
     },
     "links": {
       "title": "Contract & code",
-      "subtitle": "What this workspace is wired to",
+      "subtitle": "Documentation for the demo and the separate API evidence surface",
       "apiDocs": "REST API contract (docs/API.md)",
       "apiContract": "API Contract screen",
       "evidence": "Evidence screen",
@@ -650,7 +650,7 @@
     },
     "pipeline": {
       "title": "Delivery pipeline",
-      "subtitle": "What a saved run produces after the HTTP response",
+      "subtitle": "What an authenticated API run produces after the HTTP response",
       "steps": [
         "POST /api/v1/runs validates and executes checks",
         "Run, campaign version, blockers, and outbox rows commit together",
@@ -661,7 +661,7 @@
     },
     "reliability": {
       "title": "Reliability guarantees",
-      "subtitle": "The parts that make the demo reviewer-safe",
+      "subtitle": "Guarantees of the protected API evidence contract",
       "items": [
         "Required Idempotency-Key for POST /api/v1/runs",
         "Same key + same body returns the same run",
@@ -701,7 +701,7 @@
   "apiContract": {
     "eyebrow": "09 / API contract",
     "title": "API contract",
-    "subtitle": "The authenticated integration surface behind the product UI, plus public health and readiness probes.",
+    "subtitle": "The authenticated integration surface, separate from the browser demo, plus public health and readiness probes.",
     "primary": {
       "title": "Primary write path",
       "subtitle": "POST /api/v1/runs",
@@ -713,12 +713,12 @@
         "Idempotency-Key is required for POST /api/v1/runs",
         "Same key + same request body returns the original run",
         "Same key + different body returns 409 conflict",
-        "Safe for client retries, webhook redelivery, and double-clicks"
+        "Safe for integration retries and webhook redelivery"
       ]
     },
     "auth": {
       "title": "Authentication boundary",
-      "protected": "All /api/v1/* endpoints require Authorization: Bearer <key>. The configured key stays server-side and is never exposed by this UI.",
+      "protected": "All /api/v1/* endpoints require Authorization: Bearer <key>. The configured key stays server-side; the browser demo never receives or sends it.",
       "public": "/api/health and /api/ready remain public for liveness and readiness probes."
     },
     "endpoints": {
@@ -732,7 +732,7 @@
     },
     "response": {
       "title": "Response shape",
-      "subtitle": "The UI reads the same contract that external clients receive."
+      "subtitle": "Authenticated API clients receive this persisted response; the browser demo does not call this endpoint."
     },
     "links": {
       "docs": "Full docs/API.md",
@@ -768,14 +768,14 @@
           "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples, and 202 tests."
         },
         {
-          "area": "Persistence and versioning",
-          "visible": "Campaigns, saved runs, version detail, and diff between saved reviews.",
-          "proof": "Postgres run storage, campaign versions, and version diff contract."
+          "area": "Browser demo state",
+          "visible": "Campaigns, saved demo reviews, version detail, and diff inside the interactive workflow.",
+          "proof": "Synthetic data and localStorage keep demo drafts and versions local to the browser, without durable server claims."
         },
         {
           "area": "REST API",
           "visible": "API Contract screen with endpoints, curl, response shape, and idempotency semantics.",
-          "proof": "docs/API.md, Zod response schema, public health/ready probes, and protected stats/audit endpoints."
+          "proof": "Authenticated Postgres run storage, policy provenance, docs/API.md, Zod response schema, and protected stats/audit endpoints."
         },
         {
           "area": "Operational pipeline",
@@ -796,7 +796,7 @@
         {
           "label": "Landing",
           "href": "/",
-          "note": "See the whole story in the first viewport: UI workflow plus REST, persistence, outbox, audit, Telegram, CI, and tests."
+          "note": "Start with the synthetic browser demo, then follow links to the separate authenticated API evidence contract."
         },
         {
           "label": "System Status",
@@ -811,7 +811,7 @@
         {
           "label": "Campaigns",
           "href": "/app/campaigns",
-          "note": "Open saved runs, version history, and blockers diff."
+          "note": "Inspect browser-local saved demo reviews, version history, and blockers diff."
         },
         {
           "label": "Handoff",
@@ -852,14 +852,14 @@
     },
     "architecture": {
       "title": "System story",
-      "subtitle": "How one campaign run moves through the system.",
+      "subtitle": "The interactive browser demo and protected API evidence stay separate.",
       "steps": [
-        "A CampaignBundle enters through UI or POST /api/v1/runs and is validated at the boundary.",
-        "The deterministic engine runs channel, terms, math, GEO, localization, ownership, link, and format checks.",
-        "The command persists run, campaign version, blockers, and outbox rows in one Postgres transaction.",
-        "Idempotency keeps retries and double-clicks from creating duplicate work.",
-        "The worker drains outbox rows into audit_log first, then best-effort Telegram notification.",
-        "Campaigns, Risk Report, Handoff, Status, API Contract, and Evidence expose the same underlying state."
+        "The browser demo starts from synthetic data, validates locally, and runs the deterministic check workflow.",
+        "Demo drafts, reports, campaign versions, and handoff previews remain in browser localStorage.",
+        "The demo does not send PREFLIGHT_API_KEY or claim a persisted backend review run.",
+        "Separately, an authenticated POST /api/v1/runs persists an integration run and policy provenance to Postgres.",
+        "The API transaction writes blockers and outbox rows; the worker delivers audit first and Telegram best-effort.",
+        "Status, API Contract, and Evidence document this protected contract without connecting the demo UI to it."
       ]
     },
     "links": {

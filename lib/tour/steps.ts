@@ -51,9 +51,9 @@ export const productTourSteps: ProductTourStep[] = [
   {
     selector: '[data-tour="save-run"]',
     route: "/app/risk-report",
-    title: "Save the review run",
+    title: "Save the demo review",
     description:
-      "Save the current report as an internal review run before moving into Campaigns, version history, and handoff.",
+      "Save the current report in browser-local demo state before moving into Campaigns, version history, and handoff.",
     side: "left",
     align: "center"
   },
@@ -89,7 +89,7 @@ export const productTourSteps: ProductTourStep[] = [
     route: "/app/status",
     title: "Inspect System Status",
     description:
-      "Screen 08 / System Status exposes health, run telemetry, audit events, reliability guarantees, and source links.",
+      "Screen 08 / System Status exposes public health probes and documents the separate protected telemetry and audit endpoints.",
     side: "bottom",
     align: "start"
   },
@@ -98,7 +98,7 @@ export const productTourSteps: ProductTourStep[] = [
     route: "/app/api",
     title: "Open the API contract",
     description:
-      "Screen 09 / API Contract shows REST endpoints, idempotency semantics, and a curl path for integration.",
+      "Screen 09 / API Contract documents the authenticated integration path; the browser demo never sends its API key.",
     side: "bottom",
     align: "start"
   },

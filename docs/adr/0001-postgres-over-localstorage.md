@@ -16,9 +16,9 @@ As the project evolved toward a real operator use case, four requirements broke 
 
 ## Decision
 
-Move all runs, campaigns, campaign versions, blockers, outbox events, and the audit log to Postgres. Use Drizzle ORM for type-safe queries and Drizzle Kit for migrations.
+Provide two explicitly separate surfaces. The protected REST API persists authenticated integration runs, campaign versions, blockers, outbox events, and the audit log to Postgres. It uses Drizzle ORM for type-safe queries and Drizzle Kit for migrations.
 
-Keep `localStorage` as a parallel mode controlled by the `PREFLIGHT_MODE=localStorage` environment variable. When this mode is active, the UI works entirely client-side — no API calls, no database — preserving the demo experience without infrastructure.
+Keep the interactive browser workflow as a synthetic demo that stores its draft, report, version, and tour state in `localStorage`. It does not call the protected API or receive `PREFLIGHT_API_KEY`; there is no browser mode that turns a demo review into a persisted API run.
 
 ## Consequences
 
@@ -34,4 +34,4 @@ Keep `localStorage` as a parallel mode controlled by the `PREFLIGHT_MODE=localSt
 - Migrations must be applied before the API starts; the readiness probe (`GET /api/ready`) enforces this.
 
 **Neutral**
-- The UI now has two code paths (`localStorage` mode and `server` mode) and must handle both during the v1/v2 transition period.
+- The demo UI and authenticated API provide separate evidence: browser-local usability on one side, durable integration/audit behavior on the other.
