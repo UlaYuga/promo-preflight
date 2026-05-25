@@ -27,13 +27,13 @@ Versioned under `/api/v1/`. Single canonical request shape; response shapes docu
 - `GET /api/v1/runs/:id` — same shape as POST. Non-UUID id → 404.
 - `GET /api/v1/campaigns`, `GET /api/v1/campaigns/:id`, `GET /api/v1/campaigns/:id/versions`, `GET /api/v1/campaigns/:id/diff?from=&to=` — read-side endpoints.
 - `GET /api/v1/audit?type=&limit=&cursor=` — paginated event log.
-- `GET /api/health`, `GET /api/ready` — liveness and readiness probes (the latter checks env, db, migrations).
+- `GET /api/health`, `GET /api/ready` — liveness and readiness probes (the latter reads env, database connectivity, and required migrated tables; it does not apply migrations).
 
 ### Persistence and pipeline
 
-- PostgreSQL via Drizzle ORM + `pg`. Migrations under `db/migrations/` are applied on server boot from `instrumentation.node.ts` (Next standalone strips `pg`/`drizzle-orm` from `node_modules`, so a separate migrate script is not possible — T-057).
+- PostgreSQL via Drizzle ORM + `pg`. Railway runs `node db/migrate.mjs` as a pre-deploy command from the final Docker image, applying pending artifacts from the existing Drizzle migration journal and recording them in `drizzle.__drizzle_migrations` before the web process starts; failure blocks deployment.
 - Idempotent run persistence inside a single transaction: claim the idempotency slot via `INSERT ... ON CONFLICT DO NOTHING`, then find-or-create campaign, then create version, then write run + blockers. Concurrent transactions for the same `{campaignName, operatorLabel}` are serialized with `pg_advisory_xact_lock(hashtextextended(...))` to prevent duplicate campaign rows (T-061).
-- Transactional outbox: domain events (`RunStarted`, `BlockerRaised`, `RunCompleted`) are inserted into `outbox` in the same transaction as the run. The outbox worker boots in-process from `instrumentation.node.ts` after migrations succeed (T-062), drains the queue with `FOR UPDATE SKIP LOCKED`, and delivers to two subscribers in order `[audit, telegram]` so the durable sink runs before the best-effort notifier (T-064).
+- Transactional outbox: domain events (`RunStarted`, `BlockerRaised`, `RunCompleted`) are inserted into `outbox` in the same transaction as the run. The outbox worker remains an in-process runtime responsibility of `instrumentation.node.ts` when `DATABASE_URL` is configured (T-062), drains the queue with `FOR UPDATE SKIP LOCKED`, and delivers to two subscribers in order `[audit, telegram]` so the durable sink runs before the best-effort notifier (T-064).
 - Audit append is idempotent on `event.id` (T-063) — a redelivery on worker crash or Railway redeploy mid-batch never produces a duplicate `audit_log` row.
 
 ### Notifications
@@ -45,13 +45,14 @@ Versioned under `/api/v1/`. Single canonical request shape; response shapes docu
 
 - Railway service `promo-preflight` (project `perceptive-perfection`). Sibling Postgres service in the same project. Region `sfo`.
 - Build via **Dockerfile** (`railway.toml` declares `builder = "DOCKERFILE"`); start command is `node server.js` from the standalone bundle. Not `npm run start` / `next start` (that path crashed prod with `sh: next: not found` — T-051).
+- Before start, `[deploy].preDeployCommand = "node db/migrate.mjs"` runs in the final image; its non-zero exit status blocks the Railway deployment.
 - Auto-redeploy on every push to `main` (~3–6 min Docker build).
 - `noindex` metadata + disallow-all `robots.ts`.
 
 ### CI
 
 - GitHub Actions `.github/workflows/ci.yml` on Node 22 with a Postgres 16 service.
-- Quality gates per PR: typecheck, lint, schema check, db migrate, db check, vitest (162 tests / 23 files), rules check, owners check, i18n parity (447/447 leaf keys EN+RU), versioning check, AI check, checks regression smoke. Docker build runs in a separate job.
+- Quality gates per PR: typecheck, lint, schema check, db migrate, db check, vitest (187 tests / 30 files), rules check, owners check, i18n parity (649/649 leaf keys EN+RU), versioning check, AI check, checks regression smoke. Docker build runs in a separate job.
 - Action versions kept current: `actions/checkout@v5`, `actions/setup-node@v5`, `docker/setup-buildx-action@v4` (T-068).
 
 ## What Is Not Implemented

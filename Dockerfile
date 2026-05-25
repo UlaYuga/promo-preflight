@@ -26,9 +26,11 @@ RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-# Migration SQL is read at server boot by instrumentation.ts so the prod
-# schema is never behind the deployed code.
+# Railway executes this runner from the final image as its pre-deploy command.
+# It consumes the existing Drizzle journal and SQL artifacts before start.
+COPY --from=builder --chown=nextjs:nodejs /app/db/migrate.mjs ./db/migrate.mjs
 COPY --from=builder --chown=nextjs:nodejs /app/db/migrations ./db/migrations
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/drizzle-orm ./node_modules/drizzle-orm
 
 USER nextjs
 EXPOSE 3000

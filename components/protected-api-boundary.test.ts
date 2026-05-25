@@ -34,7 +34,7 @@ describe('client UI protected API boundary', () => {
     expect(statusSource).toContain('fetch("/api/health"');
     expect(statusSource).toContain('fetch("/api/ready"');
     expect(statusSource).not.toContain('process.env.PREFLIGHT_API_KEY');
-    expect(evidenceSource).toContain('["182", "evidence.summary.tests"]');
+    expect(evidenceSource).toContain('["187", "evidence.summary.tests"]');
     expect(evidenceSource).not.toContain('["164", "evidence.summary.tests"]');
   });
 
@@ -66,10 +66,10 @@ describe('client UI protected API boundary', () => {
       );
       expect(JSON.stringify(dictionary)).not.toContain('164');
       expect(JSON.stringify(dictionary)).toContain(
-        language === 'en' ? '182 tests' : '182 теста'
+        language === 'en' ? '187 tests' : '187 тестов'
       );
       expect(JSON.stringify(dictionary)).toContain(
-        language === 'en' ? '27 files' : '27 файлах'
+        language === 'en' ? '30 files' : '30 файлах'
       );
     }
   );
