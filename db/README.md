@@ -6,6 +6,7 @@ Database migrations, seed data, and schema notes live here.
 
 - `schema.sql` creates the Postgres schema from spec section 16.
 - `seed.sql` upserts the eight check definitions and eight synthetic worked examples from spec section 18.
+- `migrate.mjs` applies the versioned `migrations/*.sql` artifacts as Railway's fail-fast pre-deploy command.
 - `check.mjs` applies `schema.sql` and `seed.sql` against `DATABASE_URL`, then verifies the expected row counts.
 
 ## Raw input safety

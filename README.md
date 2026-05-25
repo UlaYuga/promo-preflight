@@ -153,6 +153,10 @@ curl -X POST http://localhost:3000/api/v1/runs \
 
 See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment variable reference.
 
+### Railway deploy lifecycle
+
+Railway Docker deployments run `node db/migrate.mjs` from the final application image as the `[deploy].preDeployCommand`. The command consumes the existing `db/migrations/*.sql` artifacts and exits non-zero on failure, preventing `node server.js` from starting. At runtime, `instrumentation.node.ts` starts only the in-process outbox worker; `/api/ready` reads database connectivity and required-table status without applying migrations.
+
 ### 2. Drop into your CI (npm package + CLI)
 
 ```bash
@@ -175,7 +179,7 @@ Coming soon. [Email for early access](mailto:alex@marlerino.group).
 | `react` 19 | Server Components; concurrent rendering for the run result view |
 | `typescript` 6 | Strict mode; all types derived from Zod schemas via `z.infer<>` |
 | `tailwindcss` 3.4 | Custom design token palette; no standard Tailwind color classes in UI code |
-| `drizzle-orm` + `postgres` | Type-safe SQL with zero-overhead query builder; migrations via Drizzle Kit |
+| `drizzle-orm` + `pg` | Type-safe SQL access; versioned SQL migrations run before Railway starts the application image |
 | `zod` | Runtime validation at all system boundaries |
 | `vitest` | Fast unit + integration tests; ESM-native, TypeScript path alias support |
 | `@anthropic-ai/sdk` | Optional AI augmentation layer; stubbed when `USE_MOCK_AI=true` |

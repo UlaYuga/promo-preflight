@@ -26,8 +26,9 @@ RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-# Migration SQL is read at server boot by instrumentation.ts so the prod
-# schema is never behind the deployed code.
+# Railway executes this runner from the final image as its pre-deploy command.
+# It consumes the existing SQL artifacts before the web server is started.
+COPY --from=builder --chown=nextjs:nodejs /app/db/migrate.mjs ./db/migrate.mjs
 COPY --from=builder --chown=nextjs:nodejs /app/db/migrations ./db/migrations
 
 USER nextjs
