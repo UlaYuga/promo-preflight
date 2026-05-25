@@ -155,7 +155,7 @@ See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment va
 
 ### Railway deploy lifecycle
 
-Railway Docker deployments run `node db/migrate.mjs` from the final application image as the `[deploy].preDeployCommand`. The command consumes the existing `db/migrations/*.sql` artifacts and exits non-zero on failure, preventing `node server.js` from starting. At runtime, `instrumentation.node.ts` starts only the in-process outbox worker; `/api/ready` reads database connectivity and required-table status without applying migrations.
+Railway Docker deployments run `node db/migrate.mjs` from the final application image as the `[deploy].preDeployCommand`. The command reads Drizzle's existing `db/migrations/meta/_journal.json` and SQL artifacts, and exits non-zero on failure, preventing `node server.js` from starting. Repeated deploys skip migrations already recorded in `drizzle.__drizzle_migrations`. At runtime, `instrumentation.node.ts` starts only the in-process outbox worker; `/api/ready` reads database connectivity and required-table status without applying migrations.
 
 ### 2. Drop into your CI (npm package + CLI)
 
