@@ -1,5 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 import { RunChecksUseCase } from './RunChecksUseCase';
+import type { RunChecksCommand } from '../command/RunChecksCommand';
 import type { CampaignBundle } from '../../domain/model/Campaign';
 import type { RunBlocker } from '../../domain/model/Run';
 import type { ICheck } from '../../infrastructure/checks/ICheck';
@@ -153,42 +154,42 @@ describe('RunChecksUseCase', () => {
     expect(result.value.verdict).toBe('BLOCK');
   });
 
-  it('skips a new-style check by id when skipChecks is provided', async () => {
-    const useCase = new RunChecksUseCase([
-      makeCheck('skip-me', [
-        {
-          ruleId: 'new.block',
-          severity: 'block',
-          evidence: 'block evidence',
-          suggestion: 'fix block',
-          ownerHint: 'risk',
-        },
-      ]),
+  it('executes mandatory supplemental checks without an exclusion contract', async () => {
+    type CommandHasOptions = 'options' extends keyof RunChecksCommand ? true : false;
+    expectTypeOf<CommandHasOptions>().toEqualTypeOf<false>();
+    expectTypeOf<Parameters<RunChecksUseCase['run']>>().toEqualTypeOf<
+      [campaign: CampaignBundle]
+    >();
+
+    const supplementalCheck = makeCheck('payment_compat', [
+      {
+        ruleId: 'payment_compat.mandatory',
+        severity: 'block',
+        evidence: 'block evidence',
+        suggestion: 'fix block',
+        ownerHint: 'risk',
+      },
     ]);
-    const result = await useCase.run(CLEAN_CAMPAIGN, { skipChecks: ['skip-me'] });
+    const useCase = new RunChecksUseCase([
+      supplementalCheck,
+    ]);
+    const result = await useCase.run(CLEAN_CAMPAIGN);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.value.verdict).toBe('GO');
-    expect(result.value.blockers.some((b) => b.ruleId === 'new.block')).toBe(false);
+    expect(supplementalCheck.run).toHaveBeenCalledTimes(1);
+    expect(result.value.verdict).toBe('BLOCK');
+    expect(result.value.blockers.some((b) => b.ruleId === 'payment_compat.mandatory')).toBe(true);
   });
 
-  it('skips a legacy check by checkId when skipChecks contains that id', async () => {
+  it('includes mandatory legacy check findings in a run', async () => {
     const useCase = new RunChecksUseCase([]);
-    const withLegacy = await useCase.run(makeLegacyBlockingCampaign());
-    const skipped = await useCase.run(makeLegacyBlockingCampaign(), {
-      skipChecks: ['terms_robustness'],
-    });
+    const result = await useCase.run(makeLegacyBlockingCampaign());
 
-    expect(withLegacy.ok).toBe(true);
-    if (!withLegacy.ok) return;
-    expect(withLegacy.value.verdict).toBe('WARN');
-    expect(withLegacy.value.blockers.some((b) => b.ruleId.startsWith('terms_robustness.'))).toBe(true);
-
-    expect(skipped.ok).toBe(true);
-    if (!skipped.ok) return;
-    expect(skipped.value.verdict).toBe('GO');
-    expect(skipped.value.blockers.some((b) => b.ruleId.startsWith('terms_robustness.'))).toBe(false);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.verdict).toBe('WARN');
+    expect(result.value.blockers.some((b) => b.ruleId.startsWith('terms_robustness.'))).toBe(true);
   });
 
   it('executes all new-style checks once for a single run', async () => {

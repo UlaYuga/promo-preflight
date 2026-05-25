@@ -8,42 +8,31 @@ import type { Result } from '../bus/types';
 import type { PreflightException } from '../../domain/exception/PreflightException';
 import { SystemException } from '../../domain/exception/PreflightException';
 
-export interface RunChecksOptions {
-  skipChecks?: string[];
-}
-
 export class RunChecksUseCase {
   constructor(
     private readonly newStyleChecks: ICheck[] = []
   ) {}
 
-  async run(
-    campaign: CampaignBundle,
-    options: RunChecksOptions = {}
-  ): Promise<Result<Run, PreflightException>> {
+  async run(campaign: CampaignBundle): Promise<Result<Run, PreflightException>> {
     const createdAt = new Date().toISOString();
 
     try {
       // Run legacy 8 checks from lib/checks/ — TODO(v2.1): migrate remaining 6 checks into infrastructure/checks/
       const report = runChecks({ bundle: campaign, mode: 'offline', generatedAt: createdAt });
 
-      const legacyBlockers: RunBlocker[] = report.checkResults
-        .filter((r) => !(options.skipChecks ?? []).includes(r.checkId))
-        .flatMap((r) =>
-          r.issues.map((issue) => ({
-            ruleId: `${r.checkId}.${issue.issueId}`,
-            severity: issue.blocker ? ('block' as const) : issue.severity === 'CRITICAL' ? ('block' as const) : ('warn' as const),
-            evidence: issue.evidence.map((e) => `${e.field}: ${e.snippet}`).join('; '),
-            suggestion: issue.suggestedFix,
-            ownerHint: issue.ownerSuggestion,
-          }))
-        );
+      const legacyBlockers: RunBlocker[] = report.checkResults.flatMap((r) =>
+        r.issues.map((issue) => ({
+          ruleId: `${r.checkId}.${issue.issueId}`,
+          severity: issue.blocker ? ('block' as const) : issue.severity === 'CRITICAL' ? ('block' as const) : ('warn' as const),
+          evidence: issue.evidence.map((e) => `${e.field}: ${e.snippet}`).join('; '),
+          suggestion: issue.suggestedFix,
+          ownerHint: issue.ownerSuggestion,
+        }))
+      );
 
       // Run new-style ICheck implementations
       const newStyleResults = await Promise.all(
-        this.newStyleChecks
-          .filter((c) => !(options.skipChecks ?? []).includes(c.id))
-          .map((c) => c.run(campaign))
+        this.newStyleChecks.map((c) => c.run(campaign))
       );
       const newStyleBlockers: RunBlocker[] = newStyleResults.flat();
 
