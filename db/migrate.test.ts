@@ -8,9 +8,9 @@ import { describe, expect, it } from 'vitest';
 const databaseUrl = process.env.DATABASE_URL?.trim();
 const POSTGRES_INTEGRATION_TIMEOUT_MS = 30_000;
 
-function databaseUrlForDatabase(baseUrl: string, databaseName: string): string {
+function databaseUrlWithSearchPath(baseUrl: string, schemaName: string): string {
   const url = new URL(baseUrl);
-  url.pathname = `/${databaseName}`;
+  url.searchParams.set('options', `-c search_path=${schemaName}`);
   return url.toString();
 }
 
@@ -106,13 +106,12 @@ describe('db migration runner', () => {
     async () => {
       if (!databaseUrl) return;
       const marker = `policy_snapshot_${process.pid}_${Date.now()}`;
-      const databaseName = marker;
+      const fixtureSchema = marker;
       const migrationsSchema = `drizzle_${marker}`;
       const migrationsFolder = mkdtempSync(join(tmpdir(), 'preflight-migrations-'));
-      const adminClient = new Client({ connectionString: databaseUrl });
-      let adminConnected = false;
-      const isolatedDatabaseUrl = databaseUrlForDatabase(databaseUrl, databaseName);
-      const client = new Client({ connectionString: isolatedDatabaseUrl });
+      const isolatedDatabaseUrl = databaseUrlWithSearchPath(databaseUrl, fixtureSchema);
+      const client = new Client({ connectionString: databaseUrl });
+      let clientConnected = false;
 
       mkdirSync(join(migrationsFolder, 'meta'));
       writeFileSync(
@@ -161,9 +160,9 @@ values ('${marker}', 'hash', '{"runId":"run-1","verdict":"GO","status":"complete
       );
 
       try {
-        await adminClient.connect();
-        adminConnected = true;
-        await adminClient.query(`create database "${databaseName}"`);
+        await client.connect();
+        clientConnected = true;
+        await client.query(`create schema "${fixtureSchema}"`);
 
         const env = {
           DATABASE_URL: isolatedDatabaseUrl,
@@ -179,9 +178,8 @@ values ('${marker}', 'hash', '{"runId":"run-1","verdict":"GO","status":"complete
         expect(second.stderr).toBe('');
         expect(second.status).toBe(0);
 
-        await client.connect();
         const result = await client.query<{ response_snapshot: unknown }>(
-          'select response_snapshot from idempotency_keys where key = $1',
+          `select response_snapshot from "${fixtureSchema}".idempotency_keys where key = $1`,
           [marker]
         );
 
@@ -193,18 +191,15 @@ values ('${marker}', 'hash', '{"runId":"run-1","verdict":"GO","status":"complete
           },
         });
       } finally {
-        await client.query('drop table if exists idempotency_keys').catch(() => undefined);
-        await client.query('drop table if exists runs').catch(() => undefined);
-        await client
-          .query(`drop schema if exists "${migrationsSchema}" cascade`)
-          .catch(() => undefined);
-        await client.end().catch(() => undefined);
-        if (adminConnected) {
-          await adminClient
-            .query(`drop database if exists "${databaseName}" with (force)`)
+        if (clientConnected) {
+          await client
+            .query(`drop schema if exists "${fixtureSchema}" cascade`)
+            .catch(() => undefined);
+          await client
+            .query(`drop schema if exists "${migrationsSchema}" cascade`)
             .catch(() => undefined);
         }
-        await adminClient.end().catch(() => undefined);
+        await client.end().catch(() => undefined);
         rmSync(migrationsFolder, { recursive: true, force: true });
       }
     },
