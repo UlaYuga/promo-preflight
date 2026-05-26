@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
-import { CHECK_DEFS, WORKED_EXAMPLES } from "@/lib/demo-data";
+import { CHECK_DEFS } from "@/lib/demo-data";
 
 type PaletteItem = {
   kind: string;
@@ -26,7 +26,7 @@ const navItems = [
 ];
 
 export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -51,37 +51,13 @@ export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
       })),
       {
         kind: t("palette.action" as TranslationKey),
-        label: t("palette.actions.run" as TranslationKey),
-        hint: "⌘↵",
+        label: t("palette.actions.openIntake" as TranslationKey),
+        hint: "G I",
         action: () => { router.push("/app/intake"); onClose(); }
       },
-      {
-        kind: t("palette.action" as TranslationKey),
-        label: t("palette.actions.save" as TranslationKey),
-        hint: "⌘S",
-        action: onClose
-      },
-      {
-        kind: t("palette.action" as TranslationKey),
-        label: t("palette.actions.exportMd" as TranslationKey),
-        hint: "E M",
-        action: onClose
-      },
-      {
-        kind: t("palette.action" as TranslationKey),
-        label: t("palette.actions.exportSlack" as TranslationKey),
-        hint: "E S",
-        action: onClose
-      },
-      ...WORKED_EXAMPLES.map((ex) => ({
-        kind: t("palette.example" as TranslationKey),
-        label: `${ex.id} — ${ex.labelEn}`,
-        hint: "",
-        action: onClose
-      })),
       ...CHECK_DEFS.map((c) => ({
         kind: t("palette.check" as TranslationKey),
-        label: c.nameEn,
+        label: language === "ru" ? c.nameRu : c.nameEn,
         hint: c.id,
         action: () => { router.push("/app/risk-report"); onClose(); }
       })),
@@ -92,7 +68,7 @@ export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
     return base.filter(
       (x) => (x.label + x.kind + (x.hint || "")).toLowerCase().includes(ql)
     );
-  }, [query, t, router, onClose]);
+  }, [query, language, t, router, onClose]);
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "ArrowDown") {
@@ -138,7 +114,7 @@ export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
             onKeyDown={handleKeyDown}
             aria-label={t("palette.placeholder" as TranslationKey)}
             name="command-palette-search"
-            placeholder={t("palette.placeholder" as TranslationKey) || "Search · run · jump"}
+            placeholder={t("palette.placeholder" as TranslationKey)}
             className="flex-1 rounded-sm bg-transparent text-[15px] tracking-tight2 outline-none placeholder:text-muted focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent/40"
           />
           <kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">
@@ -184,9 +160,9 @@ export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
           )}
         </div>
         <div className="hairline-t px-5 py-2.5 flex items-center gap-3 text-[10.5px] text-muted">
-          <span>{t("palette.move" as TranslationKey) || "Move"} <kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">↑</kbd><kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">↓</kbd></span>
-          <span>{t("palette.open" as TranslationKey) || "Open"} <kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">↵</kbd></span>
-          <span className="ml-auto font-mono">{t("palette.stats" as TranslationKey) || "23 rules · 8 checks · 6 owners"}</span>
+          <span>{t("palette.footer.move" as TranslationKey)} <kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">↑</kbd><kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">↓</kbd></span>
+          <span>{t("palette.footer.open" as TranslationKey)} <kbd className="font-mono text-[10px] px-[5px] py-[1px] border border-white/[0.07] rounded-[3px] bg-page text-subtle leading-none inline-flex items-center gap-px">↵</kbd></span>
+          <span className="ml-auto font-mono">{t("palette.footer.stats" as TranslationKey)}</span>
         </div>
       </div>
     </div>

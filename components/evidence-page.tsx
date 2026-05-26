@@ -35,7 +35,7 @@ type PathItem = {
 const summaryStats = [
   ["08", "evidence.summary.checks"],
   ["10", "evidence.summary.endpoints"],
-  ["202", "evidence.summary.tests"],
+  ["207", "evidence.summary.tests"],
   ["23", "evidence.summary.rules"]
 ] as const;
 

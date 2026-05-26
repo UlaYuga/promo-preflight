@@ -15,16 +15,18 @@ const MAX_REQUESTS = parseInt(
   10
 );
 
+function getRateLimitClientIp(request: NextRequest): string {
+  // Railway Public Networking sets X-Real-IP to the client's remote IP.
+  // Do not enforce limits using X-Forwarded-For, which callers can spoof.
+  return request.headers.get("x-real-ip")?.trim() || "unknown";
+}
+
 export function proxy(request: NextRequest) {
   if (!request.nextUrl.pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    request.headers.get("x-real-ip") ??
-    "unknown";
-
+  const ip = getRateLimitClientIp(request);
   const result = checkRateLimit(ip, WINDOW_SECONDS, MAX_REQUESTS);
 
   if (!result.allowed) {

@@ -32,7 +32,6 @@ export type TranslationKey = LeafPaths<Dictionary>;
 
 type I18nContextValue = {
   language: Language;
-  languageSelected: boolean;
   setLanguage: (language: Language) => void;
   t: (key: TranslationKey, values?: Record<string, string | number>) => string;
   get: <T = unknown>(key: string) => T | undefined;
@@ -43,14 +42,12 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [language, setLanguageState] = useState<Language>("en");
-  const [languageSelected, setLanguageSelected] = useState(true);
 
   useEffect(() => {
     window.setTimeout(() => {
       const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
       if (isLanguage(stored)) {
         setLanguageState(stored);
-        setLanguageSelected(true);
         document.documentElement.lang = stored;
       }
     }, 0);
@@ -58,7 +55,6 @@ export function I18nProvider({ children }: Readonly<{ children: React.ReactNode 
 
   const setLanguage = useCallback((nextLanguage: Language) => {
     setLanguageState(nextLanguage);
-    setLanguageSelected(true);
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
     document.documentElement.lang = nextLanguage;
   }, []);
@@ -81,16 +77,11 @@ export function I18nProvider({ children }: Readonly<{ children: React.ReactNode 
   );
 
   const value = useMemo(
-    () => ({ language, languageSelected, setLanguage, t, get }),
-    [get, language, languageSelected, setLanguage, t]
+    () => ({ language, setLanguage, t, get }),
+    [get, language, setLanguage, t]
   );
 
-  return (
-    <I18nContext.Provider value={value}>
-      {children}
-      <LanguageGate />
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
 export function useI18n() {
@@ -124,62 +115,6 @@ export function LanguageToggle({ className }: { className?: string }) {
           {t(`languageToggle.${item}` as TranslationKey)}
         </button>
       ))}
-    </div>
-  );
-}
-
-function LanguageGate() {
-  const { languageSelected, setLanguage, t } = useI18n();
-
-  if (languageSelected) {
-    return null;
-  }
-
-  return (
-    <div className="fixed inset-0 z-[1000000001] flex items-center justify-center bg-[#070708]/95 px-4 backdrop-blur-sm">
-      <section className="w-full max-w-[440px] overflow-hidden rounded-sm border border-[#1d1d23] bg-[#0d0d0f] text-center shadow-2xl shadow-black/60">
-        <div className="px-8 pb-8 pt-10">
-          <div className="mb-6 inline-flex items-center gap-2">
-            <span className="block h-2 w-2 rounded-full bg-[#c5ff3d] shadow-[0_0_28px_rgba(197,255,61,0.32)]" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#5a5a62]">
-              Promo Preflight
-            </span>
-          </div>
-          <h2 className="text-[32px] font-medium leading-tight tracking-tight text-[#ededee]">
-            {t("languageGate.title")}
-          </h2>
-        <p className="mt-3 text-[13.5px] leading-[1.55] text-[#9a9aa1]">
-          {t("languageGate.subtitle")}
-        </p>
-        <div className="mt-8 grid gap-3 sm:grid-cols-2">
-          <button
-            type="button"
-            onClick={() => setLanguage("en")}
-            className="rounded-sm border border-[#1d1d23] px-4 py-4 text-left transition hover:border-[#c5ff3d]/60 hover:bg-[#15151a]/60"
-          >
-            <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.22em] text-[#5a5a62]">
-              EN
-            </span>
-            <span className="text-[18px] font-medium tracking-tight text-[#ededee]">
-              {t("languageGate.english")}
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setLanguage("ru")}
-            className="rounded-sm border border-[#1d1d23] px-4 py-4 text-left transition hover:border-[#c5ff3d]/60 hover:bg-[#15151a]/60"
-          >
-            <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.22em] text-[#5a5a62]">
-              RU
-            </span>
-            <span className="text-[18px] font-medium tracking-tight text-[#ededee]">
-              {t("languageGate.russian")}
-            </span>
-          </button>
-        </div>
-        <p className="mt-5 text-[11px] text-[#5a5a62]">{t("languageGate.note")}</p>
-        </div>
-      </section>
     </div>
   );
 }
