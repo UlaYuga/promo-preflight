@@ -873,16 +873,13 @@
     }
   },
   "palette": {
-    "placeholder": "Search, run, or jump",
+    "placeholder": "Search or jump",
     "go": "Go",
     "action": "Action",
     "example": "Example",
     "check": "Check",
     "actions": {
-      "run": "Run check",
-      "save": "Save campaign as draft",
-      "exportMd": "Export Risk Report → Markdown",
-      "exportSlack": "Export Risk Report → Slack"
+      "openIntake": "Open campaign bundle"
     },
     "footer": {
       "move": "Move",
