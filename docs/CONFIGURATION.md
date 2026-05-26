@@ -18,6 +18,16 @@
 | `HTTP_PORT` | `3000` | Port the Next.js server listens on. |
 | `LOG_LEVEL` | `info` | Log verbosity: `debug` / `info` / `warn` / `error`. |
 | `OUTBOX_POLL_INTERVAL_MS` | `1000` | How often the outbox worker polls for undelivered events (milliseconds). |
+| `RATE_LIMIT_WINDOW_SECONDS` | `60` | Protected API rate-limit window length in seconds. |
+| `RATE_LIMIT_MAX_REQUESTS` | `20` | Maximum requests per client address during the rate-limit window. |
+
+### Rate limiting on Railway
+
+On Railway public networking, application rate limiting keys requests by the
+platform-provided `X-Real-IP` header. Do not change enforcement to use incoming
+`X-Forwarded-For`; callers can spoof that header. The in-memory limiter is
+process-local and should be replaced by shared infrastructure before scaling
+the protected API across multiple instances.
 
 ## Example .env
 

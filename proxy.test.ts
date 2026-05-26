@@ -63,6 +63,25 @@ describe('API authentication proxy', () => {
     expect(request().status).toBe(429);
   });
 
+  it('does not allow rotating x-forwarded-for to bypass a client limit', () => {
+    const request = (forwardedFor: string) =>
+      proxy(
+        new NextRequest('http://localhost/api/v1/audit', {
+          headers: {
+            authorization: 'Bearer wrong-rate-limited-key',
+            'x-real-ip': 'railway-client-address',
+            'x-forwarded-for': forwardedFor,
+          },
+        })
+      );
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      expect(request(`forged-${attempt}`).status).toBe(401);
+    }
+
+    expect(request('forged-after-limit').status).toBe(429);
+  });
+
   it('fails closed when no API key is configured', () => {
     delete process.env.PREFLIGHT_API_KEY;
 
