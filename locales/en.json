@@ -30,13 +30,6 @@
       "EX09 sample promo content"
     ]
   },
-  "languageGate": {
-    "title": "Choose language",
-    "subtitle": "Choose the interface language for this demo.",
-    "english": "English",
-    "russian": "Русский",
-    "note": "You can switch languages later from the header."
-  },
   "languageToggle": {
     "label": "Language",
     "en": "EN",
