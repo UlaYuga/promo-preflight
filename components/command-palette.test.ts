@@ -9,9 +9,14 @@ function readSource(path: string): string {
 function readPalette(language: 'en' | 'ru'): {
   placeholder: string;
   actions: Record<string, string>;
+  footer: { stats: string };
 } {
   const dictionary = JSON.parse(readSource(`locales/${language}.json`)) as {
-    palette: { placeholder: string; actions: Record<string, string> };
+    palette: {
+      placeholder: string;
+      actions: Record<string, string>;
+      footer: { stats: string };
+    };
   };
   return dictionary.palette;
 }
@@ -32,6 +37,8 @@ describe('command palette supported behavior', () => {
     expect(ru.actions).toEqual({ openIntake: 'Открыть пакет кампании' });
     expect(en.placeholder).toBe('Search or jump');
     expect(ru.placeholder).toBe('Найти или перейти');
+    expect(en.footer.stats).toContain('207 tests');
+    expect(ru.footer.stats).toContain('207 тестов');
   });
 
   it('uses the defined footer translations', () => {
