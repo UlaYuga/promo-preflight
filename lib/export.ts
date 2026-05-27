@@ -1,3 +1,7 @@
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   ExportPayloadSchema,
   type CheckIssue,
@@ -353,4 +357,179 @@ function sanitizeLine(value: string, maxLength = 180) {
 
 function trimExport(lines: string[]) {
   return `${lines.join("\n").replace(/\n{3,}/g, "\n\n").trim()}\n`;
+}
+
+const PDF = {
+  bg: "#0b0b0c", surf: "#1e1e22", fg: "#e4e4e5",
+  sub: "#9e9fa0", mute: "#5f6060", acc: "#5f6dcd",
+  pass: "#3dd68c", warn: "#e5a00d", fail: "#e5534b",
+} as const;
+
+export async function downloadRiskReportPDF(
+  report: RiskReport,
+  readiness?: LaunchReadiness | null,
+) {
+  const M = 16, W = 210;
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  let y = M;
+
+  function Hdr(title: string) {
+    doc.setFillColor(PDF.surf);
+    doc.rect(M, y, W - M * 2, 9, "F");
+    doc.setFontSize(8); doc.setTextColor(PDF.mute);
+    doc.text(title.toUpperCase(), M + 3, y + 6.5);
+    y += 14;
+  }
+
+  function Meta(label: string, value: string) {
+    doc.setFontSize(9); doc.setTextColor(PDF.mute);
+    doc.text(label, M, y);
+    doc.setTextColor(PDF.fg);
+    doc.text(value, M + 38, y);
+    y += 6;
+  }
+
+  doc.setFillColor(PDF.bg); doc.rect(0, 0, W, 40, "F");
+  doc.setFontSize(20); doc.setTextColor(PDF.fg);
+  doc.text("Promo Preflight", M, 18);
+  doc.setFontSize(9); doc.setTextColor(PDF.sub);
+  doc.text("Risk Report", M, 28);
+  y = 44;
+
+  Hdr("Campaign");
+  Meta("Campaign", sanitizeLine(report.campaignName, 60));
+  Meta("Report ID", sanitizeLine(report.reportId, 50));
+  Meta("Date", report.generatedAt.slice(0, 19).replace("T", " "));
+  const vc = report.overallStatus === "PASS" ? PDF.pass
+    : report.overallStatus === "WARN" ? PDF.warn : PDF.fail;
+  doc.setFontSize(13); doc.setTextColor(vc);
+  doc.text(report.overallStatus, M + 38, y); y += 10;
+
+  Hdr("Summary");
+  const bs = [
+    { l: "Pass", v: report.counts.pass, c: PDF.pass },
+    { l: "Warn", v: report.counts.warn, c: PDF.warn },
+    { l: "Fail", v: report.counts.fail, c: PDF.fail },
+  ];
+  let bx = M;
+  for (const b of bs) {
+    doc.setFillColor(PDF.surf); doc.rect(bx, y, 44, 13, "F");
+    doc.setFontSize(8); doc.setTextColor(PDF.mute); doc.text(b.l, bx + 3, y + 5);
+    doc.setFontSize(14); doc.setTextColor(b.c); doc.text(String(b.v), bx + 3, y + 11);
+    bx += 47;
+  }
+  y += 18;
+
+  Hdr("Findings");
+  const rows = getIssueRows(report);
+
+  if (rows.length === 0) {
+    doc.setFontSize(10); doc.setTextColor(PDF.pass);
+    doc.text("All checks passed.", M, y);
+  } else {
+    autoTable(doc, {
+      startY: y, margin: { left: M, right: M },
+      head: [["Check", "Severity", "Issue", "Owner"]],
+      body: rows.map((r) => [
+        sanitizeLine(r.check.publicName, 35),
+        r.issue.severity,
+        sanitizeLine(r.issue.detectedIssue, 55),
+        formatOwnerRole(getIssueOwner(r)),
+      ]),
+      theme: "plain",
+      headStyles: { fillColor: PDF.surf, textColor: PDF.mute, fontSize: 8 },
+      bodyStyles: { fillColor: PDF.bg, textColor: PDF.sub, fontSize: 9 },
+      alternateRowStyles: { fillColor: "#121216" },
+      styles: { lineColor: [255, 255, 255, 6], lineWidth: 0.2 },
+      didParseCell: (hook: any) => {
+        if (hook.section === "body" && hook.column.index === 1) {
+          const s = String(hook.cell.raw);
+          hook.cell.styles.textColor =
+            s === "CRITICAL" || s === "HIGH" ? PDF.fail
+            : s === "MEDIUM" ? PDF.warn : PDF.pass;
+        }
+      },
+    });
+  }
+
+  if (readiness) {
+    Hdr("Launch Readiness");
+    Meta("State", readiness.state);
+    for (const b of readiness.blockers.slice(0, 5)) {
+      doc.setFontSize(8); doc.setTextColor(PDF.fail);
+      doc.text("●", M + 2, y + 1);
+      doc.setTextColor(PDF.sub);
+      doc.text(sanitizeLine(b.description, 90), M + 8, y + 1);
+      y += 5;
+    }
+  }
+
+  const tp = doc.getNumberOfPages();
+  for (let i = 1; i <= tp; i++) {
+    doc.setPage(i);
+    doc.setFontSize(7); doc.setTextColor(PDF.mute);
+    doc.text(
+      `Promo Preflight  ·  ${sanitizeLine(report.campaignName, 35)}  ·  ${i}/${tp}`,
+      M, doc.internal.pageSize.getHeight() - 8,
+    );
+  }
+
+  const d = new Date().toISOString().slice(0, 10);
+  const n = report.campaignName.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 40) || "report";
+  doc.save(`preflight-${n}-${d}.pdf`);
+}
+
+const C = {
+  bg: "#0b0b0c", surf: "#1e1e22", fg: "#e4e4e5",
+  sub: "#9e9fa0", mute: "#5f6060", acc: "#5f6dcd",
+  pass: "#3dd68c", warn: "#e5a00d", fail: "#e5534b",
+} as const;
+
+export async function downloadRiskReportPDF(
+  report: RiskReport,
+  readiness?: LaunchReadiness | null,
+) {
+  const M = 16, W = 210, doc = new jsPDF({ unit: "mm", format: "a4" }); let y = M;
+
+  function H(t: string) { doc.setFillColor(C.surf); doc.rect(M, y, W - M * 2, 9, "F"); doc.setFontSize(8); doc.setTextColor(C.mute); doc.text(t.toUpperCase(), M + 3, y + 6.5); y += 14; }
+  function L(l: string, v: string) { doc.setFontSize(9); doc.setTextColor(C.mute); doc.text(l, M, y); doc.setTextColor(C.fg); doc.text(v, M + 38, y); y += 6; }
+  function sc(s: string) { return s === "CRITICAL" || s === "HIGH" ? C.fail : s === "MEDIUM" ? C.warn : C.pass; }
+
+  doc.setFillColor(C.bg); doc.rect(0, 0, W, 40, "F");
+  doc.setFontSize(20); doc.setTextColor(C.fg); doc.text("Promo Preflight", M, 18);
+  doc.setFontSize(9); doc.setTextColor(C.sub); doc.text("Risk Report", M, 28); y = 44;
+
+  H("Campaign");
+  L("Campaign", sanitizeLine(report.campaignName, 60));
+  L("Report ID", sanitizeLine(report.reportId, 50));
+  L("Date", report.generatedAt.slice(0, 19).replace("T", " "));
+  const vc = report.overallStatus === "PASS" ? C.pass : report.overallStatus === "WARN" ? C.warn : C.fail;
+  doc.setFontSize(13); doc.setTextColor(vc); doc.text(report.overallStatus, M + 38, y); y += 10;
+
+  y += 4; H("Summary");
+  const bs = [{ l: "Pass", v: report.counts.pass, c: C.pass }, { l: "Warn", v: report.counts.warn, c: C.warn }, { l: "Fail", v: report.counts.fail, c: C.fail }];
+  let bx = M;
+  for (const b of bs) { doc.setFillColor(C.surf); doc.rect(bx, y, 44, 13, "F"); doc.setFontSize(8); doc.setTextColor(C.mute); doc.text(b.l, bx + 3, y + 5); doc.setFontSize(14); doc.setTextColor(b.c); doc.text(String(b.v), bx + 3, y + 11); bx += 47; }
+  y += 18;
+
+  H("Findings");
+  const rows = getIssueRows(report);
+  if (rows.length === 0) { doc.setFontSize(10); doc.setTextColor(C.pass); doc.text("All checks passed.", M, y); y += 8; }
+  else {
+    autoTable(doc, { startY: y, margin: { left: M, right: M }, head: [["Check", "Severity", "Issue", "Owner"]],
+      body: rows.map(r => [sanitizeLine(r.check.publicName, 35), r.issue.severity, sanitizeLine(r.issue.detectedIssue, 55), formatOwnerRole(getIssueOwner(r))]),
+      theme: "plain", headStyles: { fillColor: C.surf, textColor: C.mute, fontSize: 8 },
+      bodyStyles: { fillColor: C.bg, textColor: C.sub, fontSize: 9 }, alternateRowStyles: { fillColor: "#121216" },
+      styles: { lineColor: [255,255,255,6], lineWidth: 0.2 },
+    });
+    y = (doc as any).lastAutoTable.finalY + 10;
+  }
+
+  if (readiness) { H("Launch Readiness"); L("State", readiness.state);
+    for (const b of readiness.blockers.slice(0, 5)) { doc.setFontSize(8); doc.setTextColor(C.fail); doc.text("●", M + 2, y + 1); doc.setTextColor(C.sub); doc.text(sanitizeLine(b.description, 90), M + 8, y + 1); y += 5; } }
+
+  const tp = doc.getNumberOfPages();
+  for (let i = 1; i <= tp; i++) { doc.setPage(i); doc.setFontSize(7); doc.setTextColor(C.mute); doc.text(`Promo Preflight  ·  ${sanitizeLine(report.campaignName, 35)}  ·  ${i}/${tp}`, M, doc.internal.pageSize.getHeight() - 8); }
+  const d = new Date().toISOString().slice(0, 10), n = report.campaignName.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 40) || "report";
+  doc.save(`preflight-${n}-${d}.pdf`);
 }

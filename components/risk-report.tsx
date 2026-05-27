@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   CircleDashed,
   Copy,
+  FileDown,
   FileText,
   MessageSquareText
 } from "lucide-react";
@@ -31,7 +32,7 @@ import {
   PROMO_PREFLIGHT_DRAFT_KEY,
   PROMO_PREFLIGHT_REPORT_KEY
 } from "@/lib/demo-storage";
-import { formatExportPayload } from "@/lib/export";
+import { formatExportPayload, downloadRiskReportPDF } from "@/lib/export";
 import {
   generateLaunchReadiness,
   type ReadinessInputOwner
@@ -433,6 +434,10 @@ function ExportControls({
       setCopyStatus("error");
       setShowManualText(true);
     }
+  }
+
+  async function handleDownloadPdf() {
+    await downloadRiskReportPDF(report, readiness ?? null);
   }
 
   function handleSelectExportText() {
