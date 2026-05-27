@@ -32,7 +32,8 @@ import {
   PROMO_PREFLIGHT_DRAFT_KEY,
   PROMO_PREFLIGHT_REPORT_KEY
 } from "@/lib/demo-storage";
-import { formatExportPayload, downloadRiskReportPDF } from "@/lib/export";
+import { formatExportPayload } from "@/lib/export";
+import { downloadRiskReportPDF } from "@/lib/export-pdf";
 import {
   generateLaunchReadiness,
   type ReadinessInputOwner
