@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, type DragEvent } from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -9,6 +9,7 @@ import {
   Loader2,
   AlertTriangle,
   Info,
+  Upload,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
@@ -21,7 +22,7 @@ import {
 // ---------------------------------------------------------------------------
 // Brief Import Panel
 //
-// Paste a free-text campaign brief or load the sample.
+// Upload a .docx / .md / .txt file or paste a free-text campaign brief.
 // AI extracts candidate fields for human confirmation before deterministic checks.
 // ---------------------------------------------------------------------------
 
@@ -32,18 +33,112 @@ type Props = {
   onCancel: () => void;
 };
 
+const ALLOWED_EXTENSIONS = [".docx", ".md", ".txt"];
+
+function getExtension(filename: string): string {
+  const dot = filename.lastIndexOf(".");
+  if (dot === -1) return "";
+  return filename.slice(dot).toLowerCase();
+}
+
+function isAllowed(filename: string): boolean {
+  return ALLOWED_EXTENSIONS.includes(getExtension(filename));
+}
+
+async function readDocxText(file: File): Promise<string> {
+  // Dynamic import of mammoth — browser-compatible
+  const mammoth = await import("mammoth");
+  const arrayBuf = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer: arrayBuf });
+  return result.value;
+}
+
+async function readTextFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve((reader.result as string) ?? "");
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsText(file);
+  });
+}
+
+async function parseFile(file: File): Promise<string> {
+  const ext = getExtension(file.name);
+  if (ext === ".docx") {
+    return readDocxText(file);
+  }
+  return readTextFile(file);
+}
+
 export function BriefImportPanel({ onConfirm, onCancel }: Props) {
   const { t } = useI18n();
   const [text, setText] = useState("");
   const [phase, setPhase] = useState<Phase>("idle");
   const [result, setResult] = useState<BriefExtractionResult | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isParsing, setIsParsing] = useState(false);
+  const [parseError, setParseError] = useState("");
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleLoadSample() {
     setText(BRIEF_EXTRACTION_SAMPLE);
     setPhase("idle");
     setErrorMessage("");
+    setParseError("");
   }
+
+  const handleFile = useCallback(
+    async (file: File) => {
+      if (!isAllowed(file.name)) {
+        setParseError(t("briefImport.uploadParseError" as TranslationKey));
+        return;
+      }
+      setParseError("");
+      setIsParsing(true);
+      try {
+        const extracted = await parseFile(file);
+        setText(extracted);
+        setPhase("idle");
+        setErrorMessage("");
+      } catch {
+        setParseError(t("briefImport.uploadParseError" as TranslationKey));
+      } finally {
+        setIsParsing(false);
+      }
+    },
+    [t],
+  );
+
+  const onDrop = useCallback(
+    (e: DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+      const file = e.dataTransfer.files?.[0];
+      if (file) void handleFile(file);
+    },
+    [handleFile],
+  );
+
+  const onDragOver = useCallback((e: DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const onDragLeave = useCallback((e: DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
+  const onFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) void handleFile(file);
+      // Reset so the same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    },
+    [handleFile],
+  );
 
   async function handleExtract() {
     const trimmed = text.trim();
@@ -114,9 +209,67 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
         </p>
       </div>
 
-      {/* Textarea — shown in idle and error phases */}
+      {/* Textarea + file upload — shown in idle and error phases */}
       {phase !== "review" && (
         <div className="space-y-3">
+          {/* File upload drop zone */}
+          <div
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onClick={() => fileInputRef.current?.click()}
+            className={cn(
+              "relative cursor-pointer rounded-lg border-2 border-dashed px-6 py-5 text-center transition-colors",
+              isDragOver
+                ? "border-accent/60 bg-accent/10"
+                : "border-white/[0.08] bg-surface/30 hover:border-white/[0.15] hover:bg-surface/50",
+            )}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={ALLOWED_EXTENSIONS.join(",")}
+              onChange={onFileInputChange}
+              className="sr-only"
+              aria-label={t("briefImport.uploadBrowse" as TranslationKey)}
+            />
+            {isParsing ? (
+              <div className="flex flex-col items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin text-accent" aria-hidden="true" />
+                <span className="text-sm text-subtle">
+                  {t("briefImport.uploadParsing" as TranslationKey)}
+                </span>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-1.5">
+                <Upload className="h-5 w-5 text-muted" aria-hidden="true" />
+                <span className="text-sm text-subtle">
+                  {t("briefImport.uploadDropzone" as TranslationKey)}
+                </span>
+                <span className="text-xs text-muted">
+                  {t("briefImport.uploadSupported" as TranslationKey)}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {parseError && (
+            <div className="flex items-start gap-2 rounded border border-fail/30 bg-fail/10 px-4 py-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-fail" aria-hidden="true" />
+              <p className="text-sm text-fail">{parseError}</p>
+            </div>
+          )}
+
+          {/* Divider */}
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/[0.06]" />
+            <span className="text-xs text-muted">
+              {t("briefImport.orPaste" as TranslationKey)}
+            </span>
+            <div className="h-px flex-1 bg-white/[0.06]" />
+          </div>
+
+          {/* Label + load sample */}
           <div className="flex items-center justify-between gap-3">
             <label
               htmlFor="brief-import-textarea"
@@ -124,13 +277,25 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
             >
               {t("briefImport.textareaLabel" as TranslationKey)}
             </label>
-            <button
-              type="button"
-              onClick={handleLoadSample}
-              className="text-xs font-medium text-accent hover:text-accent/80 transition-colors"
-            >
-              {t("briefImport.loadSample" as TranslationKey)}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
+                className="text-xs font-medium text-accent/70 hover:text-accent transition-colors"
+              >
+                {t("briefImport.uploadBrowse" as TranslationKey)}
+              </button>
+              <button
+                type="button"
+                onClick={handleLoadSample}
+                className="text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+              >
+                {t("briefImport.loadSample" as TranslationKey)}
+              </button>
+            </div>
           </div>
           <textarea
             id="brief-import-textarea"

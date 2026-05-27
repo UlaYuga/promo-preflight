@@ -901,7 +901,7 @@
   "briefImport": {
     "eyebrow": "AI Import",
     "title": "Import from brief",
-    "subtitle": "Paste a free-text campaign brief. AI extracts candidate fields for your review before deterministic checks run.",
+    "subtitle": "Paste a free-text campaign brief or upload a file. AI extracts candidate fields for your review before deterministic checks run.",
     "trustStatement": "AI extracts candidate fields. Versioned rules determine the verdict.",
     "modeManual": "Fill manually",
     "modeImport": "Import from brief",
@@ -916,6 +916,12 @@
     "errorTooShort": "Brief is too short. Paste at least 10 characters of campaign text.",
     "errorGeneric": "Extraction failed. Try again or switch to manual entry.",
     "errorNetwork": "Network error. Check your connection and try again.",
+    "uploadDropzone": "Drop a .docx, .md, or .txt file here",
+    "uploadBrowse": "Browse files",
+    "uploadSupported": "Supports .docx, .md, .txt",
+    "uploadParsing": "Reading file…",
+    "uploadParseError": "Could not read file. Try pasting the text below.",
+    "orPaste": "or paste below",
     "sections": {
       "extracted": "Extracted",
       "extractedHint": "Fields AI found in the brief with source snippets and confidence levels.",

@@ -88,13 +88,13 @@ export const BriefExtractionRequestSchema = z.object({
   rawBrief: z.string().min(10).max(20000),
 });
 
-export const BRIEF_EXTRACTION_SAMPLE = `BR welcome email for Friday. Deposit min R$50, bonus up to R$500 with 35x wagering.
-Email subject: Acme Casino — ganhe at\u00e9 R$500 em b\u00f4nus
-Email body: Bem-vindo ao Acme Casino! Deposite R$50 e ganhe at\u00e9 R$500 em b\u00f4nus de boas-vindas. 18+.
-SMS copy: Acme Casino: b\u00f4nus 100% at\u00e9 R$500. Dep\u00f3sito m\u00edn R$50. T&C se aplicam. 18+
+export const BRIEF_EXTRACTION_SAMPLE = `BR welcome offer for Q2 2026. Deposit min R$50, bonus up to R$500 with 35x wagering.
+Email subject: Acme Casino — Get up to R$500 Welcome Bonus
+Email body: Welcome to Acme Casino! Deposit R$50 and get up to R$500 in welcome bonus. 18+. T&Cs apply.
+SMS copy: Acme Casino: 100% bonus up to R$500. Min deposit R$50. T&Cs apply. 18+
 Landing CTA URL: https://acme.casino/br/welcome?utm_source=email_welcome&utm_medium=email&utm_campaign=welcome_br_q2
 Payment methods: Pix, Visa, Mastercard, USDT-TRC20
-T&C: B\u00f4nus de 100% at\u00e9 R$500. Dep\u00f3sito m\u00ednimo R$50. Rollover 35x. Aposta m\u00e1xima R$5. V\u00e1lido 30 dias. 18+. Jogue com responsabilidade.
-License info: Licen\u00e7a SPA/MF n\u00ba [XXXX].
+T&C: 100% welcome bonus up to R$500. Minimum deposit R$50. 35x wagering requirement. Max bet R$5. Valid 30 days. 18+. Gamble responsibly.
+License info: SPA/MF license no. [XXXX].
 Compliance owner assigned. Marketing owner: pedro.costa. CRM owner: ana.silva.
 Operator: Acme Casino. GEO: BR. Locale: pt-BR. Currency: BRL.`;

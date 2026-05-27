@@ -493,7 +493,7 @@ export function IntakeForm() {
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [showExamples, setShowExamples] = useState(false);
-  const [mode, setMode] = useState<"manual" | "import">("manual");
+  const [mode, setMode] = useState<"manual" | "import">("import");
 
   useEffect(() => {
     if (window.location.search.includes("examples=1")) {
@@ -890,18 +890,6 @@ export function IntakeForm() {
           <div className="mt-4 flex items-center gap-1 rounded border border-white/[0.07] bg-surface/40 p-1 w-fit">
             <button
               type="button"
-              onClick={() => setMode("manual")}
-              className={cn(
-                "rounded px-3 py-1.5 text-xs font-medium transition-colors",
-                mode === "manual"
-                  ? "bg-background text-foreground border border-white/[0.07]"
-                  : "text-subtle hover:text-foreground",
-              )}
-            >
-              {t("briefImport.modeManual" as TranslationKey)}
-            </button>
-            <button
-              type="button"
               onClick={() => setMode("import")}
               className={cn(
                 "rounded px-3 py-1.5 text-xs font-medium transition-colors",
@@ -911,6 +899,18 @@ export function IntakeForm() {
               )}
             >
               {t("briefImport.modeImport" as TranslationKey)}
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("manual")}
+              className={cn(
+                "rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                mode === "manual"
+                  ? "bg-background text-foreground border border-white/[0.07]"
+                  : "text-subtle hover:text-foreground",
+              )}
+            >
+              {t("briefImport.modeManual" as TranslationKey)}
             </button>
           </div>
         </div>

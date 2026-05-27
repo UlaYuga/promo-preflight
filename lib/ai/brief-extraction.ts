@@ -43,20 +43,19 @@ function buildMockResult(): BriefExtractionResult {
         maxBet: 5,
       },
       termsText:
-        "Bônus de 100% até R$500. Depósito mínimo R$50. Rollover 35x. " +
-        "Aposta máxima R$5. Válido 30 dias. 18+. Jogue com responsabilidade. " +
-        "Licença SPA/MF nº [XXXX].",
+        "100% welcome bonus up to R$500. Minimum deposit R$50. 35x wagering requirement. " +
+        "Max bet R$5. Valid 30 days. 18+. Gamble responsibly.",
       channelCopy: {
         email_subject: {
-          text: "Acme Casino — ganhe até R$500 em bônus",
+          text: "Acme Casino — Get up to R$500 Welcome Bonus",
           fieldName: "Email subject",
         },
         email_body: {
-          text: "Bem-vindo ao Acme Casino! Deposite R$50 e ganhe até R$500 em bônus de boas-vindas. 18+.",
+          text: "Welcome to Acme Casino! Deposit R$50 and get up to R$500 in welcome bonus. 18+. T&Cs apply.",
           fieldName: "Email body",
         },
         sms_copy: {
-          text: "Acme Casino: bônus 100% até R$500. Depósito mín R$50. T&C se aplicam. 18+",
+          text: "Acme Casino: 100% bonus up to R$500. Min deposit R$50. T&Cs apply. 18+",
           fieldName: "SMS copy",
         },
       },
@@ -80,7 +79,7 @@ function buildMockResult(): BriefExtractionResult {
         label: "Campaign name",
         value: "BR Welcome Q2 2026",
         confidence: "high",
-        sourceSnippet: "BR welcome email for Friday",
+        sourceSnippet: "BR welcome offer for Q2 2026",
       },
       {
         fieldPath: "operatorLabel",
@@ -94,7 +93,7 @@ function buildMockResult(): BriefExtractionResult {
         label: "Promo type",
         value: "welcome",
         confidence: "high",
-        sourceSnippet: "BR welcome email for Friday",
+        sourceSnippet: "BR welcome offer for Q2 2026",
       },
       {
         fieldPath: "geo",
@@ -136,7 +135,7 @@ function buildMockResult(): BriefExtractionResult {
         label: "Bonus percentage",
         value: "100",
         confidence: "high",
-        sourceSnippet: "bônus 100% até R$500",
+        sourceSnippet: "100% bonus up to R$500",
       },
       {
         fieldPath: "offer.wageringRequirement",
@@ -150,35 +149,35 @@ function buildMockResult(): BriefExtractionResult {
         label: "Max bet",
         value: "5",
         confidence: "medium",
-        sourceSnippet: "Aposta máxima R$5",
+        sourceSnippet: "Max bet R$5",
       },
       {
         fieldPath: "termsText",
         label: "T&C text",
-        value: "Bônus de 100% até R$500…",
+        value: "100% welcome bonus up to R$500…",
         confidence: "high",
-        sourceSnippet: "T&C: Bônus de 100% até R$500",
+        sourceSnippet: "T&C: 100% welcome bonus up to R$500",
       },
       {
         fieldPath: "channelCopy.email_subject",
         label: "Email subject",
-        value: "Acme Casino — ganhe até R$500 em bônus",
+        value: "Acme Casino — Get up to R$500 Welcome Bonus",
         confidence: "high",
-        sourceSnippet: "Email subject: Acme Casino — ganhe até R$500 em bônus",
+        sourceSnippet: "Email subject: Acme Casino — Get up to R$500 Welcome Bonus",
       },
       {
         fieldPath: "channelCopy.email_body",
         label: "Email body",
-        value: "Bem-vindo ao Acme Casino!…",
+        value: "Welcome to Acme Casino!…",
         confidence: "high",
-        sourceSnippet: "Email body: Bem-vindo ao Acme Casino!",
+        sourceSnippet: "Email body: Welcome to Acme Casino!",
       },
       {
         fieldPath: "channelCopy.sms_copy",
         label: "SMS copy",
-        value: "Acme Casino: bônus 100% até R$500…",
+        value: "Acme Casino: 100% bonus up to R$500…",
         confidence: "high",
-        sourceSnippet: "SMS copy: Acme Casino: bônus 100%",
+        sourceSnippet: "SMS copy: Acme Casino: 100% bonus",
       },
       {
         fieldPath: "links.0.url",
@@ -203,8 +202,8 @@ function buildMockResult(): BriefExtractionResult {
       },
     ],
     needsConfirmation: [
-      "campaignName — inferred from 'BR welcome email for Friday'",
-      "launchDate — not specified, implied Friday",
+      "campaignName — inferred from 'BR welcome offer for Q2 2026'",
+      "launchDate — not specified",
       "owners.compliance — empty name, status pending",
       "offer.maxBet — extracted from T&C, confirm value",
     ],
