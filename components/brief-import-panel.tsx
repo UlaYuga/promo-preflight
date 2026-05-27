@@ -78,6 +78,7 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState("");
+  const [uploadSuccess, setUploadSuccess] = useState(""); // file name on success
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -86,23 +87,30 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
     setPhase("idle");
     setErrorMessage("");
     setParseError("");
+    setUploadSuccess("");
   }
 
   const handleFile = useCallback(
     async (file: File) => {
       if (!isAllowed(file.name)) {
-        setParseError(t("briefImport.uploadParseError" as TranslationKey));
+        setParseError(t("briefImport.parseError" as TranslationKey));
         return;
       }
       setParseError("");
+      setUploadSuccess("");
       setIsParsing(true);
       try {
         const extracted = await parseFile(file);
-        setText(extracted);
-        setPhase("idle");
-        setErrorMessage("");
+        if (!extracted.trim()) {
+          setParseError(t("briefImport.parseError" as TranslationKey));
+        } else {
+          setText(extracted);
+          setPhase("idle");
+          setErrorMessage("");
+          setUploadSuccess(file.name);
+        }
       } catch {
-        setParseError(t("briefImport.uploadParseError" as TranslationKey));
+        setParseError(t("briefImport.parseError" as TranslationKey));
       } finally {
         setIsParsing(false);
       }
@@ -161,9 +169,13 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
       const data = await response.json();
 
       if (!response.ok) {
-        setErrorMessage(
-          data.message ?? t("briefImport.errorGeneric" as TranslationKey),
-        );
+        const msg =
+          response.status === 413
+            ? `${t("briefImport.errorPayload" as TranslationKey)}`
+            : response.status >= 500
+              ? `${t("briefImport.errorApi" as TranslationKey)}: ${data.message ?? ""}`
+              : data.message ?? t("briefImport.errorGeneric" as TranslationKey);
+        setErrorMessage(msg);
         setPhase("error");
         return;
       }
@@ -254,6 +266,20 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
             <div className="flex items-start gap-2 rounded border border-fail/30 bg-fail/10 px-4 py-3">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-fail" aria-hidden="true" />
               <p className="text-sm text-fail">{parseError}</p>
+            </div>
+          )}
+
+          {uploadSuccess && (
+            <div className="flex items-start gap-2 rounded border border-pass/30 bg-pass/10 px-4 py-3">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-pass" aria-hidden="true" />
+              <div>
+                <p className="text-sm font-medium text-pass">
+                  {t("briefImport.fileLoaded" as TranslationKey)}
+                </p>
+                <p className="text-xs text-pass/70">
+                  {uploadSuccess} — {t("briefImport.fileLoadedHint" as TranslationKey)}
+                </p>
+              </div>
             </div>
           )}
 

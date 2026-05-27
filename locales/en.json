@@ -254,6 +254,7 @@
     "runPreflightSubtitle": "Next: the Risk Report opens after the check.",
     "examplesNextStep": "Next step: load one sample case, then run the check to open the Risk Report.",
     "runPreflightReady": "Ready to run",
+    "runningChecks": "Running checks",
     "runPreflightMissing": "Fill in the required fields before running the check.",
     "unknownRunError": "Something went wrong while running the check.",
     "sections": {
@@ -384,7 +385,9 @@
     },
     "empty": {
       "noIssueSelected": "No issue selected",
-      "description": "Issue details, affected fields, suggested fix, and assignment appear here."
+      "description": "Issue details, affected fields, suggested fix, and assignment appear here.",
+      "allClear": "All checks passed",
+      "allClearHint": "No warnings or blockers. The campaign is ready for launch."
     }
   },
   "readiness": {
@@ -913,9 +916,14 @@
     "confirmAndRun": "Confirm and run deterministic checks",
     "back": "Back to manual entry",
     "fieldsApplied": "AI-extracted fields applied. Review and complete missing fields, then run checks.",
-    "errorTooShort": "Brief is too short. Paste at least 10 characters of campaign text.",
-    "errorGeneric": "Extraction failed. Try again or switch to manual entry.",
-    "errorNetwork": "Network error. Check your connection and try again.",
+    "errorTooShort": "Brief is too short. Paste at least 10 characters.",
+    "errorGeneric": "Something went wrong. Try again or switch to manual entry.",
+    "errorNetwork": "Could not reach the server. Check your connection and try again.",
+    "errorApi": "Extraction service error",
+    "errorPayload": "Brief is too long (max 20 000 characters).",
+    "fileLoaded": "File loaded",
+    "fileLoadedHint": "Text extracted and ready for field extraction.",
+    "parseError": "Could not read file. Check the file format and try again.",
     "uploadDropzone": "Drop a .docx, .md, or .txt file here",
     "uploadBrowse": "Browse files",
     "uploadSupported": "Supports .docx, .md, .txt",

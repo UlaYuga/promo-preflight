@@ -4,11 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
   CircleAlert,
+  Loader2,
   Save,
   ShieldCheck,
   X
 } from "lucide-react";
 import { runChecks } from "@/lib/checks/runner";
+import { CHECK_DEFINITIONS } from "@/lib/checks/definitions";
+import { CHECK_DEFINITIONS } from "@/lib/checks/definitions";
 import {
   PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT,
   PROMO_PREFLIGHT_DRAFT_KEY,
@@ -494,6 +497,18 @@ export function IntakeForm() {
   const [statusMessage, setStatusMessage] = useState("");
   const [showExamples, setShowExamples] = useState(false);
   const [mode, setMode] = useState<"manual" | "import">("import");
+  const [isRunning, setIsRunning] = useState(false);
+  const [runStep, setRunStep] = useState(0);
+
+  const checkLabels = useMemo(
+    () =>
+      CHECK_DEFINITIONS.filter((d) => d.id !== "launch_ownership")
+        .map((d) => (language === "ru" ? d.publicNameRu : d.publicName))
+        .concat(
+          language === "ru" ? "Назначение ролей" : "Launch ownership"
+        ),
+    [language]
+  );
 
   useEffect(() => {
     if (window.location.search.includes("examples=1")) {
@@ -712,9 +727,19 @@ export function IntakeForm() {
     });
   }
 
-  function handleRunPreflight() {
-    if (!readyToRun) {
+  async function handleRunPreflight() {
+    if (!readyToRun || isRunning) {
       return;
+    }
+
+    setIsRunning(true);
+    setRunStep(0);
+    setStatusMessage("");
+
+    const checks = CHECK_DEFINITIONS;
+    for (let i = 0; i < checks.length; i++) {
+      setRunStep(i + 1);
+      await new Promise((r) => setTimeout(r, 120));
     }
 
     try {
@@ -735,6 +760,8 @@ export function IntakeForm() {
       const message =
         err instanceof Error ? err.message : t("intake.unknownRunError");
       setStatusMessage(`Error: ${message}`);
+      setIsRunning(false);
+      setRunStep(0);
     }
   }
 
@@ -1536,9 +1563,65 @@ export function IntakeForm() {
           <h3 className="text-sm font-semibold text-foreground">
             {t("intake.runPreflight")}
           </h3>
-          <p className="mt-2 text-sm leading-6 text-muted">
-            {readyToRun ? t("intake.runPreflightReady") : t("intake.runPreflightMissing")}
-          </p>
+
+          {isRunning ? (
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin text-accent" aria-hidden="true" />
+                <span className="text-sm text-subtle">
+                  {t("intake.runningChecks")}: {runStep}/{CHECK_DEFINITIONS.length}
+                </span>
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-overlay overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-accent transition-all duration-200"
+                  style={{
+                    width: `${Math.round((runStep / CHECK_DEFINITIONS.length) * 100)}%`
+                  }}
+                />
+              </div>
+              <p className="text-xs text-muted">
+                {checkLabels[runStep - 1] ?? ""}
+              </p>
+              <button
+                type="button"
+                disabled
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded border border-white/[0.07] px-4 py-3 text-sm font-medium text-muted/60 cursor-not-allowed"
+              >
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                {t("intake.runningChecks")}…
+              </button>
+            </div>
+          ) : (
+            <>
+              <p className="mt-2 text-sm leading-6 text-muted">
+                {readyToRun ? t("intake.runPreflightReady") : t("intake.runPreflightMissing")}
+              </p>
+          {isRunning ? (
+            <div className="mt-4 rounded border border-accent/30 bg-accent/[0.06] p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <Loader2 className="h-4 w-4 animate-spin text-accent" aria-hidden="true" />
+                <span className="text-sm font-medium text-foreground">
+                  {t("intake.runningChecks")}
+                </span>
+                <span className="font-mono text-xs text-accent ml-auto">
+                  {runStep}/{checkLabels.length}
+                </span>
+              </div>
+              <div className="h-1 rounded-full bg-overlay overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-accent transition-all duration-200"
+                  style={{ width: `${(runStep / checkLabels.length) * 100}%` }}
+                />
+              </div>
+              <p className="mt-2 text-xs text-subtle truncate">
+                {runStep > 0 && runStep <= checkLabels.length
+                  ? checkLabels[runStep - 1]
+                  : "…"}
+              </p>
+            </div>
+          ) : (
+            <>
           <button
             type="button"
             data-testid="run-preflight"
@@ -1555,6 +1638,10 @@ export function IntakeForm() {
             <ShieldCheck className="h-4 w-4" aria-hidden="true" />
             {t("intake.runPreflight")}
           </button>
+            </>
+          )}
+            </>
+          )}
           {statusMessage ? (
             <p
               data-testid="intake-status"
