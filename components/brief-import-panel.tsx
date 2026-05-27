@@ -190,10 +190,7 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
     <div className="space-y-5">
       {/* Heading */}
       <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
-          {t("briefImport.eyebrow" as TranslationKey)}
-        </p>
-        <h2 className="mt-3 text-[32px] tracking-tighter2 text-foreground">
+        <h2 className="text-[32px] tracking-tighter2 text-foreground">
           {t("briefImport.title" as TranslationKey)}
         </h2>
         <p className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.55] text-subtle">
