@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { runChecks } from "@/lib/checks/runner";
 import { CHECK_DEFINITIONS } from "@/lib/checks/definitions";
-import { CHECK_DEFINITIONS } from "@/lib/checks/definitions";
 import {
   PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT,
   PROMO_PREFLIGHT_DRAFT_KEY,

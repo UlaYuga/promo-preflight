@@ -234,10 +234,10 @@ export function RiskReport() {
         <div className="rounded-lg border border-pass/30 bg-pass/[0.05] p-6 text-center sm:p-8">
           <CheckCircle2 className="mx-auto h-10 w-10 text-pass" aria-hidden="true" />
           <h2 className="mt-4 text-[18px] font-semibold text-pass sm:text-[22px]">
-            {t("riskReport.empty.allClear" as TranslationKey)}
+            {t("riskReport.empty.allClear")}
           </h2>
           <p className="mt-1 text-[14px] text-pass/70">
-            {t("riskReport.empty.allClearHint" as TranslationKey)}
+            {t("riskReport.empty.allClearHint")}
           </p>
         </div>
       )}
@@ -558,10 +558,10 @@ function IssueTable({
             <>
               <CheckCircle2 className="mx-auto h-8 w-8 text-pass" aria-hidden="true" />
               <p className="mt-3 text-[15px] font-semibold text-foreground">
-                {t("riskReport.empty.allClear" as TranslationKey)}
+            {t("riskReport.empty.allClear")}
               </p>
               <p className="mt-1 text-[13px] text-subtle">
-                {t("riskReport.empty.allClearHint" as TranslationKey)}
+                {t("riskReport.empty.allClearHint")}
               </p>
             </>
           ) : (
@@ -571,10 +571,10 @@ function IssueTable({
                 aria-hidden="true"
               />
               <p className="mt-3 text-[14px] font-semibold text-foreground">
-                {t("riskReport.empty.noIssueSelected" as TranslationKey)}
+                {t("riskReport.empty.noIssueSelected")}
               </p>
               <p className="mt-1 text-[12px] text-subtle">
-                {t("riskReport.empty.description" as TranslationKey)}
+                {t("riskReport.empty.description")}
               </p>
             </>
           )}
