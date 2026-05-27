@@ -26,6 +26,8 @@ import type {
   TargetJurisdiction
 } from "@/schemas";
 import { CampaignBundleSchema } from "@/schemas";
+import type { BriefExtractionResult } from "@/schemas/brief-extraction";
+import { BriefImportPanel } from "@/components/brief-import-panel";
 
 type DraftMetadata = Omit<
   CampaignBundleInput["metadata"],
@@ -491,6 +493,7 @@ export function IntakeForm() {
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [showExamples, setShowExamples] = useState(false);
+  const [mode, setMode] = useState<"manual" | "import">("manual");
 
   useEffect(() => {
     if (window.location.search.includes("examples=1")) {
@@ -747,6 +750,110 @@ export function IntakeForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function handleBriefConfirm(result: BriefExtractionResult) {
+    const c = result.candidate;
+
+    updateDraft((current) => {
+      let next = { ...current };
+
+      // Metadata
+      if (c.campaignName) next = { ...next, metadata: { ...next.metadata, campaignName: c.campaignName } };
+      if (c.operatorLabel) next = { ...next, metadata: { ...next.metadata, operatorLabel: c.operatorLabel } };
+      if (c.promoType) next = { ...next, metadata: { ...next.metadata, promoType: c.promoType as PromoType | "" } };
+      if (c.geo) next = { ...next, metadata: { ...next.metadata, geo: c.geo } };
+      if (c.locale) next = { ...next, metadata: { ...next.metadata, locale: c.locale } };
+      if (c.currency) next = { ...next, metadata: { ...next.metadata, currency: c.currency } };
+      if (c.launchDate) next = { ...next, metadata: { ...next.metadata, launchDate: c.launchDate } };
+      if (c.channelsIncluded && c.channelsIncluded.length > 0) {
+        next = { ...next, metadata: { ...next.metadata, channelsIncluded: c.channelsIncluded as Channel[] } };
+      }
+      if (c.targetJurisdiction && c.targetJurisdiction.length > 0) {
+        next = { ...next, targetJurisdiction: c.targetJurisdiction as TargetJurisdiction[] };
+      }
+
+      // Offer
+      if (c.offer) {
+        const o = c.offer;
+        next = { ...next, offer: { ...next.offer } };
+        if (o.minDeposit !== undefined) next.offer.minDeposit = o.minDeposit;
+        if (o.bonusAmount !== undefined) next.offer.bonusAmount = o.bonusAmount;
+        if (o.bonusPercentage !== undefined) next.offer.bonusPercentage = o.bonusPercentage;
+        if (o.maxBonus !== undefined) next.offer.maxBonus = o.maxBonus;
+        if (o.maxCashout !== undefined) next.offer.maxCashout = o.maxCashout;
+        if (o.maxBet !== undefined) next.offer.maxBet = o.maxBet;
+        if (o.wageringRequirement) next.offer.wageringRequirement = o.wageringRequirement;
+        if (o.eligibleGames) next.offer.eligibleGames = o.eligibleGames;
+        if (o.contribution) next.offer.contribution = o.contribution;
+        if (o.cooldown) next.offer.cooldown = o.cooldown;
+        if (o.eligibilityRules) next.offer.eligibilityRules = o.eligibilityRules;
+      }
+
+      // Terms
+      if (c.termsText) next = { ...next, termsText: c.termsText };
+
+      // Channel copy → assets
+      if (c.channelCopy) {
+        const existingAssets = [...next.assets];
+        for (const [key, copy] of Object.entries(c.channelCopy)) {
+          let channel: Channel = "email";
+          const fieldName = copy.fieldName ?? key;
+          if (key.includes("email")) channel = "email";
+          else if (key.includes("sms")) channel = "sms";
+          else if (key.includes("push")) channel = "push";
+          else if (key.includes("landing")) channel = "landing";
+          else if (key.includes("onsite")) channel = "onsite";
+          else if (key.includes("in_app")) channel = "in_app";
+
+          const existingIdx = existingAssets.findIndex(
+            (a) => a.channel === channel && a.fieldName === fieldName,
+          );
+          if (existingIdx >= 0) {
+            existingAssets[existingIdx] = { ...existingAssets[existingIdx], text: copy.text };
+          } else {
+            existingAssets.push({ channel, fieldName, text: copy.text });
+          }
+        }
+        next = { ...next, assets: existingAssets };
+      }
+
+      // Links
+      if (c.links && c.links.length > 0) {
+        const existingLinks = [...next.links];
+        for (const link of c.links) {
+          const label = link.label ?? "CTA";
+          const existingIdx = existingLinks.findIndex((l) => l.label === label);
+          if (existingIdx >= 0) {
+            existingLinks[existingIdx] = { ...existingLinks[existingIdx], url: link.url };
+          } else {
+            existingLinks.push({ label, url: link.url, requiresUtm: link.requiresUtm ?? false });
+          }
+        }
+        next = { ...next, links: existingLinks };
+      }
+
+      // Owners
+      if (c.owners && c.owners.length > 0) {
+        const existingOwners = normalizeOwners(next.owners);
+        for (const owner of c.owners) {
+          const idx = existingOwners.findIndex((o) => o.role === owner.role);
+          if (idx >= 0) {
+            if (owner.name) existingOwners[idx] = { ...existingOwners[idx], name: owner.name };
+            if (owner.status) existingOwners[idx] = { ...existingOwners[idx], status: owner.status as OwnerStatus };
+          }
+        }
+        next = { ...next, owners: existingOwners };
+      }
+
+      return next;
+    });
+
+    setDirty(true);
+    setHasSavedDraft(true);
+    setStatusMessage(t("briefImport.fieldsApplied" as TranslationKey));
+    setMode("manual");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <form
       data-testid="intake-form"
@@ -767,16 +874,54 @@ export function IntakeForm() {
                 {t("intake.subtitle")}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowExamples(true)}
-              aria-expanded={showExamples}
-              className="shrink-0 hairline border rounded px-4 py-2 text-[12px] font-medium text-subtle hover:text-accent hover:border-accent/40 transition-colors"
-            >
-              {t("welcome.testCases")}
-            </button>
+            {mode === "manual" && (
+              <button
+                type="button"
+                onClick={() => setShowExamples(true)}
+                aria-expanded={showExamples}
+                className="shrink-0 hairline border rounded px-4 py-2 text-[12px] font-medium text-subtle hover:text-accent hover:border-accent/40 transition-colors"
+              >
+                {t("welcome.testCases")}
+              </button>
+            )}
           </div>
 
+          {/* Mode toggle */}
+          <div className="mt-4 flex items-center gap-1 rounded border border-white/[0.07] bg-surface/40 p-1 w-fit">
+            <button
+              type="button"
+              onClick={() => setMode("manual")}
+              className={cn(
+                "rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                mode === "manual"
+                  ? "bg-background text-foreground border border-white/[0.07]"
+                  : "text-subtle hover:text-foreground",
+              )}
+            >
+              {t("briefImport.modeManual" as TranslationKey)}
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("import")}
+              className={cn(
+                "rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                mode === "import"
+                  ? "bg-background text-foreground border border-white/[0.07]"
+                  : "text-subtle hover:text-foreground",
+              )}
+            >
+              {t("briefImport.modeImport" as TranslationKey)}
+            </button>
+          </div>
+        </div>
+
+        {mode === "import" ? (
+          <BriefImportPanel
+            onConfirm={handleBriefConfirm}
+            onCancel={() => setMode("manual")}
+          />
+        ) : (
+          <>
           {showExamples ? (
             <div className="mt-4 rounded border border-white/[0.07] bg-surface/60 p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
@@ -829,7 +974,6 @@ export function IntakeForm() {
               </p>
             </div>
           ) : null}
-        </div>
 
         <div className="space-y-4">
           <Section title={t("intake.sections.metadata")} tourId="intake-sample">
@@ -1327,8 +1471,12 @@ export function IntakeForm() {
             />
           </Section>
         </div>
+
+          </>
+        )}
       </section>
 
+      {mode === "manual" && (
       <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
         <div className="rounded border border-white/[0.07] bg-surface/60 p-4">
           <div className="flex items-start gap-3">
@@ -1418,6 +1566,7 @@ export function IntakeForm() {
           ) : null}
         </div>
       </aside>
+      )}
     </form>
   );
 }

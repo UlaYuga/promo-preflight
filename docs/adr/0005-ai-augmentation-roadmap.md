@@ -1,7 +1,10 @@
 # ADR-0005 — AI augmentation roadmap (planned, deferred from v1)
 
-**Status**: Accepted, deferred
+**Status**: Accepted, partially superseded by ADR-0006
 **Date**: 2026-05-16
+
+**Update (2026-05-27):** ADR-0006 implements a bounded text-only browser-demo
+version of augmentation #1. PDF input and augmentations #2-#5 remain deferred.
 
 ## Context
 
