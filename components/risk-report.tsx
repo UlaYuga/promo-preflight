@@ -484,6 +484,14 @@ function ExportControls({
           <Copy className="h-3.5 w-3.5" aria-hidden="true" />
           {t("common.copy")}
         </button>
+        <button
+          type="button"
+          onClick={handleDownloadPdf}
+          className="inline-flex items-center gap-1.5 rounded-sm border border-accent/40 bg-accent/10 px-2.5 py-1.5 text-[11px] font-medium text-accent transition hover:bg-accent/20"
+        >
+          <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
+          PDF
+        </button>
       </div>
       <p
         aria-live="polite"

@@ -441,7 +441,7 @@ export async function downloadRiskReportPDF(
       bodyStyles: { fillColor: PDF.bg, textColor: PDF.sub, fontSize: 9 },
       alternateRowStyles: { fillColor: "#121216" },
       styles: { lineColor: [255, 255, 255, 6], lineWidth: 0.2 },
-      didParseCell: (hook: any) => {
+      didParseCell: (hook) => {
         if (hook.section === "body" && hook.column.index === 1) {
           const s = String(hook.cell.raw);
           hook.cell.styles.textColor =
@@ -522,7 +522,7 @@ export async function downloadRiskReportPDF(
       bodyStyles: { fillColor: C.bg, textColor: C.sub, fontSize: 9 }, alternateRowStyles: { fillColor: "#121216" },
       styles: { lineColor: [255,255,255,6], lineWidth: 0.2 },
     });
-    y = (doc as any).lastAutoTable.finalY + 10;
+    y = (doc as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
   }
 
   if (readiness) { H("Launch Readiness"); L("State", readiness.state);
