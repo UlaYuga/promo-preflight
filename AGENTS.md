@@ -27,7 +27,9 @@
 - **Tailwind CSS 3.4** + `tailwindcss-animate`
 - **Zod** — валидация всех внешних границ
 - **PostgreSQL** (pg, Railway-ready)
+- **Drizzle ORM** — type-safe SQL access
 - **Anthropic SDK** — AI-ассистирование (опционально, есть mock-режим)
+- **Vitest** — unit + integration тесты
 - **YAML** — rules/rules.yaml, config/owners.yaml
 - **Lucide React** — иконки
 - **driver.js** — desktop product tour
@@ -36,12 +38,46 @@
 
 ```
 app/                  Next.js App Router
-  app/intake/         Campaign bundle intake form
-  app/risk-report/    Structured check results
-  app/readiness/      Launch readiness board
-  app/rules/          Rules artifact viewer
+  (app)/              Route group
+    intake/           Campaign bundle intake form
+    risk-report/      Structured check results
+    readiness/        Launch readiness board
+    rules/            Rules artifact viewer
+    campaigns/        Campaign workspace & version history
+    evidence/         Evidence viewer
+    handoff/          Launch handoff preview
+    owners/           Owner matrix
+    runs/[id]         Run detail view
+    status/           System status
+    api/              API contract page
+  api/v1/*            REST route handlers
+  layout.tsx          Root layout
+  page.tsx            Welcome page
+  robots.ts           Robots disallow all
+api/                  Shared API utilities (v1 helpers)
+domain/               Domain layer (zero external deps)
+  model/              Campaign, Run, Blocker, Owner
+  vo/                 Amount, Url, Locale (branded types)
+  service/            Pure domain services
+  event/              PreflightEvent sealed union
+  exception/          PreflightException hierarchy
+application/          Application layer (ports, use cases, CQRS)
+  bus/                In-process Bus + HandlerRegistry
+  command/            Command types
+  query/              Query types
+  usecase/            RunChecksUseCase, VersionDiff
+  port/               Repository / publisher interfaces
+infrastructure/       Infrastructure layer (implements ports)
+  persistence/        PgRunRepository (Drizzle + Postgres)
+  telegram/           TelegramAdapter
+  outbox/             OutboxEventPublisher + Worker
+  checks/             ICheck implementations (runtime policies)
+  handler/            Command/query handler implementations
+  db/                 Drizzle client + connection
+  registry/           DI registry
+  audit/              Audit log adapter
 components/           Shared UI components
-lib/
+lib/                  LEGACY — не расширять, мигрируется в domain/
   checks/             Offline deterministic check engine (8 checks)
   ai/                 AI-assisted extraction (Anthropic SDK)
   rules/              YAML artifact loader + validation
@@ -53,13 +89,17 @@ lib/
   rate-limit.ts       In-memory rate limiter
   input-limit.ts      Input size validation
   export.ts           Markdown/Slack export
-rules/
-  rules.yaml          Versioned documentation artifact
+rules/                YAML rule artifacts
+  rules.yaml          Documentation/catalog metadata
+  forbidden-phrases-by-region.yaml     Runtime: jurisdictional risk
+  payment-methods-by-region.yaml       Runtime: payment compatibility
+  crypto-disclosure-rules.yaml         Runtime: crypto disclosure
 config/
   owners.yaml         Workspace owner names
 db/
   schema.sql          Postgres schema
   seed.sql            Seed data
+  migrations/         Drizzle versioned migrations
 locales/
   en.json             English translations
   ru.json             Russian translations
@@ -67,6 +107,9 @@ schemas/
   index.ts            Zod contracts for all product types
   worked-examples.ts  EX01–EX11 synthetic test bundles
   fixtures.ts         Offline sample bundle
+scripts/              CLI utility and demo scripts
+bin/                  CLI entry points (preflight-check.ts)
+docs/                 Documentation + ADRs
 ```
 
 ## Tailwind CSS — кастомная палитра
@@ -82,11 +125,11 @@ schemas/
 | `text-foreground` | `#e4e4e5` | Основной текст |
 | `text-subtle` | `#9e9fa0` | Вторичный текст |
 | `text-muted` | `#5f6060` | Третичный текст |
-| `text-accent` | `#5f6dcd` | Акцентные элементы |
-| `bg-accent-muted` | `rgba(95,109,205,0.15)` | Акцентный фон |
-| `text-pass` | `#3dd68c` | Успех |
-| `text-warn` | `#e5a00d` | Предупреждение |
-| `text-fail` | `#e5534b` | Ошибка |
+| `text-accent` | `#c5ff3d` | Акцентные элементы (lime) |
+| `bg-accent-muted` | `rgba(95,109,205,0.15)` | Акцентный фон (blue) |
+| `text-pass` | `#7be17b` | Успех |
+| `text-warn` | `#ffb547` | Предупреждение |
+| `text-fail` | `#ff5d5d` | Ошибка |
 | `text-info` | `#4d9cf4` | Информация |
 
 Радиусы: `rounded-sm` (5px), `rounded` / `rounded-md` (8px), `rounded-lg` (10px), `rounded-xl` (14px), `rounded-2xl` (18px).
@@ -111,7 +154,7 @@ schemas/
 1. **Channel consistency** — copy vs offer value mismatch
 2. **Terms robustness** — max bet, wagering, cashout clauses
 3. **Offer math sanity** — математические противоречия
-4. **Jurisdictional risk** — risk phrases, missing RG wording
+4. **Jurisdictional risk signals** — risk phrases, missing RG wording
 5. **Localization QA** — locale/currency mismatch, ambiguous dates
 6. **Launch ownership** — approvers assigned and approved
 7. **Link QA** — URL validity, UTM params, domain consistency
@@ -121,15 +164,21 @@ schemas/
 
 ```bash
 npm run dev              # Dev server
-npm run build            # Production build
+npm run build            # Production build (next build + fix-build-output)
 npm run typecheck        # TypeScript strict
 npm run lint             # ESLint
+npm run test             # Vitest (unit + integration)
+npm run test:watch       # Vitest watch mode
 npm run schema:check     # Zod schema smoke
 npm run checks:mock      # Mock check runner
 npm run checks:run       # Full regression: EX01-EX11 + 9 cases
 npm run rules:check      # Validate rules/rules.yaml
-npm run i18n:check       # Validate translations
-npm run db:check         # Validate DB schema/seed
+npm run i18n:check       # Validate translations (EN ↔ RU)
+npm run owners:check     # Validate config/owners.yaml
+npm run versioning:check # Version diff smoke
+npm run ai:check         # AI module smoke test
+npm run db:check         # Validate DB schema/seed (требуется DATABASE_URL)
+npm run check            # CLI: cat campaign.json | npm run check
 ```
 
 ## Safety conventions

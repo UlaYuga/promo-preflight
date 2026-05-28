@@ -7,7 +7,7 @@ import { getPolicyRuleVersions } from '../../infrastructure/checks/runtimePolicy
 import { ok } from '../bus/types';
 import type { Result } from '../bus/types';
 import type { PreflightException } from '../../domain/exception/PreflightException';
-import { SystemException } from '../../domain/exception/PreflightException';
+import { SystemException, PreflightException as PreflightExceptionClass } from '../../domain/exception/PreflightException';
 
 export class RunChecksUseCase {
   constructor(
@@ -73,8 +73,8 @@ export class RunChecksUseCase {
 
       return ok(run);
     } catch (e) {
-      if (e instanceof Error && 'code' in e) {
-        return { ok: false, error: e as PreflightException };
+      if (e instanceof PreflightExceptionClass) {
+        return { ok: false, error: e };
       }
       return { ok: false, error: new SystemException(`RunChecks failed: ${e}`) };
     }

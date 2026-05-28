@@ -1,5 +1,5 @@
-import { SystemException } from '../../domain/exception/PreflightException';
-import type { PreflightException } from '../../domain/exception/PreflightException';
+import { SystemException, PreflightException } from '../../domain/exception/PreflightException';
+import type { PreflightException as PreflightExceptionType } from '../../domain/exception/PreflightException';
 import { HandlerRegistry } from './HandlerRegistry';
 import type { Command, Query, Result, HandlerContext } from './types';
 import { err } from './types';
@@ -10,13 +10,13 @@ export class Bus {
   async dispatch<R>(
     command: Command<R>,
     ctx: HandlerContext = {}
-  ): Promise<Result<R, PreflightException>> {
+  ): Promise<Result<R, PreflightExceptionType>> {
     try {
       const handler = this.registry.getCommandHandler(command.type);
-      return handler.execute(command, ctx) as Promise<Result<R, PreflightException>>;
+      return handler.execute(command, ctx) as Promise<Result<R, PreflightExceptionType>>;
     } catch (e) {
-      if (e instanceof Error && 'code' in e) {
-        return err(e as PreflightException);
+      if (e instanceof PreflightException) {
+        return err(e);
       }
       return err(new SystemException(`Unexpected error dispatching "${command.type}": ${e}`));
     }
