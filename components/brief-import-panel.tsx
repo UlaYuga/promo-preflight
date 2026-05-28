@@ -199,7 +199,7 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
   const extractedFields = result?.fields ?? [];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" data-tour="brief-import">
       {/* Heading */}
       <div>
         <h2 className="text-[32px] tracking-tighter2 text-foreground">
