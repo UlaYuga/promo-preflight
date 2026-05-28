@@ -22,11 +22,20 @@ export const productTourSteps: ProductTourStep[] = [
     align: "start"
   },
   {
+    selector: '[data-tour="brief-import"]',
+    route: "/app/intake",
+    title: "Import from a brief",
+    description:
+      "Paste a free‑text campaign brief so AI Import extracts candidate fields — campaign metadata, offer basics, terms, and channel copy — for review before running checks.",
+    side: "bottom",
+    align: "start"
+  },
+  {
     selector: '[data-tour="intake-sample"]',
     route: "/app/intake?examples=1",
-    title: "Load a sample case",
+    title: "Review and fill in details",
     description:
-      "Screen 02 / Campaign bundle opens with sample cases so the walkthrough starts from a realistic synthetic CRM review scenario.",
+      "Review the imported fields and fill in remaining details manually, or load a sample case. All fields remain editable before the check run.",
     side: "bottom",
     align: "start"
   },
@@ -58,6 +67,15 @@ export const productTourSteps: ProductTourStep[] = [
     align: "center"
   },
   {
+    selector: '[data-tour="readiness-board"]',
+    route: "/app/readiness",
+    title: "Check Launch Readiness",
+    description:
+      "Screen 05 / Launch Readiness shows the Go / No-Go board with blockers, dependencies, owner matrix, and the launch checklist so the team knows what stands between the current report and launch.",
+    side: "bottom",
+    align: "start"
+  },
+  {
     selector: '[data-tour="campaign-versioning"]',
     route: "/app/campaigns",
     title: "Open Campaigns",
@@ -81,6 +99,24 @@ export const productTourSteps: ProductTourStep[] = [
     title: "Prepare the handoff update",
     description:
       "Screen 04 / Handoff turns the saved report into a Slack-ready internal Promo/CRM Ops update for launch owners.",
+    side: "bottom",
+    align: "start"
+  },
+  {
+    selector: '[data-tour="rules-table"]',
+    route: "/app/rules",
+    title: "Browse the Rules library",
+    description:
+      "Screen 06 / Rules is a read-only reference catalog of all check stages, domain rules, severity levels, and suggested fixes that power the deterministic checks.",
+    side: "bottom",
+    align: "start"
+  },
+  {
+    selector: '[data-tour="owners-table"]',
+    route: "/app/owners",
+    title: "Review Owners",
+    description:
+      "Screen 07 / Owners shows workspace-level role assignments used in readiness and version views, with campaign-level overrides available from the Campaign detail screen.",
     side: "bottom",
     align: "start"
   },

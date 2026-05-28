@@ -163,7 +163,7 @@
     "eyebrow": "Guided tour",
     "takeTour": "Start guided tour",
     "restartTour": "Restart tour",
-    "continueFromStep": "Continue tour · {step} / 11",
+    "continueFromStep": "Continue tour · {step} / 14",
     "desktopOnly": "Tour works best on desktop.",
     "mobileDisabled": "Tour works best on desktop.",
     "mobileDisabledShort": "Desktop tour",
@@ -177,8 +177,12 @@
         "description": "Open the internal Promo Preflight workspace and launch the walkthrough from a synthetic demo flow."
       },
       {
-        "title": "Load a sample case",
-        "description": "Screen 02 / Campaign bundle opens with sample cases so the walkthrough starts from a realistic synthetic CRM review scenario."
+        "title": "Import from a brief",
+        "description": "Paste a free‑text campaign brief so AI Import extracts candidate fields — campaign metadata, offer basics, terms, and channel copy — for review before running checks."
+      },
+      {
+        "title": "Review and fill in details",
+        "description": "Review the imported fields and fill in remaining details manually, or load a sample case. All fields remain editable before the check run."
       },
       {
         "title": "Run the check",
@@ -193,6 +197,10 @@
         "description": "Save the current report as an internal review run before moving into Campaigns, version history, and handoff."
       },
       {
+        "title": "Check Launch Readiness",
+        "description": "Screen 05 / Launch Readiness shows the Go / No-Go board with blockers, dependencies, owner matrix, and the launch checklist so the team knows what stands between the current report and launch."
+      },
+      {
         "title": "Open Campaigns",
         "description": "Screen 01 / Campaigns shows saved runs, latest readiness state, and the path into version history for the same campaign."
       },
@@ -203,6 +211,14 @@
       {
         "title": "Prepare the handoff update",
         "description": "Screen 04 / Handoff turns the saved report into a Slack-ready internal Promo/CRM Ops update for launch owners."
+      },
+      {
+        "title": "Browse the Rules library",
+        "description": "Screen 06 / Rules is a read-only reference catalog of all check stages, domain rules, severity levels, and suggested fixes that power the deterministic checks."
+      },
+      {
+        "title": "Review Owners",
+        "description": "Screen 07 / Owners shows workspace-level role assignments used in readiness and version views, with campaign-level overrides available from the Campaign detail screen."
       },
       {
         "title": "Inspect System Status",
