@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   CircleDashed,
   Copy,
-  FileDown,
   FileText,
   MessageSquareText
 } from "lucide-react";
@@ -33,7 +32,6 @@ import {
   PROMO_PREFLIGHT_REPORT_KEY
 } from "@/lib/demo-storage";
 import { formatExportPayload } from "@/lib/export";
-import { downloadRiskReportPDF } from "@/lib/export-pdf";
 import {
   generateLaunchReadiness,
   type ReadinessInputOwner
@@ -437,10 +435,6 @@ function ExportControls({
     }
   }
 
-  async function handleDownloadPdf() {
-    await downloadRiskReportPDF(report, readiness ?? null);
-  }
-
   function handleSelectExportText() {
     exportTextRef.current?.focus();
     exportTextRef.current?.select();
@@ -484,14 +478,6 @@ function ExportControls({
         >
           <Copy className="h-3.5 w-3.5" aria-hidden="true" />
           {t("common.copy")}
-        </button>
-        <button
-          type="button"
-          onClick={handleDownloadPdf}
-          className="inline-flex items-center gap-1.5 rounded-sm border border-accent/40 bg-accent/10 px-2.5 py-1.5 text-[11px] font-medium text-accent transition hover:bg-accent/20"
-        >
-          <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
-          PDF
         </button>
       </div>
       <p

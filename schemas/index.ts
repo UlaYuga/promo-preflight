@@ -79,7 +79,7 @@ export const DependencyStatusSchema = z.enum([
   "not_required"
 ]);
 
-export const ExportFormatSchema = z.enum(["markdown", "slack", "pdf"]);
+export const ExportFormatSchema = z.enum(["markdown", "slack"]);
 
 export const CheckEvidenceSchema = z.object({
   field: z.string().min(1),
