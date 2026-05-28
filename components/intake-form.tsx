@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
   CircleAlert,
@@ -499,6 +500,8 @@ export function IntakeForm() {
   const [isRunning, setIsRunning] = useState(false);
   const [runStep, setRunStep] = useState(0);
 
+  const searchParams = useSearchParams();
+
   const checkLabels = useMemo(
     () =>
       CHECK_DEFINITIONS.filter((d) => d.id !== "launch_ownership")
@@ -510,10 +513,14 @@ export function IntakeForm() {
   );
 
   useEffect(() => {
-    if (window.location.search.includes("examples=1")) {
-      requestAnimationFrame(() => setShowExamples(true));
+    if (searchParams?.get("examples") === "1") {
+      setShowExamples(true);
+      setMode("manual");
+    } else {
+      setShowExamples(false);
+      setMode("import");
     }
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     let active = true;
