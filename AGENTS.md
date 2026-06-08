@@ -141,6 +141,18 @@ npm run db:check         # Validate DB schema/seed
 - `noindex` / `nofollow` on all pages
 - Rate limit: 20 req/min per IP
 
+## OMO Runtime Policies
+
+Runtime policies for OpenCode/OMO live in `.omo/`. Sisyphus must read and follow:
+
+- `.omo/sisyphus-autopilot.md`
+- `.omo/MODEL_ROUTING.md`
+- `.omo/PROFILE_MATRIX.md`
+- `.omo/GO_ONLY_EMERGENCY_MODE.md`
+- `.omo/VISUAL_PIPELINE_POLICY.md`
+
+These policies override generic behavior for model routing, visual workflow, Go-only mode, no CloseRouter, no Git, no Memory.
+
 ## Deployment
 
 - Railway via `railway.toml` (Nixpacks)

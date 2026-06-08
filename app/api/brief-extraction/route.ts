@@ -1,72 +1,88 @@
 import { NextRequest } from "next/server";
-import { BriefExtractionRequestSchema } from "../../../schemas/brief-extraction";
+import { z } from "zod";
 import {
-  MockBriefUnavailableError,
-  createMockBriefExtraction,
-  extractBriefWithClaude
-} from "../../../lib/ai/brief-extraction";
-import { getEnv } from "../../../lib/env";
-import { checkInputSize } from "../../../lib/input-limit";
+  BriefExtractionRequestSchema,
+  type BriefExtractionResult,
+} from "@/schemas/brief-extraction";
+import { extractBrief } from "@/lib/ai/brief-extraction";
 
-export const runtime = "nodejs";
+// ---------------------------------------------------------------------------
+// POST /api/brief-extraction
+//
+// Browser-demo helper route — NOT part of the persisted /api/v1/* contract.
+// Accepts free-text campaign brief, returns Zod-validated extraction.
+// Raw brief text is never stored. Response has Cache-Control: no-store.
+// ---------------------------------------------------------------------------
 
-const NO_STORE_HEADERS = {
-  "Cache-Control": "no-store"
-};
+const MAX_INPUT_CHARS = 20000;
 
-export async function POST(req: NextRequest): Promise<Response> {
-  let rawBody: unknown;
+export async function POST(request: NextRequest) {
+  // --- Parse & validate body ---
+  let body: unknown;
   try {
-    rawBody = (await req.json()) as unknown;
+    body = await request.json();
   } catch {
-    return errorResponse("Request body must be valid JSON.", 400);
-  }
-
-  const parsed = BriefExtractionRequestSchema.safeParse(rawBody);
-  if (!parsed.success) {
-    return errorResponse("Paste a brief of at least 20 characters before extraction.", 400);
-  }
-
-  const env = getEnv();
-  const inputSize = checkInputSize(parsed.data.rawBrief, env.MAX_INPUT_CHARS);
-  if (!inputSize.ok) {
-    return errorResponse(inputSize.message, 413);
-  }
-
-  if (env.USE_MOCK_AI) {
-    try {
-      return Response.json(createMockBriefExtraction(parsed.data.rawBrief), {
-        status: 200,
-        headers: NO_STORE_HEADERS
-      });
-    } catch (error) {
-      if (error instanceof MockBriefUnavailableError) {
-        return errorResponse(error.message, 422, "mock_sample_only");
-      }
-      throw error;
-    }
-  }
-
-  const extraction = await extractBriefWithClaude(parsed.data.rawBrief);
-  if (!extraction.ok) {
-    return errorResponse(
-      "AI extraction is unavailable. Check server model configuration and retry.",
-      503
+    return Response.json(
+      { error: "BAD_REQUEST", message: "Request body must be valid JSON." },
+      { status: 400 },
     );
   }
 
-  return Response.json(extraction.data, {
+  const parsed = BriefExtractionRequestSchema.safeParse(body);
+  if (!parsed.success) {
+    return Response.json(
+      {
+        error: "BAD_REQUEST",
+        message: formatZodIssues(parsed.error),
+      },
+      { status: 400 },
+    );
+  }
+
+  const { rawBrief } = parsed.data;
+
+  if (rawBrief.length > MAX_INPUT_CHARS) {
+    return Response.json(
+      {
+        error: "PAYLOAD_TOO_LARGE",
+        message: `Brief text exceeds ${MAX_INPUT_CHARS} characters.`,
+      },
+      { status: 413 },
+    );
+  }
+
+  // --- Extract ---
+  const outcome = await extractBrief({ rawBrief });
+
+  if (!outcome.ok) {
+    const status =
+      outcome.code === "mock_unavailable" ? 422 : 503;
+
+    return Response.json(
+      {
+        error: outcome.code.toUpperCase(),
+        message: outcome.message,
+      },
+      {
+        status,
+        headers: { "Cache-Control": "no-store" },
+      },
+    );
+  }
+
+  const body_response: BriefExtractionResult & { modelUsed: string } = {
+    ...outcome.result,
+    modelUsed: outcome.modelUsed,
+  };
+
+  return Response.json(body_response, {
     status: 200,
-    headers: NO_STORE_HEADERS
+    headers: { "Cache-Control": "no-store" },
   });
 }
 
-function errorResponse(error: string, status: number, code?: string) {
-  return Response.json(
-    { error, ...(code ? { code } : {}) },
-    {
-      status,
-      headers: NO_STORE_HEADERS
-    }
-  );
+function formatZodIssues(error: z.ZodError): string {
+  return error.issues
+    .map((i) => `${i.path.join(".")}: ${i.message}`)
+    .join("; ");
 }

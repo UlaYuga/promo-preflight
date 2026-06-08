@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { NextRequest } from "next/server";
-import { BriefExtractionResponseSchema } from "../../../schemas/brief-extraction";
-import { SAMPLE_BRIEF } from "../../../lib/ai/brief-extraction";
+import {
+  BRIEF_EXTRACTION_SAMPLE,
+  BriefExtractionResultSchema
+} from "../../../schemas/brief-extraction";
 import { POST } from "./route";
 
 function post(rawBrief: string) {
@@ -12,7 +14,15 @@ function post(rawBrief: string) {
   });
 }
 
-function restoreEnv(name: "USE_MOCK_AI" | "MAX_INPUT_CHARS", previous: string | undefined) {
+function rawPost(body: string) {
+  return new NextRequest("http://localhost/api/brief-extraction", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body
+  });
+}
+
+function restoreEnv(name: "USE_MOCK_AI", previous: string | undefined) {
   if (previous === undefined) {
     delete process.env[name];
   } else {
@@ -21,32 +31,41 @@ function restoreEnv(name: "USE_MOCK_AI" | "MAX_INPUT_CHARS", previous: string | 
 }
 
 describe("POST /api/brief-extraction", () => {
+  it("rejects malformed JSON before extraction", async () => {
+    const response = await POST(rawPost("{not-json"));
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      error: "BAD_REQUEST",
+      message: "Request body must be valid JSON."
+    });
+  });
+
   it("returns a no-store candidate review for the synthetic mock brief", async () => {
     const previous = process.env.USE_MOCK_AI;
     process.env.USE_MOCK_AI = "true";
 
     try {
-      const response = await POST(post(SAMPLE_BRIEF));
+      const response = await POST(post(BRIEF_EXTRACTION_SAMPLE));
       expect(response.status).toBe(200);
       expect(response.headers.get("Cache-Control")).toBe("no-store");
-      const payload = BriefExtractionResponseSchema.parse(await response.json());
-      expect(payload.mode).toBe("mock");
-      expect(payload.candidate.metadata.campaignName).toBe("Friday BR Welcome");
+
+      const rawPayload = await response.json();
+      const payload = BriefExtractionResultSchema.parse(rawPayload);
+      expect(rawPayload.modelUsed).toBe("mock");
+      expect(payload.candidate.campaignName).toBe("BR Welcome Q2 2026");
     } finally {
       restoreEnv("USE_MOCK_AI", previous);
     }
   });
 
   it("rejects an oversized raw brief before extraction", async () => {
-    const previous = process.env.MAX_INPUT_CHARS;
-    process.env.MAX_INPUT_CHARS = "20";
+    const response = await POST(post("A".repeat(20001)));
 
-    try {
-      const response = await POST(post("A".repeat(30)));
-      expect(response.status).toBe(413);
-    } finally {
-      restoreEnv("MAX_INPUT_CHARS", previous);
-    }
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual(
+      expect.objectContaining({ error: "BAD_REQUEST" })
+    );
   });
 
   it("explains that arbitrary extraction is unavailable in mock mode", async () => {
@@ -57,7 +76,10 @@ describe("POST /api/brief-extraction", () => {
       const response = await POST(post("A custom free-form brief long enough to submit."));
       expect(response.status).toBe(422);
       await expect(response.json()).resolves.toEqual(
-        expect.objectContaining({ error: expect.stringMatching(/sample brief/i) })
+        expect.objectContaining({
+          error: "MOCK_UNAVAILABLE",
+          message: expect.stringMatching(/sample brief/i)
+        })
       );
     } finally {
       restoreEnv("USE_MOCK_AI", previous);

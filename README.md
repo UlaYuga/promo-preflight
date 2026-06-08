@@ -1,8 +1,8 @@
 # Promo Preflight
 
-*Deterministic pre-launch workflow checks for campaign bundles. Built by a PM over a weekend with Claude Code.*
+*Deterministic pre-launch workflow checks for campaign bundles — a repeatable gate for promo, compliance, legal, and CRM teams before launch.*
 
-*Portfolio demonstration over synthetic campaign scenarios and versioned policy/rule artifacts.*
+*Sample rules and campaign scenarios are synthetic. Policy artifacts must be reviewed by qualified compliance and legal owners before production use.*
 
 [![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6)](https://www.typescriptlang.org/) [![Tests](https://img.shields.io/badge/tests-passing-green)](https://github.com/UlaYuga/promo-preflight/actions) [![CI](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml/badge.svg)](https://github.com/UlaYuga/promo-preflight/actions/workflows/ci.yml)
 
@@ -30,7 +30,7 @@ Promo Preflight runs 8 deterministic preflight checks against a campaign bundle,
 
 Promo Preflight exposes two deliberate surfaces:
 
-- **Interactive browser demo** — a guided workflow over synthetic sample data. An AI Import mode turns a pasted synthetic brief into candidate fields for human confirmation, then the existing deterministic checks produce the report. Structured drafts, reports, campaign versions, and tour state remain in that browser's `localStorage`; raw imported text is not stored by the demo endpoint.
+- **Interactive browser demo** — a guided workflow over synthetic sample data. An AI Import mode turns a pasted synthetic brief into candidate fields for human confirmation, then the existing deterministic checks produce the report. Drafts, reports, campaign versions, and tour state remain in that browser's `localStorage`; the demo does not claim durable server persistence.
 - **Protected REST API persistence contract** — `/api/v1/*` accepts authenticated integration requests, persists API runs and policy provenance to Postgres, and supports audit/outbox records.
 
 The browser demo never sends `PREFLIGHT_API_KEY` and does not submit an authenticated API run. `POST /api/brief-extraction` is a separate non-persisted, rate-limited demo helper: it uses a disclosed synthetic mock by default or optional live AI when configured. Use an authenticated API client or the documented `curl` path to exercise the persisted backend contract.
@@ -152,8 +152,6 @@ curl -X POST http://localhost:3000/api/v1/runs \
 
 See [docs/CONFIGURATION.md](./docs/CONFIGURATION.md) for the full environment variable reference.
 
-### Railway deploy lifecycle
-
 Railway Docker deployments run `node db/migrate.mjs` from the final application image as the `[deploy].preDeployCommand`. The command reads Drizzle's existing `db/migrations/meta/_journal.json` and SQL artifacts, and exits non-zero on failure, preventing `node server.js` from starting. Repeated deploys skip migrations already recorded in `drizzle.__drizzle_migrations`. At runtime, `instrumentation.node.ts` starts only the in-process outbox worker; `/api/ready` reads database connectivity and required-table status without applying migrations.
 
 ### 2. Drop into your CI (npm package + CLI)
@@ -166,9 +164,9 @@ npm run check -- --file ./campaign.json --format human
 
 Exit codes: `0` on GO, `1` on WARN, `2` on BLOCK, `3` on invalid JSON/schema, `4` on internal failure. Use as a build gate in any CI pipeline.
 
-### 3. Managed SaaS
+### 3. Integrate via REST API
 
-Coming soon. [Email for early access](mailto:alex@marlerino.group).
+Authenticated clients call `/api/v1/runs` with a `CampaignBundle`, receive a `GO` / `WARN` / `BLOCK` verdict, and get Telegram alerts through the outbox worker. See [docs/API.md](./docs/API.md) for the full contract and [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md) for Telegram setup.
 
 ## Tech stack
 
@@ -249,5 +247,6 @@ See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for the original road
 
 Issues and PRs welcome. Apache 2.0.
 
-Built by Alexander Ulanov — PM with 6+ years in digital production, e-commerce, and TV.
+Built by Alexander Ulanov — PM with 6+ years in digital production, e-commerce, and TV. The initial v1.0 was built over a weekend with AI-assisted development (Claude Code) as a proof of delivery speed.
+
 [github.com/UlaYuga](https://github.com/UlaYuga)

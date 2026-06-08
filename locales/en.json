@@ -954,5 +954,38 @@
       "blocked": "Blocked",
       "not_required": "Not required"
     }
+  },
+  "briefImport": {
+    "eyebrow": "AI Import",
+    "title": "Import from brief",
+    "subtitle": "Paste a free-text campaign brief or upload a file. AI extracts candidate fields for your review before deterministic checks run.",
+    "trustStatement": "AI extracts candidate fields. Versioned rules determine the verdict.",
+    "modeManual": "Fill manually",
+    "modeImport": "Import from brief",
+    "textareaLabel": "Campaign brief",
+    "placeholder": "Paste your campaign brief here. Include offer details, channel copy, links, owner assignments, payment methods, T&C text, GEO, locale, currency — anything relevant.",
+    "loadSample": "Load sample",
+    "extract": "Extract candidate fields",
+    "extracting": "Extracting…",
+    "confirmAndRun": "Confirm and run deterministic checks",
+    "back": "Back to manual entry",
+    "fieldsApplied": "AI-extracted fields applied. Review and complete missing fields, then run checks.",
+    "errorTooShort": "Brief is too short. Paste at least 10 characters of campaign text.",
+    "errorGeneric": "Extraction failed. Try again or switch to manual entry.",
+    "errorNetwork": "Network error. Check your connection and try again.",
+    "uploadDropzone": "Drop a .docx, .md, or .txt file here",
+    "uploadBrowse": "Browse files",
+    "uploadSupported": "Supports .docx, .md, .txt",
+    "uploadParsing": "Reading file…",
+    "uploadParseError": "Could not read file. Try pasting the text below.",
+    "orPaste": "or paste below",
+    "sections": {
+      "extracted": "Extracted",
+      "extractedHint": "Fields AI found in the brief with source snippets and confidence levels.",
+      "needsConfirmation": "Needs confirmation",
+      "needsConfirmationHint": "Fields AI found but is unsure about. Review carefully.",
+      "notProvided": "Not provided",
+      "notProvidedHint": "Fields not present in the brief. AI did not invent values for these."
+    }
   }
 }

@@ -1,353 +1,524 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRight, Bot, CheckCircle2, CircleAlert, LoaderCircle, Sparkles } from "lucide-react";
+import { useState, useRef, useCallback, type DragEvent } from "react";
 import {
-  BriefExtractionResponseSchema,
-  type BriefExtractionResponse,
-  type CampaignExtractionCandidate
-} from "@/schemas/brief-extraction";
-import { SAMPLE_BRIEF } from "@/lib/ai/brief-extraction-sample";
-import { useI18n, type TranslationKey } from "@/lib/i18n";
+  ArrowRight,
+  CheckCircle2,
+  CircleAlert,
+  FileText,
+  Loader2,
+  AlertTriangle,
+  Info,
+  Upload,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n, type TranslationKey } from "@/lib/i18n";
+import {
+  BRIEF_EXTRACTION_SAMPLE,
+  type BriefExtractionResult,
+  type ExtractionField,
+} from "@/schemas/brief-extraction";
 
-type BriefImportPanelProps = {
-  onConfirm: (candidate: CampaignExtractionCandidate) => void;
+// ---------------------------------------------------------------------------
+// Brief Import Panel
+//
+// Upload a .docx / .md / .txt file or paste a free-text campaign brief.
+// AI extracts candidate fields for human confirmation before deterministic checks.
+// ---------------------------------------------------------------------------
+
+type Phase = "idle" | "loading" | "review" | "error";
+
+type Props = {
+  onConfirm: (result: BriefExtractionResult) => void;
+  onCancel: () => void;
 };
 
-const REVIEW_FIELD_KEYS: Record<string, string> = {
-  "metadata.geo": "market",
-  "metadata.locale": "localeCurrency",
-  "offer.maxBonus": "offerMechanics",
-  "assets.email.body": "emailCopy",
-  paymentMethods: "paymentMethods",
-  "owners.legal.status": "legalApproval",
-  "metadata.launchDate": "launchDate",
-  "offer.maxCashout": "maxCashout"
-};
+const ALLOWED_EXTENSIONS = [".docx", ".md", ".txt"];
 
-const MOCK_VALUE_KEYS: Record<string, string> = {
-  "offer.maxBonus": "offerMechanics",
-  "assets.email.body": "emailCopy"
-};
+function getExtension(filename: string): string {
+  const dot = filename.lastIndexOf(".");
+  if (dot === -1) return "";
+  return filename.slice(dot).toLowerCase();
+}
 
-const MOCK_REASON_KEYS: Record<string, string> = {
-  "owners.legal.status": "legalApproval",
-  "metadata.launchDate": "launchDate",
-  "offer.maxCashout": "maxCashout"
-};
+function isAllowed(filename: string): boolean {
+  return ALLOWED_EXTENSIONS.includes(getExtension(filename));
+}
 
-export function BriefImportPanel({ onConfirm }: Readonly<BriefImportPanelProps>) {
+async function readDocxText(file: File): Promise<string> {
+  // Dynamic import of mammoth — browser-compatible
+  const mammoth = await import("mammoth");
+  const arrayBuf = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer: arrayBuf });
+  return result.value;
+}
+
+async function readTextFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve((reader.result as string) ?? "");
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsText(file);
+  });
+}
+
+async function parseFile(file: File): Promise<string> {
+  const ext = getExtension(file.name);
+  if (ext === ".docx") {
+    return readDocxText(file);
+  }
+  return readTextFile(file);
+}
+
+export function BriefImportPanel({ onConfirm, onCancel }: Props) {
   const { t } = useI18n();
-  const [rawBrief, setRawBrief] = useState("");
-  const [extraction, setExtraction] = useState<BriefExtractionResponse | null>(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState("");
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [result, setResult] = useState<BriefExtractionResult | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isParsing, setIsParsing] = useState(false);
+  const [parseError, setParseError] = useState("");
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleLoadSample() {
+    setText(BRIEF_EXTRACTION_SAMPLE);
+    setPhase("idle");
+    setErrorMessage("");
+    setParseError("");
+  }
+
+  const handleFile = useCallback(
+    async (file: File) => {
+      if (!isAllowed(file.name)) {
+        setParseError(t("briefImport.uploadParseError" as TranslationKey));
+        return;
+      }
+      setParseError("");
+      setIsParsing(true);
+      try {
+        const extracted = await parseFile(file);
+        setText(extracted);
+        setPhase("idle");
+        setErrorMessage("");
+      } catch {
+        setParseError(t("briefImport.uploadParseError" as TranslationKey));
+      } finally {
+        setIsParsing(false);
+      }
+    },
+    [t],
+  );
+
+  const onDrop = useCallback(
+    (e: DragEvent) => {
+      e.preventDefault();
+      setIsDragOver(false);
+      const file = e.dataTransfer.files?.[0];
+      if (file) void handleFile(file);
+    },
+    [handleFile],
+  );
+
+  const onDragOver = useCallback((e: DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const onDragLeave = useCallback((e: DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
+  const onFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) void handleFile(file);
+      // Reset so the same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    },
+    [handleFile],
+  );
 
   async function handleExtract() {
-    if (rawBrief.trim().length < 20) {
-      setError(t("intake.briefImport.shortBrief"));
+    const trimmed = text.trim();
+    if (trimmed.length < 10) {
+      setErrorMessage(t("briefImport.errorTooShort" as TranslationKey));
+      setPhase("error");
       return;
     }
 
-    setLoading(true);
-    setError("");
-    setExtraction(null);
+    setPhase("loading");
+    setErrorMessage("");
 
     try {
       const response = await fetch("/api/brief-extraction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rawBrief })
+        body: JSON.stringify({ rawBrief: trimmed }),
       });
-      const payload = (await response.json()) as unknown;
+
+      const data = await response.json();
 
       if (!response.ok) {
-        const message =
-          payload &&
-          typeof payload === "object" &&
-          "code" in payload &&
-          payload.code === "mock_sample_only"
-            ? t("intake.briefImport.mockOnly")
-            : payload && typeof payload === "object" && "error" in payload
-            ? String(payload.error)
-            : t("intake.briefImport.extractionFailed");
-        setError(message);
+        setErrorMessage(
+          data.message ?? t("briefImport.errorGeneric" as TranslationKey),
+        );
+        setPhase("error");
         return;
       }
 
-      const parsed = BriefExtractionResponseSchema.safeParse(payload);
-      if (!parsed.success) {
-        setError(t("intake.briefImport.invalidResponse"));
-        return;
-      }
-
-      setExtraction(parsed.data);
+      setResult(data as BriefExtractionResult);
+      setPhase("review");
     } catch {
-      setError(t("intake.briefImport.extractionFailed"));
-    } finally {
-      setLoading(false);
+      setErrorMessage(t("briefImport.errorNetwork" as TranslationKey));
+      setPhase("error");
     }
   }
 
-  function handleLoadSample() {
-    setRawBrief(SAMPLE_BRIEF);
-    setExtraction(null);
-    setError("");
+  function handleConfirm() {
+    if (result) {
+      onConfirm(result);
+    }
   }
 
-  return (
-    <section
-      aria-label={t("intake.briefImport.title")}
-      className="mb-4 overflow-hidden rounded border border-accent/20 bg-surface/60"
-    >
-      <header className="hairline-b flex flex-wrap items-start justify-between gap-4 p-4">
-        <div className="flex items-start gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-accent/30 bg-accent/10 text-accent">
-            <Bot className="h-4 w-4" aria-hidden="true" />
-          </span>
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">
-              {t("intake.briefImport.eyebrow")}
-            </p>
-            <h3 className="mt-1 text-[15px] font-semibold text-foreground">
-              {t("intake.briefImport.title")}
-            </h3>
-            <p className="mt-1 max-w-[64ch] text-sm leading-6 text-muted">
-              {t("intake.briefImport.promise")}
-            </p>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={handleLoadSample}
-          className="rounded border border-accent/30 bg-accent/10 px-3 py-2 text-xs font-medium text-accent transition hover:bg-accent/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-        >
-          {t("intake.briefImport.loadSample")}
-        </button>
-      </header>
+  const needsConfirm = result?.needsConfirmation ?? [];
+  const notProvided = result?.notProvided ?? [];
+  const extractedFields = result?.fields ?? [];
 
-      <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.92fr)]">
-        <div>
-          <label className="block">
-            <span className="text-xs font-medium text-subtle">
-              {t("intake.briefImport.rawBrief")}
-            </span>
-            <textarea
-              name="rawBrief"
-              autoComplete="off"
-              value={rawBrief}
-              onChange={(event) => setRawBrief(event.target.value)}
-              rows={14}
-              placeholder={t("intake.briefImport.placeholder")}
-              className="mt-2 block w-full resize-y rounded border border-white/[0.07] bg-background px-3 py-3 text-sm leading-6 text-foreground transition placeholder:text-muted/60 focus-visible:border-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20"
+  return (
+    <div className="space-y-5">
+      {/* Heading */}
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+          {t("briefImport.eyebrow" as TranslationKey)}
+        </p>
+        <h2 className="mt-3 text-[32px] tracking-tighter2 text-foreground">
+          {t("briefImport.title" as TranslationKey)}
+        </h2>
+        <p className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.55] text-subtle">
+          {t("briefImport.subtitle" as TranslationKey)}
+        </p>
+      </div>
+
+      {/* Trust statement */}
+      <div className="flex items-start gap-3 rounded border border-accent/20 bg-accent-muted px-4 py-3">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+        <p className="text-[13px] leading-5 text-foreground/80">
+          {t("briefImport.trustStatement" as TranslationKey)}
+        </p>
+      </div>
+
+      {/* Textarea + file upload — shown in idle and error phases */}
+      {phase !== "review" && (
+        <div className="space-y-3">
+          {/* File upload drop zone */}
+          <div
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onClick={() => fileInputRef.current?.click()}
+            className={cn(
+              "relative cursor-pointer rounded-lg border-2 border-dashed px-6 py-5 text-center transition-colors",
+              isDragOver
+                ? "border-accent/60 bg-accent/10"
+                : "border-white/[0.08] bg-surface/30 hover:border-white/[0.15] hover:bg-surface/50",
+            )}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={ALLOWED_EXTENSIONS.join(",")}
+              onChange={onFileInputChange}
+              className="sr-only"
+              aria-label={t("briefImport.uploadBrowse" as TranslationKey)}
             />
-          </label>
-          <div className="mt-3 flex flex-wrap items-center gap-3">
+            {isParsing ? (
+              <div className="flex flex-col items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin text-accent" aria-hidden="true" />
+                <span className="text-sm text-subtle">
+                  {t("briefImport.uploadParsing" as TranslationKey)}
+                </span>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-1.5">
+                <Upload className="h-5 w-5 text-muted" aria-hidden="true" />
+                <span className="text-sm text-subtle">
+                  {t("briefImport.uploadDropzone" as TranslationKey)}
+                </span>
+                <span className="text-xs text-muted">
+                  {t("briefImport.uploadSupported" as TranslationKey)}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {parseError && (
+            <div className="flex items-start gap-2 rounded border border-fail/30 bg-fail/10 px-4 py-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-fail" aria-hidden="true" />
+              <p className="text-sm text-fail">{parseError}</p>
+            </div>
+          )}
+
+          {/* Divider */}
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/[0.06]" />
+            <span className="text-xs text-muted">
+              {t("briefImport.orPaste" as TranslationKey)}
+            </span>
+            <div className="h-px flex-1 bg-white/[0.06]" />
+          </div>
+
+          {/* Label + load sample */}
+          <div className="flex items-center justify-between gap-3">
+            <label
+              htmlFor="brief-import-textarea"
+              className="text-xs font-medium text-subtle"
+            >
+              {t("briefImport.textareaLabel" as TranslationKey)}
+            </label>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
+                className="text-xs font-medium text-accent/70 hover:text-accent transition-colors"
+              >
+                {t("briefImport.uploadBrowse" as TranslationKey)}
+              </button>
+              <button
+                type="button"
+                onClick={handleLoadSample}
+                className="text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+              >
+                {t("briefImport.loadSample" as TranslationKey)}
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="brief-import-textarea"
+            value={text}
+            onChange={(e) => {
+              setText(e.target.value);
+              if (phase === "error") setPhase("idle");
+            }}
+            rows={14}
+            maxLength={20000}
+            placeholder={t("briefImport.placeholder" as TranslationKey)}
+            className="w-full rounded border border-white/[0.07] bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted/60 focus:border-accent/60 focus:ring-2 focus:ring-accent/15 resize-y leading-6 font-mono"
+          />
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs text-muted">
+              {text.length}/20000
+            </span>
             <button
               type="button"
-              disabled={loading}
+              disabled={phase === "loading" || text.trim().length < 10}
               onClick={handleExtract}
               className={cn(
-                "inline-flex items-center gap-2 rounded border px-4 py-2.5 text-sm font-medium transition",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
-                loading
-                  ? "cursor-wait border-white/[0.07] bg-background text-muted"
-                  : "border-accent/50 bg-accent/15 text-accent hover:bg-accent/25"
+                "inline-flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition",
+                phase === "loading" || text.trim().length < 10
+                  ? "cursor-not-allowed border border-white/[0.07] bg-background text-muted/60"
+                  : "border border-accent/60 bg-accent/15 text-accent hover:bg-accent/25",
               )}
             >
-              {loading ? (
-                <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+              {phase === "loading" ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  {t("briefImport.extracting" as TranslationKey)}
+                </>
               ) : (
-                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                <>
+                  <FileText className="h-4 w-4" aria-hidden="true" />
+                  {t("briefImport.extract" as TranslationKey)}
+                </>
               )}
-              {loading
-                ? t("intake.briefImport.extracting")
-                : t("intake.briefImport.extract")}
             </button>
-            <span className="text-xs leading-5 text-muted">
-              {t("intake.briefImport.rawNotStored")}
-            </span>
           </div>
-          {error ? (
-            <p
-              role="alert"
-              className="mt-3 rounded border border-warn/30 bg-warn/10 px-3 py-2 text-sm leading-6 text-warn"
-            >
-              {error}
-            </p>
-          ) : null}
-        </div>
 
-        <div className="rounded border border-white/[0.07] bg-background p-3">
-          {extraction ? (
-            <ExtractionReview
-              extraction={extraction}
-              onConfirm={() => onConfirm(extraction.candidate)}
-            />
-          ) : (
-            <div className="flex min-h-[280px] flex-col justify-center px-3">
-              <p className="text-sm font-medium text-foreground">
-                {t("intake.briefImport.emptyTitle")}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-muted">
-                {t("intake.briefImport.emptyDescription")}
-              </p>
+          {phase === "error" && errorMessage && (
+            <div className="flex items-start gap-2 rounded border border-fail/30 bg-fail/10 px-4 py-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-fail" aria-hidden="true" />
+              <p className="text-sm text-fail">{errorMessage}</p>
             </div>
           )}
         </div>
-      </div>
-    </section>
-  );
-}
+      )}
 
-function ExtractionReview({
-  extraction,
-  onConfirm
-}: Readonly<{ extraction: BriefExtractionResponse; onConfirm: () => void }>) {
-  const { t } = useI18n();
+      {/* Review panel — shown after extraction */}
+      {phase === "review" && result && (
+        <div className="space-y-5">
+          {/* Extracted fields */}
+          <Section
+            icon={<CheckCircle2 className="h-4 w-4 text-pass" />}
+            title={t("briefImport.sections.extracted" as TranslationKey)}
+            subtitle={t("briefImport.sections.extractedHint" as TranslationKey)}
+            color="pass"
+          >
+            <div className="space-y-2">
+              {extractedFields.map((field, i) => (
+                <ExtractedFieldRow key={i} field={field} />
+              ))}
+            </div>
+          </Section>
 
-  return (
-    <div aria-live="polite">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h4 className="text-sm font-semibold text-foreground">
-          {t("intake.briefImport.reviewTitle")}
-        </h4>
-        <span className="rounded border border-info/25 bg-info/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-info">
-          {extraction.mode === "mock"
-            ? t("intake.briefImport.mockBadge")
-            : t("intake.briefImport.liveBadge")}
-        </span>
-      </div>
-      <p className="mb-3 text-xs leading-5 text-muted">
-        {t("intake.briefImport.reviewHelp")}
-      </p>
+          {/* Needs confirmation */}
+          {needsConfirm.length > 0 && (
+            <Section
+              icon={<CircleAlert className="h-4 w-4 text-warn" />}
+              title={t("briefImport.sections.needsConfirmation" as TranslationKey)}
+              subtitle={t("briefImport.sections.needsConfirmationHint" as TranslationKey)}
+              color="warn"
+            >
+              <ul className="space-y-1.5">
+                {needsConfirm.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-warn">
+                    <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-warn/60" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
 
-      <ReviewGroup
-        title={t("intake.briefImport.extracted")}
-        icon="pass"
-        rows={extraction.extracted.map((field) => ({
-          key: field.path,
-          title: localizedReviewFieldLabel(field.path, field.label, t),
-          body:
-            extraction.mode === "mock"
-              ? localizedMockValue(field.path, field.value, t)
-              : field.value,
-          detail: `"${field.evidence}" · ${t(
-            `intake.briefImport.confidence.${field.confidence}` as TranslationKey
-          )}`
-        }))}
-      />
-      <ReviewGroup
-        title={t("intake.briefImport.needsConfirmation")}
-        icon="warn"
-        rows={extraction.needsConfirmation.map((gap) => ({
-          key: gap.path,
-          title: localizedReviewFieldLabel(gap.path, gap.label, t),
-          body:
-            extraction.mode === "mock"
-              ? localizedMockReason(gap.path, gap.reason, t)
-              : gap.reason
-        }))}
-      />
-      <ReviewGroup
-        title={t("intake.briefImport.notProvided")}
-        icon="muted"
-        rows={extraction.notProvided.map((gap) => ({
-          key: gap.path,
-          title: localizedReviewFieldLabel(gap.path, gap.label, t),
-          body:
-            extraction.mode === "mock"
-              ? localizedMockReason(gap.path, gap.reason, t)
-              : gap.reason
-        }))}
-      />
+          {/* Not provided */}
+          {notProvided.length > 0 && (
+            <Section
+              icon={<Info className="h-4 w-4 text-muted" />}
+              title={t("briefImport.sections.notProvided" as TranslationKey)}
+              subtitle={t("briefImport.sections.notProvidedHint" as TranslationKey)}
+              color="muted"
+            >
+              <ul className="space-y-1.5">
+                {notProvided.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-muted">
+                    <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-muted/40" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
 
-      <button
-        type="button"
-        onClick={onConfirm}
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded border border-accent/50 bg-accent/15 px-3 py-2.5 text-sm font-medium text-accent transition hover:bg-accent/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-      >
-        {t("intake.briefImport.confirmAndRun")}
-        <ArrowRight className="h-4 w-4" aria-hidden="true" />
-      </button>
+          {/* Provider note */}
+          {result.providerNote && (
+            <div className="rounded border border-white/[0.07] bg-surface/40 px-4 py-3">
+              <p className="text-xs leading-5 text-muted">{result.providerNote}</p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="rounded border border-white/[0.07] bg-background px-4 py-2 text-sm text-subtle hover:text-foreground transition-colors"
+            >
+              {t("briefImport.back" as TranslationKey)}
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirm}
+              className="inline-flex items-center gap-2 rounded border border-accent/60 bg-accent/15 px-5 py-2.5 text-sm font-semibold text-accent hover:bg-accent/25 transition-colors"
+            >
+              {t("briefImport.confirmAndRun" as TranslationKey)}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function localizedReviewFieldLabel(
-  path: string,
-  fallback: string,
-  t: ReturnType<typeof useI18n>["t"]
-) {
-  const key = REVIEW_FIELD_KEYS[path];
-  return key
-    ? t(`intake.briefImport.fieldLabels.${key}` as TranslationKey)
-    : fallback;
-}
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
 
-function localizedMockValue(
-  path: string,
-  fallback: string,
-  t: ReturnType<typeof useI18n>["t"]
-) {
-  const key = MOCK_VALUE_KEYS[path];
-  return key
-    ? t(`intake.briefImport.mockValues.${key}` as TranslationKey)
-    : fallback;
-}
-
-function localizedMockReason(
-  path: string,
-  fallback: string,
-  t: ReturnType<typeof useI18n>["t"]
-) {
-  const key = MOCK_REASON_KEYS[path];
-  return key
-    ? t(`intake.briefImport.mockReasons.${key}` as TranslationKey)
-    : fallback;
-}
-
-type ReviewRow = { key: string; title: string; body: string; detail?: string };
-
-function ReviewGroup({
-  title,
+function Section({
   icon,
-  rows
-}: Readonly<{
+  title,
+  subtitle,
+  color,
+  children,
+}: {
+  icon: React.ReactNode;
   title: string;
-  icon: "pass" | "warn" | "muted";
-  rows: ReviewRow[];
-}>) {
-  if (rows.length === 0) {
-    return null;
-  }
+  subtitle: string;
+  color: "pass" | "warn" | "muted";
+  children: React.ReactNode;
+}) {
+  const borderColor =
+    color === "pass"
+      ? "border-pass/20"
+      : color === "warn"
+        ? "border-warn/20"
+        : "border-white/[0.07]";
+
+  const bgColor =
+    color === "pass"
+      ? "bg-pass/[0.04]"
+      : color === "warn"
+        ? "bg-warn/[0.04]"
+        : "bg-surface/40";
 
   return (
-    <section className="hairline-t py-3">
-      <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
-        {title}
-      </p>
-      <ul className="space-y-2">
-        {rows.map((row) => (
-          <li key={row.key} className="flex gap-2.5 text-xs leading-5">
-            {icon === "pass" ? (
-              <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-pass" aria-hidden="true" />
-            ) : icon === "warn" ? (
-              <CircleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warn" aria-hidden="true" />
-            ) : (
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
-            )}
-            <span className="min-w-0 break-words">
-              <span className="font-medium text-foreground/85">{row.title}: </span>
-              <span className="text-subtle">{row.body}</span>
-              {row.detail ? (
-                <span className="block text-muted">{row.detail}</span>
-              ) : null}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <div className={cn("rounded border p-4", borderColor, bgColor)}>
+      <div className="mb-3 flex items-center gap-2.5">
+        {icon}
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+          <p className="text-xs text-muted">{subtitle}</p>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function ExtractedFieldRow({ field }: { field: ExtractionField }) {
+  const confidenceColor =
+    field.confidence === "high"
+      ? "text-pass"
+      : field.confidence === "medium"
+        ? "text-warn"
+        : "text-muted";
+
+  const confidenceBg =
+    field.confidence === "high"
+      ? "bg-pass/10 border-pass/20"
+      : field.confidence === "medium"
+        ? "bg-warn/10 border-warn/20"
+        : "bg-muted/10 border-muted/20";
+
+  return (
+    <div className="rounded border border-white/[0.07] bg-background p-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-foreground/80">{field.label}</p>
+          <p className="mt-0.5 font-mono text-xs text-subtle break-all">
+            {field.value}
+          </p>
+          {field.sourceSnippet && (
+            <p className="mt-1.5 text-[11px] leading-4 text-muted/70 line-clamp-2">
+              <span className="text-muted/50">«</span>
+              {field.sourceSnippet}
+              <span className="text-muted/50">»</span>
+            </p>
+          )}
+        </div>
+        <span
+          className={cn(
+            "shrink-0 rounded border px-2 py-0.5 text-[10px] font-medium uppercase",
+            confidenceColor,
+            confidenceBg,
+          )}
+        >
+          {field.confidence}
+        </span>
+      </div>
+    </div>
   );
 }

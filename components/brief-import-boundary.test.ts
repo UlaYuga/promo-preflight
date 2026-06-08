@@ -20,9 +20,9 @@ describe("AI brief import UI boundary", () => {
 
     expect(panel).toContain('fetch("/api/brief-extraction"');
     expect(panel).not.toContain("/api/v1/");
-    expect(panel).toContain("BriefExtractionResponseSchema");
+    expect(panel).toContain("BriefExtractionResult");
     expect(intake).toContain("BriefImportPanel");
-    expect(intake).toContain("handleConfirmExtraction");
+    expect(intake).toContain("handleBriefConfirm");
     expect(report).toContain("const [hydrated, setHydrated]");
     expect(report).toContain("if (!hydrated)");
     expect(report).toContain('t("common.loading")');
