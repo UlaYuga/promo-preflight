@@ -713,12 +713,51 @@ select {
 }
 
 @media (max-width: 900px) {
+  .landing-a { zoom: 1; }
   .landing-a .frame { padding: 28px; }
   .landing-a .grid { grid-template-columns: 1fr; gap: 40px; padding: 28px 0; align-items: start; }
   .landing-a .display { font-size: clamp(64px, 14vw, 104px); }
   .landing-a .positioning { font-size: 30px; max-width: none; }
   .landing-a .brief-entry { grid-template-columns: 1fr; align-items: start; }
   .landing-a .brief-link { width: 100%; }
+}
+
+@media (max-width: 520px) {
+  .landing-a .frame {
+    padding: 22px;
+  }
+
+  .landing-a .display {
+    margin-top: 28px;
+    font-size: clamp(54px, 17vw, 68px);
+    line-height: 0.94;
+    letter-spacing: -0.02em;
+  }
+
+  .landing-a .positioning {
+    margin-top: 28px;
+    font-size: 25px;
+    line-height: 1.22;
+  }
+
+  .landing-a .cta-row {
+    gap: 12px;
+  }
+
+  .landing-a .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .landing-a .brief-entry {
+    max-width: 100%;
+  }
+
+  .landing-a .syslinks {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 }
 
 /* Cyrillic needs more open spacing than the compact English display treatment. */
