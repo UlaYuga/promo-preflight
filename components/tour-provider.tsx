@@ -56,10 +56,22 @@ export function TourProvider() {
     (stepIndex: number, state: TourState) => {
       const route = getTourStepRoute(stepIndex, state);
       const routePath = route.split("?")[0];
+      const routeSearch = route.includes("?") ? "?" + route.split("?")[1] : "";
 
       if (routePath && routePath !== pathname) {
         destroyDriver();
         router.push(route);
+        return true;
+      }
+
+      // Same base path but different query params — navigate to apply them
+      if (routeSearch && routeSearch !== window.location.search) {
+        destroyDriver();
+        router.push(route);
+        // Trigger startDriver after React re-renders with new params
+        window.setTimeout(() => {
+          window.dispatchEvent(new Event(PROMO_PREFLIGHT_TOUR_EVENT));
+        }, 200);
         return true;
       }
 

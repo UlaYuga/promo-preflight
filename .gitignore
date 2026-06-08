@@ -39,3 +39,7 @@ t20-translation-source.json
 
 # agent runtime metadata
 .omo/
+
+# temporary files
+tmp/
+*.pdf

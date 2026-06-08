@@ -181,6 +181,8 @@ export function RiskReport() {
     issueRows[0] ??
     null;
   const effectiveSelectedIssueId = selectedIssue?.issue.issueId ?? null;
+  const allClear =
+    report.counts.fail === 0 && report.counts.warn === 0 && report.counts.pass > 0;
   const readiness = useMemo(
     () =>
       LaunchReadinessSchema.parse(
@@ -241,11 +243,24 @@ export function RiskReport() {
       <RiskSummaryBar readiness={readiness} report={report} />
       <RiskNextSteps />
 
+      {allClear && (
+        <div className="rounded-lg border border-pass/30 bg-pass/[0.05] p-6 text-center sm:p-8">
+          <CheckCircle2 className="mx-auto h-10 w-10 text-pass" aria-hidden="true" />
+          <h2 className="mt-4 text-[18px] font-semibold text-pass sm:text-[22px]">
+            {t("riskReport.empty.allClear")}
+          </h2>
+          <p className="mt-1 text-[14px] text-pass/70">
+            {t("riskReport.empty.allClearHint")}
+          </p>
+        </div>
+      )}
+
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
         <IssueTable
           rows={issueRows}
           selectedIssueId={effectiveSelectedIssueId}
           onSelectIssue={setSelectedIssueId}
+          allClear={allClear}
         />
         <IssueDetailPanel row={selectedIssue} />
       </section>
@@ -530,11 +545,13 @@ function ExportControls({
 function IssueTable({
   rows,
   selectedIssueId,
-  onSelectIssue
+  onSelectIssue,
+  allClear
 }: Readonly<{
   rows: IssueRow[];
   selectedIssueId: string | null;
   onSelectIssue: (issueId: string) => void;
+  allClear?: boolean;
 }>) {
   const { t, language } = useI18n();
   return (
@@ -548,18 +565,32 @@ function IssueTable({
         </span>
       </div>
 
-      {rows.length === 0 ? (
+{rows.length === 0 ? (
         <div className="py-8 text-center">
-          <CheckCircle2
-            className="mx-auto h-5 w-5 text-pass"
-            aria-hidden="true"
-          />
-          <p className="mt-3 text-[14px] font-semibold text-foreground">
-            {t("riskReport.empty.noIssueSelected")}
-          </p>
-          <p className="mt-1 text-[12px] text-subtle">
-            {t("riskReport.empty.description")}
-          </p>
+          {allClear ? (
+            <>
+              <CheckCircle2 className="mx-auto h-8 w-8 text-pass" aria-hidden="true" />
+              <p className="mt-3 text-[15px] font-semibold text-foreground">
+            {t("riskReport.empty.allClear")}
+              </p>
+              <p className="mt-1 text-[13px] text-subtle">
+                {t("riskReport.empty.allClearHint")}
+              </p>
+            </>
+          ) : (
+            <>
+              <CheckCircle2
+                className="mx-auto h-5 w-5 text-pass"
+                aria-hidden="true"
+              />
+              <p className="mt-3 text-[14px] font-semibold text-foreground">
+                {t("riskReport.empty.noIssueSelected")}
+              </p>
+              <p className="mt-1 text-[12px] text-subtle">
+                {t("riskReport.empty.description")}
+              </p>
+            </>
+          )}
         </div>
       ) : (
         <div className="overflow-x-auto">

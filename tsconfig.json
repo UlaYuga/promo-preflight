@@ -28,8 +28,7 @@
       ],
       "@domain/*": ["./domain/*"],
       "@app/*": ["./application/*"],
-      "@infra/*": ["./infrastructure/*"],
-      "@api/*": ["./api/*"]
+      "@infra/*": ["./infrastructure/*"]
     }
   },
   "include": [
@@ -41,6 +40,7 @@
   ],
   "exclude": [
     "node_modules",
+    ".next",
     ".claude/**",
     ".codex/**",
     ".opencode/**"

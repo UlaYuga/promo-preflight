@@ -84,13 +84,13 @@ export function CommandPalette({ onClose }: Readonly<{ onClose: () => void }>) {
   }
 
   const grouped: { kind: string; items: PaletteItem[] }[] = [];
-  const seen = new Set<string>();
   items.forEach((it) => {
-    if (!seen.has(it.kind)) {
-      seen.add(it.kind);
-      grouped.push({ kind: it.kind, items: [] });
+    const existing = grouped.find((g) => g.kind === it.kind);
+    if (existing) {
+      existing.items.push(it);
+    } else {
+      grouped.push({ kind: it.kind, items: [it] });
     }
-    grouped.find((g) => g.kind === it.kind)!.items.push(it);
   });
 
   return (

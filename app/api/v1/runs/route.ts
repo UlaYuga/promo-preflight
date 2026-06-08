@@ -8,7 +8,7 @@ import { HandlerRegistry } from '../../../../application/bus/HandlerRegistry';
 import { handler as runChecksHandler } from '../../../../infrastructure/handler/checks/RunChecksHandler';
 import type { PreflightEvent } from '../../../../domain/event/PreflightEvent';
 import { CampaignBundleSchema } from '../../../../domain/model/Campaign';
-import { SystemException } from '../../../../domain/exception/PreflightException';
+import { SystemException, PreflightException } from '../../../../domain/exception/PreflightException';
 import {
   RunsPostBodySchema,
   hashBody,
@@ -80,13 +80,11 @@ export async function POST(req: NextRequest): Promise<Response> {
       return Response.json(replay.response, { status: 200 });
     }
   } catch (e) {
-    if (e instanceof Error && 'code' in e) {
-      return errorResponse(e as Parameters<typeof errorResponse>[0]);
+    if (e instanceof PreflightException) {
+      return errorResponse(e);
     }
     throw e;
   }
-
-  // Run checks via Bus
   const registry = new HandlerRegistry();
   registry.register(runChecksHandler);
   const bus = new Bus(registry);
@@ -135,8 +133,8 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     return Response.json(persisted.response, { status: 200 });
   } catch (e) {
-    if (e instanceof Error && 'code' in e) {
-      return errorResponse(e as Parameters<typeof errorResponse>[0]);
+    if (e instanceof PreflightException) {
+      return errorResponse(e);
     }
     throw e;
   }

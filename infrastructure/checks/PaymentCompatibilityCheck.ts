@@ -46,8 +46,7 @@ export const PaymentCompatibilityCheck: ICheck = {
           (regionRules.grey.includes(methodNorm) ||
             (regionRules.grey.includes('any_crypto') && isCrypto(methodNorm)));
 
-        if (isForbidden) {
-          const ruleRef = regionRules.rule_refs[0] ?? 'Jurisdictional payment regulation';
+          if (isForbidden) {
           blockers.push({
             ruleId: 'payment-compat-001',
             severity: 'block',
@@ -55,7 +54,6 @@ export const PaymentCompatibilityCheck: ICheck = {
             suggestion: buildForbiddenSuggestion(method, jur, regionRules),
             ownerHint: 'payments-lead',
           });
-          void ruleRef;
         } else if (isGrey) {
           blockers.push({
             ruleId: 'payment-compat-002',
