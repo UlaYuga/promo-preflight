@@ -1,5 +1,6 @@
 import {
   PROMO_PREFLIGHT_CAMPAIGNS_KEY,
+  PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT,
   PROMO_PREFLIGHT_VERSIONS_KEY
 } from "./demo-storage";
 import {
@@ -45,6 +46,7 @@ function writeCampaigns(campaigns: CampaignRecord[]): void {
     PROMO_PREFLIGHT_CAMPAIGNS_KEY,
     JSON.stringify(campaigns)
   );
+  window.dispatchEvent(new Event(PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT));
 }
 
 function readVersions(): CampaignVersion[] {
@@ -67,6 +69,7 @@ function writeVersions(versions: CampaignVersion[]): void {
     PROMO_PREFLIGHT_VERSIONS_KEY,
     JSON.stringify(versions)
   );
+  window.dispatchEvent(new Event(PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT));
 }
 
 export function listCampaigns(): CampaignRecord[] {

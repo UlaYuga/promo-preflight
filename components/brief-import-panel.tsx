@@ -307,14 +307,14 @@ export function BriefImportPanel({ onConfirm, onCancel }: Props) {
                   e.stopPropagation();
                   fileInputRef.current?.click();
                 }}
-                className="text-xs font-medium text-accent/70 hover:text-accent transition-colors"
+                className="inline-flex min-h-9 items-center rounded-sm px-2 text-sm font-medium text-accent/70 transition-colors hover:bg-accent/10 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
               >
                 {t("briefImport.uploadBrowse" as TranslationKey)}
               </button>
               <button
                 type="button"
                 onClick={handleLoadSample}
-                className="text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+                className="inline-flex min-h-9 items-center rounded-sm px-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10 hover:text-accent/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
               >
                 {t("briefImport.loadSample" as TranslationKey)}
               </button>

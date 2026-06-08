@@ -14,3 +14,6 @@ export const PROMO_PREFLIGHT_DEMO_STORAGE_KEYS = [
 
 export const PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT =
   "promo-preflight:demo-data-cleared";
+
+export const PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT =
+  "promo-preflight:demo-data-changed";

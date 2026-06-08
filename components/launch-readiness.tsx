@@ -5,7 +5,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   CircleDashed,
+  FileWarning,
+  GitBranch,
+  ListChecks,
   ShieldAlert,
+  Users,
   XCircle
 } from "lucide-react";
 import { EmptyState } from "@/components/ui-states";
@@ -149,22 +153,22 @@ export function LaunchReadiness({
   }
 
   return (
-    <div className="px-10 py-10 space-y-6">
+    <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-muted">
             {t("readiness.eyebrow")}
           </p>
-          <h2 className="display mt-3 text-[32px] tracking-tighter2 text-foreground">
+          <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-normal text-foreground sm:text-4xl">
             {t("readiness.title")}
-          </h2>
-          <p className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.55] text-subtle">
+          </h1>
+          <p className="mt-3 max-w-[58ch] text-base leading-7 text-subtle">
             {t("readiness.subtitle", { campaignName: readiness.campaignName })}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-sm hairline border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">
+          <span className="rounded border border-white/[0.08] bg-surface px-3 py-2 text-sm font-medium text-subtle">
             {source === "saved" ? t("readiness.savedReport") : t("readiness.offlineSample")}
           </span>
         </div>
@@ -208,7 +212,7 @@ function GoNoGoBanner({
     <section
       data-tour="readiness-board"
       className={cn(
-        "rounded-lg border p-5 bg-surface",
+        "rounded-lg border bg-surface p-5 sm:p-6",
         readiness.state === "READY" &&
           "border-pass/20 bg-pass/10",
         readiness.state === "READY_WITH_WARNINGS" &&
@@ -218,22 +222,24 @@ function GoNoGoBanner({
           "border-info/20 bg-info/10"
       )}
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-start gap-3">
-          <StateIcon state={readiness.state} />
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded border border-white/[0.08] bg-background/70">
+            <StateIcon state={readiness.state} />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-muted">
               {t("readiness.goNoGo")}
             </p>
-            <h3 className="mt-1.5 text-xl font-semibold text-foreground">
+            <h2 className="mt-1.5 break-words text-2xl font-semibold tracking-normal text-foreground sm:text-3xl">
               {formatReadinessState(readiness.state, t)}
-            </h3>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-foreground/70">
+            </h2>
+            <p className="mt-3 max-w-3xl text-base leading-7 text-foreground/75">
               {getStateDescription(readiness.state, t)}
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-2 text-center text-xs">
+        <div className="grid grid-cols-3 gap-2 text-center sm:min-w-[340px]">
           <BannerMetric label={t("readiness.metrics.fail")} value={String(report.counts.fail)} />
           <BannerMetric label={t("readiness.metrics.warn")} value={String(report.counts.warn)} />
           <BannerMetric
@@ -254,9 +260,13 @@ function BannerMetric({
   value: string;
 }>) {
   return (
-    <div className="min-w-20 rounded-lg border border-white/[0.05] bg-white/[0.03] px-3 py-2">
-      <p className="uppercase text-muted">{label}</p>
-      <p className="mt-1 text-lg font-semibold text-foreground">{value}</p>
+    <div className="rounded border border-white/[0.07] bg-background/70 px-3 py-3">
+      <p className="whitespace-nowrap text-[11px] font-semibold uppercase leading-4 tracking-normal text-muted sm:text-xs sm:tracking-[0.03em]">
+        {label}
+      </p>
+      <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">
+        {value}
+      </p>
     </div>
   );
 }
@@ -273,10 +283,10 @@ function OwnerMatrix({
   const { t, language } = useI18n();
   const ownerNotesMap: Record<string, string> = {
     "Resolve linked blockers before go/no-go review.": t("readiness.ownerNotes.resolveBlockers"),
-    "Review linked issues and confirm the launch handoff path.": t("readiness.ownerNotes.reviewIssues"),
+    "Review linked issues and confirm the final package path.": t("readiness.ownerNotes.reviewIssues"),
     "No linked readiness action.": t("readiness.ownerNotes.noAction"),
     "No action generated from the current Risk Report.": t("readiness.ownerNotes.noActionGenerated"),
-    "Confirm owner status before launch handoff.": t("readiness.ownerNotes.confirmStatus"),
+    "Confirm owner status before the final package.": t("readiness.ownerNotes.confirmStatus"),
   };
 
   // Build a map from issueId → truncated detectedIssue for readable display
@@ -294,77 +304,111 @@ function OwnerMatrix({
   }, [report]);
 
   return (
-    <section>
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.05] pb-3">
+    <section className="rounded-lg border border-white/[0.07] bg-surface/90 p-4 sm:p-5">
+      <div className="flex items-start gap-3 border-b border-white/[0.06] pb-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-white/[0.07] bg-background">
+          <Users className="h-4 w-4 text-accent" aria-hidden="true" />
+        </div>
         <div>
-          <h3 className="text-sm font-semibold text-foreground">
+          <h2 className="text-lg font-semibold tracking-normal text-foreground">
             {t("readiness.ownerMatrix.title")}
-          </h3>
-          <p className="mt-1 text-xs text-muted">
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-muted">
             {t("owners.tableSubtitle")}
           </p>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-[620px] w-full border-collapse text-left text-sm">
-          <thead className="text-[10px] uppercase tracking-wide text-muted">
-            <tr>
-              <th className="px-4 py-3 font-medium">{t("readiness.ownerMatrix.role")}</th>
-              <th className="px-4 py-3 font-medium">{t("readiness.ownerMatrix.owner")}</th>
-              <th className="px-4 py-3 font-medium">{t("readiness.ownerMatrix.status")}</th>
-              <th className="px-4 py-3 font-medium">{t("readiness.ownerMatrix.linkedIssues")}</th>
-              <th className="px-4 py-3 font-medium">{t("readiness.ownerMatrix.dueDate")}</th>
-              <th className="px-4 py-3 font-medium">{t("readiness.ownerMatrix.notes")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {owners.map((owner) => (
-              <tr
-                key={owner.role}
-                className="border-t border-white/[0.04] align-top"
-              >
-                <td className="px-4 py-4 font-medium text-foreground">
-                  {labelFor(OWNER_ROLE_DISPLAY, owner.role, language)}
-                </td>
-                <td className="px-4 py-4">
-                  <OwnerNameText
-                    assigned={
-                      resolveOwner({
-                        ownerRole: owner.role,
-                        workspaceOwners
-                      }).assigned
-                    }
-                    ownerName={owner.name ?? `${owner.role} (${t("common.notAssigned").toLowerCase()})`}
-                  />
-                </td>
-                <td className="px-4 py-4">
-                  <OwnerStatusBadge status={owner.status} />
-                </td>
-                <td className="px-4 py-4">
-                  {owner.linkedIssueIds.length > 0 ? (
-                    <ul className="max-w-[260px] space-y-1.5">
-                      {owner.linkedIssueIds.map((issueId) => (
-                        <li key={issueId} className="text-[12px] leading-[1.45] text-subtle">
-                          {issueTextMap.get(issueId) ?? issueId}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <span className="text-muted">{t("readiness.ownerMatrix.none")}</span>
-                  )}
-                </td>
-                <td className="px-4 py-4 text-foreground/70">
-                  {owner.dueDate ?? t("common.notRequired")}
-                </td>
-                <td className="max-w-[260px] px-4 py-4 leading-6 text-subtle">
+
+      <div className="mt-4 grid gap-3 lg:grid-cols-2 2xl:grid-cols-3">
+        {owners.map((owner) => {
+          const resolvedOwner = resolveOwner({
+            ownerRole: owner.role,
+            workspaceOwners
+          });
+          const linkedIssues = owner.linkedIssueIds.map(
+            (issueId) => issueTextMap.get(issueId) ?? issueId
+          );
+          const visibleIssues = linkedIssues.slice(0, 2);
+          const hiddenIssueCount = Math.max(linkedIssues.length - visibleIssues.length, 0);
+
+          return (
+            <article
+              key={owner.role}
+              className="min-w-0 rounded border border-white/[0.07] bg-background/75 p-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t("readiness.ownerMatrix.role")}
+                  </p>
+                  <h3 className="mt-1 text-lg font-semibold leading-6 text-foreground">
+                    {labelFor(OWNER_ROLE_DISPLAY, owner.role, language)}
+                  </h3>
+                </div>
+                <OwnerStatusBadge status={owner.status} />
+              </div>
+
+              <div className="mt-4 grid gap-3 text-sm">
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t("readiness.ownerMatrix.owner")}
+                  </p>
+                  <p className="mt-1 leading-6">
+                    <OwnerNameText
+                      assigned={resolvedOwner.assigned}
+                      ownerName={owner.name ?? `${owner.role} (${t("common.notAssigned").toLowerCase()})`}
+                    />
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+                      {t("readiness.ownerMatrix.dueDate")}
+                    </p>
+                    <p className="mt-1 leading-6 text-foreground/75">
+                      {owner.dueDate ?? t("common.notRequired")}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+                      {t("readiness.ownerMatrix.linkedIssues")}
+                    </p>
+                    <p className="mt-1 leading-6 text-foreground/75">
+                      {linkedIssues.length > 0
+                        ? String(linkedIssues.length)
+                        : t("readiness.ownerMatrix.none")}
+                    </p>
+                  </div>
+                </div>
+
+                {linkedIssues.length > 0 ? (
+                  <ul className="space-y-2">
+                    {visibleIssues.map((issueText, index) => (
+                      <li
+                        key={`${issueText}-${index}`}
+                        className="rounded border border-white/[0.06] bg-surface/80 px-3 py-2 text-sm leading-6 text-subtle"
+                      >
+                        {issueText}
+                      </li>
+                    ))}
+                    {hiddenIssueCount > 0 ? (
+                      <li className="text-sm font-medium text-muted">
+                        +{hiddenIssueCount}
+                      </li>
+                    ) : null}
+                  </ul>
+                ) : null}
+
+                <p className="rounded border border-white/[0.06] bg-surface/80 px-3 py-2 text-sm leading-6 text-subtle">
                   {owner.notes
                     ? (ownerNotesMap[owner.notes] ?? owner.notes)
                     : t("readiness.ownerMatrix.noNote")}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </p>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -379,12 +423,22 @@ function BlockersPanel({
 }>) {
   const { t } = useI18n();
   return (
-    <section>
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.05] pb-3">
-        <h3 className="text-sm font-semibold text-foreground">
-          {t("readiness.blockers.title")}
-        </h3>
-        <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs font-medium text-subtle">
+    <section className="rounded-lg border border-white/[0.07] bg-surface/90 p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-3 border-b border-white/[0.06] pb-4">
+        <div className="flex items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-white/[0.07] bg-background">
+            <FileWarning className="h-4 w-4 text-fail" aria-hidden="true" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold tracking-normal text-foreground">
+              {t("readiness.blockers.title")}
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-muted">
+              {t("readiness.blockers.emptyDescription")}
+            </p>
+          </div>
+        </div>
+        <span className="rounded-full border border-white/[0.07] bg-background px-2.5 py-1 text-sm font-semibold tabular-nums text-subtle">
           {blockers.length}
         </span>
       </div>
@@ -397,24 +451,24 @@ function BlockersPanel({
           />
         </div>
       ) : (
-        <div className="mt-3 space-y-3">
+        <div className="mt-4 space-y-3">
           {blockers.map((blocker) => (
             <article
               key={blocker.blockerId}
-              className="rounded-md border border-white/[0.05] bg-white/[0.02] p-3"
+              className="rounded border border-white/[0.07] bg-background/75 p-4"
             >
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-mono text-[11px] uppercase text-muted">
+                <div className="min-w-0">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
                     {blocker.sourceCheckId}
                   </p>
-                  <h4 className="mt-1 text-sm font-semibold leading-6 text-foreground">
+                  <h3 className="mt-1 text-base font-semibold leading-6 text-foreground">
                     {blocker.title}
-                  </h4>
+                  </h3>
                 </div>
                 <SeverityBadge severity={blocker.severity} />
               </div>
-              <dl className="mt-3 grid gap-2 text-xs">
+              <dl className="mt-4 grid gap-2 text-sm">
                 <OwnerMetric
                   ownerRole={blocker.ownerRole}
                   workspaceOwners={workspaceOwners}
@@ -442,9 +496,11 @@ function BlockerMetric({
   value: string;
 }>) {
   return (
-    <div className="border-b border-white/[0.05] py-2">
-      <dt className="text-[10px] uppercase tracking-wide text-muted">{label}</dt>
-      <dd className="mt-0.5 text-sm leading-5 text-foreground/80">{value}</dd>
+    <div className="border-b border-white/[0.05] py-2.5 last:border-b-0">
+      <dt className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+        {label}
+      </dt>
+      <dd className="mt-1 text-sm leading-6 text-foreground/80">{value}</dd>
     </div>
   );
 }
@@ -464,16 +520,18 @@ function OwnerMetric({
   return (
     <div
       className={cn(
-        "rounded border px-2 py-2",
+        "rounded border px-3 py-2.5",
         owner?.assigned === false
           ? "border-warn/20 bg-warn/10"
           : "border-white/[0.07] bg-surface"
       )}
     >
-      <dt className="uppercase text-muted">{t("readiness.ownerMatrix.owner")}</dt>
+      <dt className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+        {t("readiness.ownerMatrix.owner")}
+      </dt>
       <dd
         className={cn(
-          "mt-1 leading-5",
+          "mt-1 leading-6",
           owner?.assigned === false ? "text-warn" : "text-foreground/70"
         )}
       >
@@ -494,17 +552,22 @@ function DependenciesPanel({
 }>) {
   const { t } = useI18n();
   return (
-    <section>
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.05] pb-3">
-        <div>
-          <h3 className="text-sm font-semibold text-foreground">
-            {t("readiness.dependencies.title")}
-          </h3>
-          <p className="mt-1 text-xs text-muted">
-            {t("readiness.dependencies.emptyDescription")}
-          </p>
+    <section className="rounded-lg border border-white/[0.07] bg-surface/90 p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-3 border-b border-white/[0.06] pb-4">
+        <div className="flex items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-white/[0.07] bg-background">
+            <GitBranch className="h-4 w-4 text-info" aria-hidden="true" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold tracking-normal text-foreground">
+              {t("readiness.dependencies.title")}
+            </h2>
+            <p className="mt-1 text-sm leading-6 text-muted">
+              {t("readiness.dependencies.emptyDescription")}
+            </p>
+          </div>
         </div>
-        <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs font-medium text-subtle">
+        <span className="rounded-full border border-white/[0.07] bg-background px-2.5 py-1 text-sm font-semibold tabular-nums text-subtle">
           {dependencies.length}
         </span>
       </div>
@@ -517,47 +580,53 @@ function DependenciesPanel({
           />
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-[580px] w-full border-collapse text-left text-sm">
-            <thead className="text-[10px] uppercase tracking-wide text-muted">
-              <tr>
-                <th className="px-4 py-3 font-medium">{t("readiness.dependencies.dependency")}</th>
-                <th className="px-4 py-3 font-medium">{t("readiness.dependencies.dependsOn")}</th>
-                <th className="px-4 py-3 font-medium">{t("readiness.dependencies.owner")}</th>
-                <th className="px-4 py-3 font-medium">{t("readiness.dependencies.status")}</th>
-                <th className="px-4 py-3 font-medium">{t("readiness.dependencies.notes")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dependencies.map((dependency) => (
-                <tr
-                  key={dependency.dependencyId}
-                  className="border-t border-white/[0.04] align-top"
-                >
-                  <td className="max-w-[260px] px-4 py-4 font-medium leading-6 text-foreground">
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {dependencies.map((dependency) => (
+            <article
+              key={dependency.dependencyId}
+              className="rounded border border-white/[0.07] bg-background/75 p-4"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t("readiness.dependencies.dependency")}
+                  </p>
+                  <h3 className="mt-1 text-base font-semibold leading-6 text-foreground">
                     {dependency.dependency}
-                  </td>
-                  <td className="px-4 py-4 text-foreground/70">
+                  </h3>
+                </div>
+                <span className="w-fit rounded-full border border-white/[0.07] bg-surface px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.04em] text-subtle">
+                  {dependency.status}
+                </span>
+              </div>
+
+              <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                <div>
+                  <dt className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t("readiness.dependencies.dependsOn")}
+                  </dt>
+                  <dd className="mt-1 leading-6 text-foreground/75">
                     {dependency.dependsOn ?? t("readiness.dependencies.riskReport")}
-                  </td>
-                  <td className="px-4 py-4">
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
+                    {t("readiness.dependencies.owner")}
+                  </dt>
+                  <dd className="mt-1">
                     <OwnerNameCell
                       ownerRole={dependency.ownerRole}
                       workspaceOwners={workspaceOwners}
                     />
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold uppercase text-subtle">
-                      {dependency.status}
-                    </span>
-                  </td>
-                  <td className="max-w-[280px] px-4 py-4 leading-6 text-subtle">
-                    {dependency.notes ?? t("readiness.dependencies.ownerReviewRequired")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </dd>
+                </div>
+              </dl>
+
+              <p className="mt-4 rounded border border-white/[0.06] bg-surface/80 px-3 py-2 text-sm leading-6 text-subtle">
+                {dependency.notes ?? t("readiness.dependencies.ownerReviewRequired")}
+              </p>
+            </article>
+          ))}
         </div>
       )}
     </section>
@@ -581,7 +650,7 @@ function OwnerNameCell({
   return (
     <span
       className={cn(
-        "inline-flex rounded border px-2 py-1 text-xs font-semibold",
+        "inline-flex rounded border px-2.5 py-1.5 text-xs font-semibold leading-5",
         owner.assigned
           ? "border-white/[0.07] bg-background text-foreground/70"
           : "border-warn/20 bg-warn/10 text-warn"
@@ -622,11 +691,16 @@ function LaunchChecklist({
   const { t, language } = useI18n();
 
   return (
-    <section>
-      <h3 className="border-b border-white/[0.05] pb-3 text-sm font-semibold text-foreground">
-        {t("readiness.checklist.title")}
-      </h3>
-      <div className="space-y-0">
+    <section className="rounded-lg border border-white/[0.07] bg-surface/90 p-4 sm:p-5">
+      <div className="flex items-center gap-3 border-b border-white/[0.06] pb-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-white/[0.07] bg-background">
+          <ListChecks className="h-4 w-4 text-pass" aria-hidden="true" />
+        </div>
+        <h2 className="text-lg font-semibold tracking-normal text-foreground">
+          {t("readiness.checklist.title")}
+        </h2>
+      </div>
+      <div className="mt-2 space-y-1">
         {getRequiredChecklistItems().map((item) => {
           const checked = Boolean(checklist[item]);
           const label = checklistItemLabels[item]?.[language] ?? item;
@@ -634,22 +708,31 @@ function LaunchChecklist({
           return (
             <div
               key={item}
-              className="flex items-center justify-between gap-3 border-b border-white/[0.04] py-2 text-sm"
+              className="flex min-h-11 items-center justify-between gap-3 rounded px-2 py-2 text-sm transition-colors hover:bg-white/[0.03]"
             >
               <span className={checked ? "text-foreground/80" : "text-subtle"}>
                 {label}
               </span>
-              {checked ? (
-                <CheckCircle2
-                  className="h-4 w-4 shrink-0 text-pass"
-                  aria-hidden="true"
-                />
-              ) : (
-                <CircleDashed
-                  className="h-4 w-4 shrink-0 text-muted"
-                  aria-hidden="true"
-                />
-              )}
+              <span
+                className={cn(
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border",
+                  checked
+                    ? "border-pass/30 bg-pass/10 text-pass"
+                    : "border-white/[0.07] bg-background text-muted"
+                )}
+              >
+                {checked ? (
+                  <CheckCircle2
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <CircleDashed
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  />
+                )}
+              </span>
             </div>
           );
         })}
@@ -689,21 +772,21 @@ function InvalidSavedReportNotice({
 }
 
 function StateIcon({ state }: Readonly<{ state: ReadinessState }>) {
-  const className = "mt-1 h-6 w-6 shrink-0";
+  const className = "h-7 w-7 shrink-0";
 
   if (state === "READY") {
-    return <CheckCircle2 className={cn(className, "text-pass")} />;
+    return <CheckCircle2 className={cn(className, "text-pass")} aria-hidden="true" />;
   }
 
   if (state === "READY_WITH_WARNINGS") {
-    return <AlertTriangle className={cn(className, "text-warn")} />;
+    return <AlertTriangle className={cn(className, "text-warn")} aria-hidden="true" />;
   }
 
   if (state === "BLOCKED") {
-    return <XCircle className={cn(className, "text-fail")} />;
+    return <XCircle className={cn(className, "text-fail")} aria-hidden="true" />;
   }
 
-  return <ShieldAlert className={cn(className, "text-info")} />;
+  return <ShieldAlert className={cn(className, "text-info")} aria-hidden="true" />;
 }
 
 function OwnerStatusBadge({ status }: Readonly<{ status: OwnerStatus }>) {
@@ -711,7 +794,7 @@ function OwnerStatusBadge({ status }: Readonly<{ status: OwnerStatus }>) {
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold uppercase",
+        "inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold",
         status === "approved" && "border-pass/30 bg-pass/10 text-pass",
         status === "pending" && "border-warn/30 bg-warn/10 text-warn",
         status === "blocked" && "border-fail/30 bg-fail/10 text-fail",
@@ -732,7 +815,7 @@ function SeverityBadge({
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold",
+        "inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold",
         severity === "CRITICAL" && "border-fail/40 bg-fail/15 text-fail font-bold",
         severity === "HIGH" && "border-fail/30 bg-fail/10 text-fail",
         severity === "MEDIUM" && "border-warn/30 bg-warn/10 text-warn",

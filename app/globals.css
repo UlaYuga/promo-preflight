@@ -22,8 +22,10 @@ body {
   margin: 0;
   background: #070708;
   color: #ededee;
-  font-family: var(--font-inter-tight), "Inter Tight", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-sans), "Manrope", "Onest", "Golos Text", "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-feature-settings: "ss01", "cv11", "tnum";
+  letter-spacing: 0;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -163,13 +165,13 @@ select {
   }
 
   .display {
-    font-family: var(--font-inter-tight), "Inter Tight", ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: -0.045em;
-    font-weight: 500;
+    font-family: var(--font-sans), "Manrope", "Onest", ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.01em;
+    font-weight: 650;
   }
 
   .stack-tight {
-    line-height: 0.86;
+    line-height: 1.05;
   }
 
   .focus-ring:focus-visible {
@@ -234,12 +236,8 @@ select {
   overflow-x: hidden;
   background: transparent;
   color: var(--text);
-  font-size: 16px;
-  /* The ~1.6x scale read oversized at 100% browser zoom; this makes the
-     default render match the 0.8-zoom view that looked right. Scoped to
-     the landing only — other app screens are unaffected. */
-  zoom: 0.8;
-  font-family: var(--font-inter-tight), "Inter Tight", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  font-family: var(--font-sans), "Manrope", "Onest", "Golos Text", ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11", "tnum";
 }
 .landing-a .frame {
@@ -247,34 +245,34 @@ select {
   z-index: 1;
   min-height: 100%;
   width: 100%;
-  max-width: 1640px;
   margin: 0 auto;
   display: grid;
   grid-template-rows: auto 1fr;
-  padding: 40px 60px;
+  max-width: 1360px;
+  padding: 32px 48px;
 }
 .landing-a .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 18px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--hairline);
 }
 .landing-a .topbar-empty { min-height: 36px; }
 .landing-a .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 720px;
-  gap: 96px;
+  grid-template-columns: minmax(0, 1fr) 560px;
+  gap: 72px;
   align-items: center;
-  padding: 28px 0;
+  padding: 22px 0;
   min-height: 0;
 }
 .landing-a .lcol { min-width: 0; }
 .landing-a .display {
-  margin: 32px 0 0;
-  font-size: clamp(112px, 11vw, 184px);
-  line-height: 0.88;
-  letter-spacing: -0.045em;
+  margin: 22px 0 0;
+  font-size: clamp(88px, 8.8vw, 146px);
+  line-height: 0.91;
+  letter-spacing: -0.02em;
   font-weight: 500;
   display: flex;
   flex-direction: column;
@@ -286,11 +284,11 @@ select {
                0 0 18px color-mix(in oklab, var(--accent) 16%, transparent);
 }
 .landing-a .positioning {
-  margin: 36px 0 0;
-  max-width: 28ch;
-  font-size: 40px;
-  line-height: 1.18;
-  letter-spacing: -0.012em;
+  margin: 26px 0 0;
+  max-width: 30ch;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: 0;
   font-weight: 500;
   color: var(--text);
 }
@@ -303,20 +301,20 @@ select {
 }
 .landing-a .cta-row {
   display: flex;
-  gap: 18px;
-  margin-top: 44px;
+  gap: 14px;
+  margin-top: 32px;
   flex-wrap: wrap;
 }
 .landing-a .btn {
   display: inline-flex;
   align-items: center;
-  gap: 15px;
-  height: 72px;
-  padding: 0 34px;
-  border-radius: 12px;
-  font-size: 21px;
+  gap: 10px;
+  height: 58px;
+  padding: 0 26px;
+  border-radius: 10px;
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
   border: 1px solid transparent;
   transition: background 0.2s, border-color 0.2s, transform 0.2s, filter 0.2s;
 }
@@ -333,72 +331,17 @@ select {
   border-color: var(--hairline);
 }
 .landing-a .btn-ghost:hover { border-color: var(--hairline-2); background: rgba(255, 255, 255, 0.04); }
-.landing-a .brief-entry {
-  margin-top: 28px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 22px;
-  max-width: 760px;
-  padding: 20px 22px;
-  border: 1px solid color-mix(in oklab, var(--accent) 28%, var(--hairline));
-  border-radius: 10px;
-  background:
-    linear-gradient(135deg, color-mix(in oklab, var(--accent) 8%, transparent), transparent 52%),
-    rgba(255, 255, 255, 0.025);
-}
-.landing-a .brief-copy {
-  min-width: 0;
-}
-.landing-a .brief-kicker {
-  display: inline-flex;
-  align-items: center;
-  margin-bottom: 8px;
-  color: var(--accent);
-  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.landing-a .brief-entry p {
-  margin: 0;
-  color: var(--subtle);
-  font-size: 18px;
-  line-height: 1.45;
-  letter-spacing: 0;
-}
-.landing-a .brief-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 48px;
-  padding: 0 18px;
-  border: 1px solid color-mix(in oklab, var(--accent) 36%, transparent);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 16px;
-  font-weight: 650;
-  white-space: nowrap;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
-}
-.landing-a .brief-link:hover {
-  background: color-mix(in oklab, var(--accent) 10%, transparent);
-  border-color: color-mix(in oklab, var(--accent) 62%, transparent);
-  transform: translateY(-1px);
-}
 .landing-a .syslinks {
-  margin-top: 28px;
+  margin-top: 24px;
   display: flex;
-  gap: 34px;
+  gap: 26px;
   flex-wrap: wrap;
 }
 .landing-a .syslink {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  font-size: 19px;
+  gap: 8px;
+  font-size: 15px;
   color: var(--subtle);
   border-bottom: 1px dashed var(--hairline);
   padding-bottom: 3px;
@@ -417,57 +360,57 @@ select {
   backdrop-filter: blur(22px) saturate(1.2);
   -webkit-backdrop-filter: blur(22px) saturate(1.2);
   border: 1px solid var(--hairline);
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow:
     0 50px 100px -30px rgba(0, 0, 0, 0.8),
     0 0 0 1px color-mix(in oklab, var(--accent) 5%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
-.landing-a .hp-head { display: flex; align-items: center; gap: 18px; padding: 28px 34px 22px; }
+.landing-a .hp-head { display: flex; align-items: center; gap: 14px; padding: 22px 26px 18px; }
 .landing-a .hp-avatar {
-  width: 58px; height: 58px;
-  border-radius: 15px;
+  width: 46px; height: 46px;
+  border-radius: 12px;
   background: linear-gradient(160deg, var(--accent), color-mix(in oklab, var(--accent) 60%, #0a0a0c));
   color: #0a0a0c;
   display: grid; place-items: center;
-  font-size: 26px; font-weight: 700; letter-spacing: -0.01em;
+  font-size: 21px; font-weight: 700; letter-spacing: 0;
   box-shadow:
     0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent),
     0 0 24px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 .landing-a .hp-id { min-width: 0; flex: 1; }
-.landing-a .hp-id-row { display: flex; align-items: center; gap: 12px; font-size: 21px; }
-.landing-a .hp-sender { font-weight: 700; color: var(--text); letter-spacing: -0.005em; }
+.landing-a .hp-id-row { display: flex; align-items: center; gap: 10px; font-size: 17px; }
+.landing-a .hp-sender { font-weight: 700; color: var(--text); letter-spacing: 0; }
 .landing-a .hp-app {
-  padding: 2px 9px;
+  padding: 2px 7px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.07);
   color: var(--subtle);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 14px; font-weight: 700; letter-spacing: 0.1em;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
 }
-.landing-a .hp-time { color: var(--muted); font-size: 18px; margin-left: auto; }
-.landing-a .hp-channel { margin-top: 3px; font-size: 19px; color: var(--muted); }
+.landing-a .hp-time { color: var(--muted); font-size: 15px; margin-left: auto; }
+.landing-a .hp-channel { margin-top: 3px; font-size: 15px; color: var(--muted); }
 .landing-a .hp-msg {
   display: grid;
-  grid-template-columns: 6px 1fr;
-  margin: 0 34px 28px;
+  grid-template-columns: 5px 1fr;
+  margin: 0 26px 22px;
   background: rgba(0, 0, 0, 0.22);
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
 }
 .landing-a .hp-bar { background: #ff5d5d; box-shadow: 0 0 12px rgba(255, 93, 93, 0.4); }
-.landing-a .hp-body { padding: 28px 30px; }
+.landing-a .hp-body { padding: 22px 24px; }
 .landing-a .hp-status {
-  display: inline-flex; align-items: center; gap: 13px;
-  padding: 8px 17px;
-  border-radius: 9px;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 6px 13px;
+  border-radius: 8px;
   background: color-mix(in oklab, #ff5d5d 14%, transparent);
   border: 1px solid color-mix(in oklab, #ff5d5d 28%, transparent);
 }
 .landing-a .hp-dot {
-  width: 11px; height: 11px;
+  width: 9px; height: 9px;
   border-radius: 50%;
   background: #ff5d5d;
   box-shadow: 0 0 8px rgba(255, 93, 93, 0.7);
@@ -475,54 +418,54 @@ select {
 }
 .landing-a .hp-status-text {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 15px; font-weight: 700; letter-spacing: 0.18em;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #ffb5b5;
 }
 .landing-a .hp-campaign {
-  margin-top: 20px;
-  font-size: 34px; font-weight: 600; letter-spacing: -0.015em;
+  margin-top: 16px;
+  font-size: 27px; font-weight: 600; letter-spacing: 0;
   color: var(--text);
 }
-.landing-a .hp-meta { margin-top: 6px; font-size: 20px; color: var(--subtle); }
+.landing-a .hp-meta { margin-top: 5px; font-size: 16px; color: var(--subtle); }
 .landing-a .hp-summary {
-  margin-top: 26px;
-  font-size: 20px; line-height: 1.5; font-weight: 500;
+  margin-top: 20px;
+  font-size: 16px; line-height: 1.48; font-weight: 500;
   color: var(--text);
 }
-.landing-a .hp-issues { margin-top: 18px; display: flex; flex-direction: column; gap: 15px; }
-.landing-a .hp-issue { display: grid; grid-template-columns: 40px 1fr; gap: 18px; align-items: start; }
+.landing-a .hp-issues { margin-top: 14px; display: flex; flex-direction: column; gap: 12px; }
+.landing-a .hp-issue { display: grid; grid-template-columns: 32px 1fr; gap: 14px; align-items: start; }
 .landing-a .hp-issue-num {
-  width: 36px; height: 36px;
-  border-radius: 9px;
+  width: 30px; height: 30px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--hairline);
   display: grid; place-items: center;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 18px; font-weight: 600;
+  font-size: 14px; font-weight: 600;
   color: var(--subtle);
 }
 .landing-a .hp-issue-body { min-width: 0; }
-.landing-a .hp-issue-text { font-size: 20px; line-height: 1.5; color: var(--text); }
+.landing-a .hp-issue-text { font-size: 16px; line-height: 1.48; color: var(--text); }
 .landing-a .hp-issue-owner {
-  margin-top: 9px;
-  display: inline-flex; align-items: center; gap: 11px;
+  margin-top: 7px;
+  display: inline-flex; align-items: center; gap: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--subtle);
 }
 .landing-a .hp-owner-dot {
-  width: 8px; height: 8px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 5px color-mix(in oklab, var(--accent) 60%, transparent);
 }
-.landing-a .hp-actions { margin-top: 26px; display: flex; gap: 12px; }
+.landing-a .hp-actions { margin-top: 20px; display: flex; gap: 10px; }
 .landing-a .hp-btn {
-  height: 56px;
-  padding: 0 26px;
-  border-radius: 10px;
-  font-size: 19px; font-weight: 600; letter-spacing: -0.005em;
+  height: 46px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-size: 15px; font-weight: 600; letter-spacing: 0;
   border: 1px solid transparent;
   transition: background 0.15s, border-color 0.15s, transform 0.15s;
 }
@@ -537,7 +480,7 @@ select {
 
 @media (min-width: 901px) and (max-height: 780px) {
   .landing-a .frame {
-    padding: 22px 60px;
+    padding: 22px 44px;
   }
 
   .landing-a .topbar {
@@ -545,52 +488,35 @@ select {
   }
 
   .landing-a .grid {
-    grid-template-columns: minmax(0, 1fr) 600px;
-    gap: 64px;
+    grid-template-columns: minmax(0, 1fr) 500px;
+    gap: 56px;
     padding: 14px 0;
   }
 
   .landing-a .display {
     margin-top: 16px;
-    font-size: clamp(88px, 8.5vw, 128px);
+    font-size: clamp(76px, 7.8vw, 112px);
     line-height: 0.9;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.015em;
   }
 
   .landing-a .positioning {
-    margin-top: 22px;
+    margin-top: 20px;
     max-width: 30ch;
-    font-size: 32px;
-    line-height: 1.16;
+    font-size: 24px;
+    line-height: 1.18;
   }
 
   .landing-a .cta-row {
-    margin-top: 28px;
+    margin-top: 24px;
   }
 
   .landing-a .btn {
-    height: 58px;
+    height: 50px;
     gap: 10px;
-    padding: 0 26px;
-    border-radius: 10px;
-    font-size: 17px;
-  }
-
-  .landing-a .brief-entry {
-    margin-top: 20px;
-    gap: 16px;
-    padding: 16px 18px;
-  }
-
-  .landing-a .brief-entry p {
+    padding: 0 22px;
+    border-radius: 9px;
     font-size: 15px;
-    line-height: 1.42;
-  }
-
-  .landing-a .brief-link {
-    min-height: 42px;
-    padding: 0 15px;
-    font-size: 14px;
   }
 
   .landing-a .syslinks {
@@ -599,24 +525,24 @@ select {
   }
 
   .landing-a .syslink {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .landing-a .hp-head {
-    gap: 14px;
-    padding: 18px 24px 14px;
+    gap: 12px;
+    padding: 16px 20px 12px;
   }
 
   .landing-a .hp-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 18px;
   }
 
   .landing-a .hp-id-row {
-    gap: 9px;
-    font-size: 17px;
+    gap: 8px;
+    font-size: 15px;
   }
 
   .landing-a .hp-app {
@@ -633,12 +559,12 @@ select {
   }
 
   .landing-a .hp-msg {
-    margin: 0 24px 20px;
+    margin: 0 20px 18px;
     border-radius: 12px;
   }
 
   .landing-a .hp-body {
-    padding: 20px 22px;
+    padding: 18px 20px;
   }
 
   .landing-a .hp-status {
@@ -658,17 +584,17 @@ select {
   }
 
   .landing-a .hp-campaign {
-    margin-top: 15px;
-    font-size: 26px;
+    margin-top: 14px;
+    font-size: 23px;
   }
 
   .landing-a .hp-meta {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .landing-a .hp-summary {
-    margin-top: 18px;
-    font-size: 16px;
+    margin-top: 16px;
+    font-size: 14px;
     line-height: 1.45;
   }
 
@@ -690,7 +616,7 @@ select {
   }
 
   .landing-a .hp-issue-text {
-    font-size: 15px;
+    font-size: 13px;
     line-height: 1.4;
   }
 
@@ -705,21 +631,19 @@ select {
   }
 
   .landing-a .hp-btn {
-    height: 44px;
-    padding: 0 18px;
+    height: 40px;
+    padding: 0 16px;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 900px) {
-  .landing-a { zoom: 1; }
-  .landing-a .frame { padding: 28px; }
-  .landing-a .grid { grid-template-columns: 1fr; gap: 40px; padding: 28px 0; align-items: start; }
-  .landing-a .display { font-size: clamp(64px, 14vw, 104px); }
-  .landing-a .positioning { font-size: 30px; max-width: none; }
-  .landing-a .brief-entry { grid-template-columns: 1fr; align-items: start; }
-  .landing-a .brief-link { width: 100%; }
+  .landing-a .frame { padding: 24px; }
+  .landing-a .grid { grid-template-columns: 1fr; gap: 32px; padding: 24px 0; align-items: start; }
+  .landing-a .display { font-size: clamp(52px, 12vw, 82px); }
+  .landing-a .positioning { font-size: 24px; max-width: none; }
+  .landing-a .btn { height: 52px; font-size: 16px; }
 }
 
 @media (max-width: 520px) {
@@ -744,15 +668,15 @@ select {
   }
 
   .landing-a .display {
-    margin-top: 28px;
-    font-size: clamp(54px, 17vw, 68px);
+    margin-top: 24px;
+    font-size: clamp(44px, 15vw, 58px);
     line-height: 0.94;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 
   .landing-a .positioning {
-    margin-top: 28px;
-    font-size: 25px;
+    margin-top: 22px;
+    font-size: 20px;
     line-height: 1.22;
     max-width: min(100%, 346px);
     overflow-wrap: anywhere;
@@ -765,15 +689,6 @@ select {
   .landing-a .btn {
     width: 100%;
     justify-content: center;
-  }
-
-  .landing-a .brief-entry {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .landing-a .brief-entry p {
-    overflow-wrap: anywhere;
   }
 
   .landing-a .syslinks {

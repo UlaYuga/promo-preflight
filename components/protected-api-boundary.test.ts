@@ -34,7 +34,8 @@ describe('client UI protected API boundary', () => {
     expect(statusSource).toContain('fetch("/api/health"');
     expect(statusSource).toContain('fetch("/api/ready"');
     expect(statusSource).not.toContain('process.env.PREFLIGHT_API_KEY');
-    expect(evidenceSource).toContain('["207", "evidence.summary.tests"]');
+    expect(evidenceSource).toContain('["210", "evidence.summary.tests"]');
+    expect(evidenceSource).not.toContain('["207", "evidence.summary.tests"]');
     expect(evidenceSource).not.toContain('["164", "evidence.summary.tests"]');
   });
 
@@ -65,13 +66,18 @@ describe('client UI protected API boundary', () => {
         expect.any(String)
       );
       expect(valueAt(dictionary, 'welcome', 'body')).toContain(
+        language === 'en' ? 'before a campaign ships' : 'до запуска'
+      );
+      expect(valueAt(dictionary, 'welcome', 'heroA', 'positioning')).toEqual(
+        language === 'en'
+          ? 'Check a promo campaign before it goes live.'
+          : 'Проверьте промо-кампанию до запуска.'
+      );
+      expect(valueAt(dictionary, 'welcome', 'heroA', 'positioning')).not.toContain(
         language === 'en' ? 'browser demo' : 'браузерное демо'
       );
-      expect(valueAt(dictionary, 'welcome', 'heroA', 'positioning')).toContain(
-        language === 'en' ? 'browser demo' : 'браузерное демо'
-      );
-      expect(valueAt(dictionary, 'welcome', 'systemLinks', 'api')).toContain(
-        language === 'en' ? 'API evidence' : 'защищённого API'
+      expect(valueAt(dictionary, 'welcome', 'systemLinks', 'api')).toEqual(
+        language === 'en' ? 'API contract' : 'API-контракт'
       );
       expect(valueAt(dictionary, 'welcome', 'architectureBody')).toContain(
         'localStorage'

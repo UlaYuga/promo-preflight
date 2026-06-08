@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { NextRequest } from 'next/server';
 import { Client } from 'pg';
 import { POST as postRun } from '../app/api/v1/runs/route';
@@ -9,6 +8,7 @@ import { OutboxWorker } from '../infrastructure/outbox';
 import { PgAuditRepository } from '../infrastructure/persistence/PgAuditRepository';
 import { telegramSubscriber } from '../infrastructure/telegram';
 import type { CampaignBundleInput } from '../schemas';
+import { applyDbMigrations } from './db-smoke-helpers';
 
 type OutboxSummaryRow = {
   total: string;
@@ -58,11 +58,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 async function prepareDb(client: Client): Promise<void> {
-  const sql = await readFile(
-    join(process.cwd(), 'db/migrations/0001_block4_complete_schema.sql'),
-    'utf8'
-  );
-  await client.query(sql);
+  await applyDbMigrations(client);
   await client.query(`
     truncate table
       audit_log,
@@ -147,7 +143,7 @@ async function runSmoke(): Promise<void> {
   try {
     await prepareDb(client);
 
-    const idempotencyKey = `smoke-worker-${Date.now()}`;
+    const idempotencyKey = randomUUID();
     const runRequest = new NextRequest('http://localhost/api/v1/runs', {
       method: 'POST',
       headers: {

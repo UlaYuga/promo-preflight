@@ -892,17 +892,17 @@ export function IntakeForm() {
   return (
     <form
       data-testid="intake-form"
-      className="px-10 py-10 grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]"
+      className="grid gap-6 px-6 py-8 sm:px-8 sm:py-10 lg:px-10 xl:grid-cols-[minmax(0,1fr)_340px]"
       onSubmit={(event) => event.preventDefault()}
     >
       <section className="min-w-0">
         <div className="mb-5">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+              <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
                 {t("intake.eyebrow")}
               </p>
-              <h2 className="display mt-3 text-[32px] tracking-tighter2 text-foreground">
+              <h2 className="display mt-3 text-[36px] leading-[1.08] tracking-normal text-foreground sm:text-[40px]">
                 {t("intake.title")}
               </h2>
               <p className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.55] text-subtle">
@@ -914,7 +914,7 @@ export function IntakeForm() {
                 type="button"
                 onClick={() => setShowExamples(true)}
                 aria-expanded={showExamples}
-                className="shrink-0 hairline border rounded px-4 py-2 text-[12px] font-medium text-subtle hover:text-accent hover:border-accent/40 transition-colors"
+                className="shrink-0 hairline border rounded px-4 py-2 text-[13px] font-medium text-subtle hover:text-accent hover:border-accent/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
               >
                 {t("welcome.testCases")}
               </button>
@@ -927,7 +927,7 @@ export function IntakeForm() {
               type="button"
               onClick={() => setMode("import")}
               className={cn(
-                "rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                "min-h-9 rounded px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
                 mode === "import"
                   ? "bg-background text-foreground border border-white/[0.07]"
                   : "text-subtle hover:text-foreground",
@@ -939,7 +939,7 @@ export function IntakeForm() {
               type="button"
               onClick={() => setMode("manual")}
               className={cn(
-                "rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                "min-h-9 rounded px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
                 mode === "manual"
                   ? "bg-background text-foreground border border-white/[0.07]"
                   : "text-subtle hover:text-foreground",
@@ -997,7 +997,7 @@ export function IntakeForm() {
                     <button
                       type="button"
                       onClick={() => handleLoadExample(example.id)}
-                      className="shrink-0 rounded border border-accent/30 bg-accent/10 px-2.5 py-1.5 text-xs font-medium text-accent transition hover:bg-accent/20"
+                      className="inline-flex min-h-9 shrink-0 items-center rounded border border-accent/30 bg-accent/10 px-2.5 py-1.5 text-sm font-medium text-accent transition hover:bg-accent/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                     >
                       {t("intake.load")}
                     </button>

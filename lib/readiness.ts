@@ -201,7 +201,7 @@ function getLegalRiskOwnerBlockers(
       sourceCheckId: check.checkId,
       severity: issue.severity === "LOW" ? "MEDIUM" : issue.severity,
       ownerRole,
-      requiredAction: `Assign a ${formatOwnerRole(ownerRole)} owner before launch handoff.`,
+      requiredAction: `Assign a ${formatOwnerRole(ownerRole)} owner before the final package.`,
       status: "open",
       dueDate: getDueDate(report.generatedAt, issue.severity)
     });
@@ -369,7 +369,7 @@ function getOwnerNotes(
   }
 
   if (linkedIssueCount > 0) {
-    return "Review linked issues and confirm the launch handoff path.";
+    return "Review linked issues and confirm the final package path.";
   }
 
   if (status === "approved") {
@@ -380,7 +380,7 @@ function getOwnerNotes(
     return "No action generated from the current Risk Report.";
   }
 
-  return "Confirm owner status before launch handoff.";
+  return "Confirm owner status before the final package.";
 }
 
 function getDueDate(generatedAt: string, severity: CheckSeverity) {

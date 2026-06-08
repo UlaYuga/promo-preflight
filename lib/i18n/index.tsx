@@ -92,13 +92,28 @@ export function useI18n() {
   return value;
 }
 
-export function LanguageToggle({ className }: { className?: string }) {
+type LanguageToggleVariant = "solid" | "subtle";
+
+export function LanguageToggle({
+  className,
+  variant = "solid"
+}: {
+  className?: string;
+  variant?: LanguageToggleVariant;
+}) {
   const { language, setLanguage, t } = useI18n();
+  const isSubtle = variant === "subtle";
 
   return (
     <div
-      className={["inline-flex items-center gap-px overflow-hidden rounded-sm border border-edge bg-char text-xs font-semibold text-dim", className].filter(Boolean).join(" ")}
+      className={[
+        isSubtle
+          ? "inline-flex h-9 items-center gap-0.5 rounded-sm border border-white/[0.07] bg-page/60 p-0.5 text-xs font-semibold text-muted"
+          : "inline-flex min-h-9 items-center gap-px overflow-hidden rounded-sm border border-edge bg-char text-xs font-semibold text-dim",
+        className
+      ].filter(Boolean).join(" ")}
       aria-label={t("languageToggle.label")}
+      role="group"
     >
       {languages.map((item) => (
         <button
@@ -106,11 +121,16 @@ export function LanguageToggle({ className }: { className?: string }) {
           type="button"
           onClick={() => setLanguage(item)}
           aria-pressed={language === item}
-          className={
-            language === item
-              ? "bg-accent px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-ink font-semibold"
-              : "px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-dim transition hover:bg-graph hover:text-text"
-          }
+          className={[
+            "min-h-8 rounded-[4px] border border-transparent px-3 py-1 font-mono text-xs font-semibold uppercase tracking-[0.08em] transition-colors focus-ring",
+            isSubtle
+              ? language === item
+                ? "border-accent bg-accent text-ink shadow-[0_0_18px_rgba(197,255,61,0.18)]"
+                : "text-muted hover:bg-surface/55 hover:text-subtle"
+              : language === item
+                ? "bg-accent text-ink"
+                : "text-dim hover:bg-graph hover:text-text"
+          ].join(" ")}
         >
           {t(`languageToggle.${item}` as TranslationKey)}
         </button>

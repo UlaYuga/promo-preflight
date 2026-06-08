@@ -44,6 +44,11 @@ if (!databaseUrl) {
   throw new Error('DATABASE_URL is required for demo:e2e');
 }
 
+const apiKey = process.env.PREFLIGHT_API_KEY;
+if (!apiKey) {
+  throw new Error('PREFLIGHT_API_KEY is required for demo:e2e');
+}
+
 const baseUrl = normalizeBaseUrl(
   process.env.PRELIGHT_BASE_URL ??
     process.env.PREFLIGHT_BASE_URL ??
@@ -62,7 +67,12 @@ function sleep(ms: number): Promise<void> {
 
 async function verifyApiReachable(url: string): Promise<void> {
   const endpoint = `${url}/api/v1/audit?limit=1`;
-  const response = await fetch(endpoint, { signal: AbortSignal.timeout(4_000) });
+  const response = await fetch(endpoint, {
+    headers: {
+      authorization: `Bearer ${apiKey}`,
+    },
+    signal: AbortSignal.timeout(4_000),
+  });
   if (!response.ok) {
     const body = (await response.text()).slice(0, 400);
     throw new Error(`API is not reachable at ${endpoint}: ${response.status} ${body}`);
@@ -122,8 +132,9 @@ async function postRun(url: string, bundle: CampaignBundleInput): Promise<{
   const response = await fetch(`${url}/api/v1/runs`, {
     method: 'POST',
     headers: {
+      authorization: `Bearer ${apiKey}`,
       'content-type': 'application/json',
-      'idempotency-key': `demo-e2e-${Date.now()}-${randomUUID()}`,
+      'idempotency-key': randomUUID(),
     },
     body: JSON.stringify({ campaign: bundle }),
   });

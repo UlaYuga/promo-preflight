@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono, Manrope } from "next/font/google";
 import { I18nProvider } from "@/lib/i18n";
 import { TourContainer } from "@/components/tour-container";
 import "./globals.css";
+
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans"
+});
 
 const interTight = Inter_Tight({
   subsets: ["latin", "cyrillic"],
@@ -46,7 +52,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${interTight.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${manrope.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+    >
       <body>
         <I18nProvider>
           <TourContainer />

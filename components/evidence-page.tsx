@@ -35,7 +35,7 @@ type PathItem = {
 const summaryStats = [
   ["08", "evidence.summary.checks"],
   ["10", "evidence.summary.endpoints"],
-  ["207", "evidence.summary.tests"],
+  ["210", "evidence.summary.tests"],
   ["23", "evidence.summary.rules"]
 ] as const;
 
@@ -74,33 +74,35 @@ export function EvidencePage() {
   const reviewerPath = get<PathItem[]>("evidence.reviewerPath.items") ?? [];
 
   return (
-    <div className="px-10 py-10 space-y-6">
+    <div className="space-y-6 px-6 py-8 sm:px-8 sm:py-10 lg:px-10">
       <header
         data-tour="evidence"
         className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between"
       >
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+          <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
             {t("evidence.eyebrow")}
           </p>
-          <h1 className="display mt-3 text-[32px] tracking-tighter2 text-foreground">
+          <h1 className="display mt-3 text-[36px] leading-[1.08] tracking-normal text-foreground sm:text-[40px]">
             {t("evidence.title")}
           </h1>
           <p className="mt-2 max-w-[68ch] text-[14.5px] leading-[1.55] text-subtle">
             {t("evidence.subtitle")}
           </p>
         </div>
-        <div className="grid grid-cols-4 overflow-hidden rounded border border-white/[0.07] bg-surface/50">
+        <div className="grid grid-cols-2 overflow-hidden rounded border border-white/[0.07] bg-surface/50 sm:grid-cols-4">
           {summaryStats.map(([value, key], index) => (
             <div
               key={key}
               className={cn(
                 "min-w-24 px-4 py-3",
-                index < summaryStats.length - 1 && "border-r border-white/[0.06]"
+                index % 2 === 0 && "border-r border-white/[0.06]",
+                index < 2 && "border-b border-white/[0.06] sm:border-b-0",
+                index < summaryStats.length - 1 && "sm:border-r sm:border-white/[0.06]"
               )}
             >
               <p className="font-mono text-2xl leading-none text-foreground">{value}</p>
-              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
                 {t(key as TranslationKey)}
               </p>
             </div>
@@ -142,19 +144,19 @@ function CapabilityMatrix({ items }: Readonly<{ items: MatrixItem[] }>) {
           {items.map((item) => (
             <li key={item.area} className="space-y-3 px-4 py-4">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
                   {t("evidence.matrix.area")}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">{item.area}</p>
               </div>
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
                   {t("evidence.matrix.visible")}
                 </p>
                 <p className="mt-1 text-sm leading-6 text-subtle">{item.visible}</p>
               </div>
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
                   {t("evidence.matrix.proof")}
                 </p>
                 <p className="mt-1 text-sm leading-6 text-subtle">{item.proof}</p>
@@ -218,7 +220,7 @@ function ReviewerPath({ items }: Readonly<{ items: PathItem[] }>) {
             <div>
               <Link
                 href={item.href}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition hover:text-accent"
+                className="-mx-2 inline-flex min-h-9 items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-semibold text-foreground transition hover:bg-surface hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
               >
                 {item.label}
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -278,7 +280,7 @@ function ArchitectureStory() {
       <div className="grid gap-px bg-white/[0.05] sm:grid-cols-2">
         {steps.map((step, index) => (
           <div key={step} className="bg-surface/70 px-4 py-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+            <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-accent">
               {String(index + 1).padStart(2, "0")}
             </p>
             <p className="mt-2 text-sm leading-6 text-subtle">{step}</p>

@@ -181,8 +181,6 @@ export function RiskReport() {
     issueRows[0] ??
     null;
   const effectiveSelectedIssueId = selectedIssue?.issue.issueId ?? null;
-  const allClear =
-    report.counts.fail === 0 && report.counts.warn === 0 && report.counts.pass > 0;
   const readiness = useMemo(
     () =>
       LaunchReadinessSchema.parse(
@@ -243,24 +241,11 @@ export function RiskReport() {
       <RiskSummaryBar readiness={readiness} report={report} />
       <RiskNextSteps />
 
-      {allClear && (
-        <div className="rounded-lg border border-pass/30 bg-pass/[0.05] p-6 text-center sm:p-8">
-          <CheckCircle2 className="mx-auto h-10 w-10 text-pass" aria-hidden="true" />
-          <h2 className="mt-4 text-[18px] font-semibold text-pass sm:text-[22px]">
-            {t("riskReport.empty.allClear")}
-          </h2>
-          <p className="mt-1 text-[14px] text-pass/70">
-            {t("riskReport.empty.allClearHint")}
-          </p>
-        </div>
-      )}
-
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
-        <IssueTable
+        <IssueActionQueue
           rows={issueRows}
           selectedIssueId={effectiveSelectedIssueId}
           onSelectIssue={setSelectedIssueId}
-          allClear={allClear}
         />
         <IssueDetailPanel row={selectedIssue} />
       </section>
@@ -272,32 +257,32 @@ function RiskNextSteps() {
   const { t } = useI18n();
 
   return (
-    <section className="rounded border border-white/[0.07] bg-surface/60 p-4">
+    <section className="rounded-lg border border-white/[0.07] bg-surface/60 p-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-[64ch]">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          <h3 className="text-base font-semibold text-foreground">
             {t("riskReport.nextStepsTitle")}
-          </p>
-          <p className="mt-2 text-sm leading-6 text-subtle">
+          </h3>
+          <p className="mt-2 text-base leading-7 text-subtle">
             {t("riskReport.nextStepsBody")}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link
             href="/app/readiness"
-            className="inline-flex items-center gap-2 rounded border border-white/[0.07] bg-background px-3 py-2 text-xs font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent"
+            className="inline-flex min-h-10 items-center gap-2 rounded border border-white/[0.07] bg-background px-4 py-2.5 text-sm font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           >
             {t("riskReport.nextStepsReadiness")}
           </Link>
           <Link
             href="/app/handoff"
-            className="inline-flex items-center gap-2 rounded border border-white/[0.07] bg-background px-3 py-2 text-xs font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent"
+            className="inline-flex min-h-10 items-center gap-2 rounded border border-white/[0.07] bg-background px-4 py-2.5 text-sm font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           >
             {t("riskReport.nextStepsHandoff")}
           </Link>
           <Link
             href="/app/campaigns"
-            className="inline-flex items-center gap-2 rounded border border-white/[0.07] bg-background px-3 py-2 text-xs font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent"
+            className="inline-flex min-h-10 items-center gap-2 rounded border border-white/[0.07] bg-background px-4 py-2.5 text-sm font-medium text-foreground/80 transition hover:border-accent/40 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           >
             {t("riskReport.nextStepsCampaigns")}
           </Link>
@@ -314,69 +299,85 @@ function RiskSummaryBar({
   readiness: LaunchReadiness;
   report: RiskReportData;
 }>) {
-  const { t, language } = useI18n();
+  const { language } = useI18n();
   const generatedAt = formatTimestamp(report.generatedAt, language);
+  const statusText = labelFor(CHECK_STATUS_LABELS, report.overallStatus, language);
+  const statusTone =
+    report.overallStatus === "PASS"
+      ? "border-pass/25 bg-pass/10"
+      : report.overallStatus === "WARN"
+        ? "border-warn/25 bg-warn/10"
+        : "border-fail/25 bg-fail/10";
+  const copy = language === "ru"
+    ? {
+        decision: "Решение",
+        counts: "Итог проверок",
+        blockers: "Блокеры",
+        generated: "Сгенерировано"
+      }
+    : {
+        decision: "Decision",
+        counts: "Check Results",
+        blockers: "Blockers",
+        generated: "Generated"
+      };
 
   return (
     <section
       data-tour="risk-summary"
-      className="hairline-b pb-4"
+      className={cn("rounded-lg border p-5 sm:p-6", statusTone)}
     >
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-        {/* Overall status */}
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{t("riskReport.summary.overallStatus")}</p>
+          <p className="text-sm font-medium text-foreground/70">{copy.decision}</p>
           <p className={cn(
-            "mt-1 text-2xl font-bold tracking-tight",
+            "mt-2 text-3xl font-semibold tracking-normal",
             report.overallStatus === "PASS" && "text-pass",
             report.overallStatus === "WARN" && "text-warn",
             report.overallStatus === "FAIL" && "text-fail",
           )}>
-            {labelFor(CHECK_STATUS_LABELS, report.overallStatus, language)}
+            {statusText}
+          </p>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-foreground/70">
+            {readiness.blockers.length > 0
+              ? language === "ru"
+                ? "Начните с действий ниже."
+                : "Start with the blocker actions below."
+              : language === "ru"
+                ? "Критичных блокеров нет."
+                : "No critical blockers remain."}
           </p>
         </div>
 
-        {/* Divider */}
-        <div className="hidden h-8 w-px bg-overlay lg:block" />
-
-        {/* Counts */}
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{t("riskReport.summary.passWarnFail")}</p>
-          <div className="mt-1.5 flex gap-2">
-            <CountBadge label={labelFor(CHECK_STATUS_LABELS, "PASS", language)} count={report.counts.pass} status="PASS" />
-            <CountBadge label={labelFor(CHECK_STATUS_LABELS, "WARN", language)} count={report.counts.warn} status="WARN" />
-            <CountBadge label={labelFor(CHECK_STATUS_LABELS, "FAIL", language)} count={report.counts.fail} status="FAIL" />
-            {report.counts.notApplicable > 0 ? (
-              <CountBadge label={labelFor(CHECK_STATUS_LABELS, "NOT_APPLICABLE", language)} count={report.counts.notApplicable} status="NOT_APPLICABLE" />
-            ) : null}
+        <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[520px]">
+          <div className="rounded border border-white/[0.08] bg-background/70 p-3">
+            <p className="text-sm font-medium text-subtle">{copy.counts}</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <CountBadge label={labelFor(CHECK_STATUS_LABELS, "PASS", language)} count={report.counts.pass} status="PASS" />
+              <CountBadge label={labelFor(CHECK_STATUS_LABELS, "WARN", language)} count={report.counts.warn} status="WARN" />
+              <CountBadge label={labelFor(CHECK_STATUS_LABELS, "FAIL", language)} count={report.counts.fail} status="FAIL" />
+              {report.counts.notApplicable > 0 ? (
+                <CountBadge label={labelFor(CHECK_STATUS_LABELS, "NOT_APPLICABLE", language)} count={report.counts.notApplicable} status="NOT_APPLICABLE" />
+              ) : null}
+            </div>
+          </div>
+          <div className="rounded border border-white/[0.08] bg-background/70 p-3">
+            <p className="text-sm font-medium text-subtle">{copy.blockers}</p>
+            <p className={cn(
+              "mt-1 text-3xl font-semibold",
+              readiness.blockers.length > 0 ? "text-fail" : "text-pass"
+            )}>
+              {readiness.blockers.length}
+            </p>
+          </div>
+          <div className="rounded border border-white/[0.08] bg-background/70 p-3">
+            <p className="text-sm font-medium text-subtle">{copy.generated}</p>
+            <p className="mt-2 text-sm font-medium leading-6 text-foreground/80">{generatedAt}</p>
           </div>
         </div>
-
-        <div className="hidden h-8 w-px bg-overlay lg:block" />
-
-        {/* Blockers */}
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{t("riskReport.summary.criticalBlockers")}</p>
-          <p className={cn(
-            "mt-1 text-2xl font-bold tracking-tight",
-            report.counts.criticalBlockers > 0 ? "text-fail" : "text-pass"
-          )}>
-            {report.counts.criticalBlockers}
-          </p>
-        </div>
-
-        <div className="hidden h-8 w-px bg-overlay lg:block" />
-
-        {/* Generated */}
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{t("riskReport.summary.generated")}</p>
-          <p className="mt-1 text-[13px] font-medium text-subtle">{generatedAt}</p>
-        </div>
-
-        {/* Export pushed to the right */}
-        <div className="ml-auto">
-          <ExportControls readiness={readiness} report={report} />
-        </div>
+      </div>
+      <div className="mt-5 border-t border-white/[0.07] pt-5">
+        <ExportControls readiness={readiness} report={report} />
       </div>
     </section>
   );
@@ -394,7 +395,7 @@ function CountBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-semibold",
+        "inline-flex items-center gap-2 rounded border px-2.5 py-1.5 text-sm font-semibold",
         statusBadgeClass(status)
       )}
     >
@@ -455,10 +456,10 @@ function ExportControls({
 
   return (
     <div data-tour="export-controls">
-      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+      <p className="text-sm font-semibold text-foreground">
         {t("riskReport.export.title")}
       </p>
-      <div className="mt-2 flex items-center gap-1.5">
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         {formatOptions.map((option) => {
           const Icon = option.icon;
           const selected = format === option.format;
@@ -473,13 +474,13 @@ function ExportControls({
                 setCopyStatus("idle");
               }}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 text-[11px] font-medium transition",
+                "inline-flex min-h-11 items-center justify-center gap-2 rounded border px-4 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
                 selected
-                  ? "border-accent/50 bg-accent/10 text-accent"
-                  : "hairline border bg-surface text-subtle hover:border-overlay hover:text-foreground"
+                  ? "border-accent/50 bg-accent/15 text-accent"
+                  : "border-white/[0.07] bg-background text-subtle hover:border-overlay hover:text-foreground"
               )}
             >
-              <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+              <Icon className="h-4 w-4" aria-hidden="true" />
               {option.label}
             </button>
           );
@@ -487,16 +488,16 @@ function ExportControls({
         <button
           type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 rounded-sm hairline border bg-surface px-2.5 py-1.5 text-[11px] font-medium text-subtle transition hover:border-accent/40 hover:text-foreground"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded bg-accent px-4 py-2.5 text-sm font-semibold text-ink transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
-          <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+          <Copy className="h-4 w-4" aria-hidden="true" />
           {t("common.copy")}
         </button>
       </div>
       <p
         aria-live="polite"
         className={cn(
-          "mt-2 min-h-5 text-xs",
+          "mt-3 min-h-5 text-sm",
           copyStatus === "success" && "text-pass",
           copyStatus === "error" && "text-fail",
           copyStatus === "idle" && "text-muted"
@@ -518,13 +519,13 @@ function ExportControls({
       {showManualText ? (
         <div className="mt-3 rounded-sm hairline border bg-surface p-2">
           <div className="mb-2 flex items-center justify-between gap-2">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            <p className="text-sm font-semibold text-foreground">
               {t("riskReport.export.title")}
             </p>
             <button
               type="button"
               onClick={handleSelectExportText}
-              className="inline-flex items-center justify-center rounded-sm hairline border bg-background px-2 py-1 text-[11px] font-medium text-subtle transition hover:border-accent/60 hover:text-foreground"
+              className="inline-flex min-h-9 items-center justify-center rounded-sm hairline border bg-background px-3 py-1.5 text-sm font-medium text-subtle transition hover:border-accent/60 hover:text-foreground"
             >
               {t("common.view")}
             </button>
@@ -542,125 +543,132 @@ function ExportControls({
   );
 }
 
-function IssueTable({
+function IssueActionQueue({
   rows,
   selectedIssueId,
-  onSelectIssue,
-  allClear
+  onSelectIssue
 }: Readonly<{
   rows: IssueRow[];
   selectedIssueId: string | null;
   onSelectIssue: (issueId: string) => void;
-  allClear?: boolean;
 }>) {
   const { t, language } = useI18n();
   return (
     <section data-tour="issue-detail">
       <div className="flex items-center justify-between gap-4 hairline-b pb-3 mb-0">
-        <h3 className="text-[14px] font-semibold text-foreground">
-          {t("riskReport.issueTable.title")}
-        </h3>
+        <div>
+          <h3 className="text-[14px] font-semibold text-foreground">
+            {t("riskReport.issueTable.title")}
+          </h3>
+          <p className="mt-1 text-xs leading-5 text-muted">
+            {language === "ru"
+              ? "Приоритетная очередь: сначала блокеры, затем высокий риск, затем остальные предупреждения."
+              : "Prioritized queue: blockers first, then high risk, then remaining warnings."}
+          </p>
+        </div>
         <span className="rounded-full bg-overlay px-2 py-0.5 font-mono text-[10px] text-subtle">
           {rows.length}
         </span>
       </div>
 
-{rows.length === 0 ? (
+      {rows.length === 0 ? (
         <div className="py-8 text-center">
-          {allClear ? (
-            <>
-              <CheckCircle2 className="mx-auto h-8 w-8 text-pass" aria-hidden="true" />
-              <p className="mt-3 text-[15px] font-semibold text-foreground">
-            {t("riskReport.empty.allClear")}
-              </p>
-              <p className="mt-1 text-[13px] text-subtle">
-                {t("riskReport.empty.allClearHint")}
-              </p>
-            </>
-          ) : (
-            <>
-              <CheckCircle2
-                className="mx-auto h-5 w-5 text-pass"
-                aria-hidden="true"
-              />
-              <p className="mt-3 text-[14px] font-semibold text-foreground">
-                {t("riskReport.empty.noIssueSelected")}
-              </p>
-              <p className="mt-1 text-[12px] text-subtle">
-                {t("riskReport.empty.description")}
-              </p>
-            </>
-          )}
+          <CheckCircle2
+            className="mx-auto h-5 w-5 text-pass"
+            aria-hidden="true"
+          />
+          <p className="mt-3 text-[14px] font-semibold text-foreground">
+            {t("riskReport.empty.noIssueSelected")}
+          </p>
+          <p className="mt-1 text-[12px] text-subtle">
+            {t("riskReport.empty.description")}
+          </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-[620px] w-full border-collapse text-left text-sm">
-            <thead className="bg-background">
-              <tr>
-                <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("riskReport.issueTable.check")}</th>
-                <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("riskReport.issueTable.severity")}</th>
-                <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("riskReport.issueTable.detectedIssue")}</th>
-                <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("riskReport.issueTable.evidence")}</th>
-                <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("riskReport.issueTable.suggestedFix")}</th>
-                <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("riskReport.issueTable.owner")}</th>
-                <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("riskReport.issueTable.blocker")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => {
-                const selected = selectedIssueId === row.issue.issueId;
+        <div className="mt-4 grid gap-3">
+          {rows.map((row) => {
+            const selected = selectedIssueId === row.issue.issueId;
 
-                return (
-                  <tr
-                    key={row.issue.issueId}
-                    className={cn(
-                      "hairline-b align-top transition",
-                      selected ? "bg-accent/10" : "hover:bg-surface/40"
-                    )}
-                  >
-                    <td className="px-5 py-4">
-                      <button
-                        type="button"
-                        onClick={() => onSelectIssue(row.issue.issueId)}
-                        className="text-left font-medium text-accent underline-offset-4 hover:underline"
-                      >
-                        {formatCheckName(row.check, language)}
-                      </button>
-                    </td>
-                    <td className="px-5 py-4">
+            return (
+              <button
+                key={row.issue.issueId}
+                type="button"
+                onClick={() => onSelectIssue(row.issue.issueId)}
+                className={cn(
+                  "w-full rounded border p-4 text-left transition",
+                  selected
+                    ? "border-accent/50 bg-accent/10"
+                    : "border-white/[0.07] bg-surface/60 hover:border-overlay hover:bg-surface"
+                )}
+              >
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
                       <SeverityBadge severity={row.issue.severity} />
-                    </td>
-                    <td className="max-w-[260px] px-5 py-4 text-[13px] text-subtle">
-                      {row.issue.detectedIssue}
-                    </td>
-                    <td className="max-w-[240px] px-5 py-4 text-[12px] text-muted">
-                      {formatEvidence(row.issue)}
-                    </td>
-                    <td className="max-w-[260px] px-5 py-4 text-[13px] text-subtle">
-                      {row.issue.suggestedFix}
-                    </td>
-                    <td className="px-5 py-4 text-[12px] text-subtle">
-                      {formatOwner(row.issue.ownerSuggestion, language)}
-                    </td>
-                    <td className="px-5 py-4">
                       {row.issue.blocker ? (
-                        <span className="rounded-full bg-fail px-2.5 py-1 text-[10px] font-semibold text-white">
-                          {labelFor(CHECK_STATUS_LABELS, "FAIL", language)}
+                        <span className="rounded-sm border border-fail/30 bg-fail/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-fail">
+                          {language === "ru" ? "Блокер" : "Blocker"}
                         </span>
-                      ) : (
-                        <span className="rounded-full hairline border bg-surface px-2.5 py-1 text-[10px] font-semibold text-muted">
-                          {labelFor(CHECK_STATUS_LABELS, "PASS", language)}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      ) : null}
+                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                        {formatCheckName(row.check, language)}
+                      </span>
+                    </div>
+                    <h4 className="mt-3 text-[15px] font-semibold leading-6 text-foreground">
+                      {row.issue.detectedIssue}
+                    </h4>
+                    <p className="mt-2 text-sm leading-6 text-subtle">
+                      {row.issue.suggestedFix}
+                    </p>
+                    <p className="mt-3 rounded-sm border border-white/[0.06] bg-background px-3 py-2 text-xs leading-5 text-muted">
+                      <span className="font-medium text-subtle">
+                        {t("riskReport.issueTable.evidence")}:{" "}
+                      </span>
+                      {formatEvidence(row.issue)}
+                    </p>
+                  </div>
+                  <div className="grid shrink-0 grid-cols-2 gap-2 lg:w-44 lg:grid-cols-1">
+                    <QueueMeta
+                      label={t("riskReport.issueTable.owner")}
+                      value={formatOwner(row.issue.ownerSuggestion, language)}
+                    />
+                    <QueueMeta
+                      label={t("riskReport.issueTable.blocker")}
+                      value={
+                        row.issue.blocker
+                          ? labelFor(CHECK_STATUS_LABELS, "FAIL", language)
+                          : language === "ru"
+                            ? "Не блокирует"
+                            : "Non-blocking"
+                      }
+                    />
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
     </section>
+  );
+}
+
+function QueueMeta({
+  label,
+  value
+}: Readonly<{
+  label: string;
+  value: string;
+}>) {
+  return (
+    <span className="rounded-sm border border-white/[0.07] bg-background px-3 py-2">
+      <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+        {label}
+      </span>
+      <span className="mt-1 block text-xs font-medium text-foreground/80">
+        {value}
+      </span>
+    </span>
   );
 }
 

@@ -105,16 +105,16 @@ export function ApiContractPage() {
   }
 
   return (
-    <div className="px-10 py-10 space-y-6">
+    <div className="space-y-6 px-6 py-8 sm:px-8 sm:py-10 lg:px-10">
       <header
         data-tour="api-contract"
         className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between"
       >
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+          <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
             {t("apiContract.eyebrow")}
           </p>
-          <h1 className="display mt-3 text-[32px] tracking-tighter2 text-foreground">
+          <h1 className="display mt-3 text-[36px] leading-[1.08] tracking-normal text-foreground sm:text-[40px]">
             {t("apiContract.title")}
           </h1>
           <p className="mt-2 max-w-[64ch] text-[14.5px] leading-[1.55] text-subtle">
@@ -214,7 +214,26 @@ export function ApiContractPage() {
             {t("apiContract.endpoints.subtitle")}
           </p>
         </div>
-        <div className="overflow-x-auto">
+        <div className="sm:hidden">
+          <ul className="divide-y divide-white/[0.05]">
+            {endpoints.map((endpoint) => (
+              <li key={`${endpoint.method} ${endpoint.path}`} className="px-4 py-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-xs font-semibold text-accent">
+                    {endpoint.method}
+                  </span>
+                  <span className="font-mono text-sm text-foreground">
+                    {endpoint.path}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm leading-6 text-subtle">
+                  {language === "ru" ? endpoint.noteRu : endpoint.noteEn}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="hidden overflow-x-auto sm:block">
           <table className="w-full text-left text-xs">
             <tbody className="divide-y divide-white/[0.05]">
               {endpoints.map((endpoint) => (

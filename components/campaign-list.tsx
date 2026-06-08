@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpen, ChevronRight, FolderOpen } from "lucide-react";
+import { BookOpen, ChevronRight, FolderOpen, PlayCircle } from "lucide-react";
 import { OwnerOverridePanel } from "@/components/owner-override-panel";
 import {
+  PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT,
   PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT
 } from "@/lib/demo-storage";
 import { useI18n } from "@/lib/i18n";
+import { loadDecisionDemoState } from "@/lib/tour/sample";
 import {
   getCampaign,
   getLatestVersionSummary,
@@ -30,12 +32,17 @@ type CampaignVersionListState = {
   versions: CampaignVersion[];
 };
 
-function readinessLabel(state: CampaignVersion["readinessState"] | null) {
+function readinessLabel(
+  state: CampaignVersion["readinessState"] | null,
+  language: string
+) {
   if (!state) return null;
-  if (state === "READY") return "Ready";
-  if (state === "READY_WITH_WARNINGS") return "Ready w/ warnings";
-  if (state === "BLOCKED") return "Blocked";
-  return "Needs review";
+  const ru = language === "ru";
+
+  if (state === "READY") return ru ? "Готово" : "Ready";
+  if (state === "READY_WITH_WARNINGS") return ru ? "С предупреждениями" : "Ready w/ warnings";
+  if (state === "BLOCKED") return ru ? "Заблокировано" : "Blocked";
+  return ru ? "Нужен review" : "Needs review";
 }
 
 function readinessBadgeClass(state: CampaignVersion["readinessState"] | null) {
@@ -45,9 +52,9 @@ function readinessBadgeClass(state: CampaignVersion["readinessState"] | null) {
   return "border-white/[0.07] bg-surface text-subtle";
 }
 
-function formatDate(iso: string) {
+function formatDate(iso: string, language: string) {
   try {
-    return new Intl.DateTimeFormat("en", {
+    return new Intl.DateTimeFormat(language === "ru" ? "ru" : "en", {
       dateStyle: "medium",
       timeStyle: "short"
     }).format(new Date(iso));
@@ -57,8 +64,9 @@ function formatDate(iso: string) {
 }
 
 export function CampaignList() {
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const [summaries, setSummaries] = useState<CampaignSummary[] | null>(null);
+  const [isLoadingDemo, setIsLoadingDemo] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -78,6 +86,10 @@ export function CampaignList() {
     const timeoutId = window.setTimeout(refreshCampaigns, 0);
     window.addEventListener("storage", refreshCampaigns);
     window.addEventListener(
+      PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT,
+      refreshCampaigns
+    );
+    window.addEventListener(
       PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT,
       refreshCampaigns
     );
@@ -87,11 +99,24 @@ export function CampaignList() {
       window.clearTimeout(timeoutId);
       window.removeEventListener("storage", refreshCampaigns);
       window.removeEventListener(
+        PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT,
+        refreshCampaigns
+      );
+      window.removeEventListener(
         PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT,
         refreshCampaigns
       );
     };
   }, []);
+
+  const loadDemoRun = useCallback(() => {
+    setIsLoadingDemo(true);
+    try {
+      loadDecisionDemoState({ language, state: "ready" });
+    } finally {
+      setIsLoadingDemo(false);
+    }
+  }, [language]);
 
   if (summaries === null) {
     return (
@@ -103,21 +128,40 @@ export function CampaignList() {
 
   if (summaries.length === 0) {
     return (
-      <div className="rounded-sm border border-dashed border-white/[0.07] bg-surface/50 px-6 py-12 text-center">
-        <FolderOpen className="mx-auto h-6 w-6 text-muted/60" aria-hidden="true" />
-        <p className="mt-4 text-sm font-semibold text-foreground/80">
-          {t("campaigns.emptyTitle")}
-        </p>
-        <p className="mt-2 max-w-sm mx-auto text-sm text-subtle">
-          {t("campaigns.emptyDescription")}
-        </p>
-        <Link
-          href="/app/intake?examples=1"
-          className="mt-5 inline-flex items-center gap-2 rounded-sm hairline border border-accent/40 bg-accent/10 px-4 py-2.5 text-sm font-medium text-accent transition hover:bg-accent/20"
-        >
-          <BookOpen className="h-4 w-4" aria-hidden="true" />
-          {t("campaigns.emptyAction")}
-        </Link>
+      <div className="rounded-sm border border-white/[0.07] bg-surface/50 px-4 py-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-start gap-3">
+            <FolderOpen className="mt-0.5 h-5 w-5 shrink-0 text-muted/70" aria-hidden="true" />
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground/80">
+                {t("campaigns.emptyTitle")}
+              </p>
+              <p className="mt-1 text-sm leading-6 text-subtle">
+                {t("campaigns.emptyDescription")}
+              </p>
+            </div>
+          </div>
+          <div className="flex shrink-0 flex-col gap-2 sm:items-end">
+            <button
+              type="button"
+              onClick={loadDemoRun}
+              disabled={isLoadingDemo}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-sm border border-accent/50 bg-accent px-4 py-2.5 text-sm font-semibold text-ink transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-wait disabled:opacity-70"
+            >
+              <PlayCircle className="h-4 w-4" aria-hidden="true" />
+              {isLoadingDemo
+                ? t("campaigns.emptyActionLoading")
+                : t("campaigns.emptyAction")}
+            </button>
+            <Link
+              href="/app/intake?examples=1"
+              className="inline-flex min-h-9 items-center justify-center gap-2 rounded-sm border border-white/[0.07] bg-background px-3 py-2 text-xs font-medium text-subtle transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+            >
+              <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
+              {t("campaigns.emptySecondaryAction")}
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -127,14 +171,68 @@ export function CampaignList() {
       data-tour="campaign-versioning"
       className="overflow-hidden rounded-sm hairline border bg-surface/60"
     >
-      <table className="w-full border-collapse text-left text-sm">
+      <div className="sm:hidden">
+        <ul className="divide-y divide-white/[0.06]">
+          {summaries.map(({ campaign, versionCount, latestReadinessState, latestCreatedAt }) => (
+            <li key={campaign.id} className="px-4 py-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold leading-6 text-foreground">
+                    {campaign.name}
+                  </p>
+                  {campaign.jurisdiction ? (
+                    <p className="mt-0.5 font-mono text-xs text-muted">
+                      {campaign.jurisdiction}
+                    </p>
+                  ) : null}
+                </div>
+                {latestReadinessState ? (
+                  <span
+                    className={cn(
+                      "inline-flex min-h-8 shrink-0 rounded-sm border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]",
+                      readinessBadgeClass(latestReadinessState)
+                    )}
+                  >
+                    {readinessLabel(latestReadinessState, language)}
+                  </span>
+                ) : null}
+              </div>
+              <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
+                    {t("campaigns.columns.versions")}
+                  </dt>
+                  <dd className="mt-1 font-mono text-subtle">{versionCount}</dd>
+                </div>
+                <div>
+                  <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
+                    {t("campaigns.columns.lastRun")}
+                  </dt>
+                  <dd className="mt-1 text-subtle">
+                    {latestCreatedAt ? formatDate(latestCreatedAt, language) : "—"}
+                  </dd>
+                </div>
+              </dl>
+              <Link
+                href={`/app/campaigns/${campaign.id}`}
+                className="mt-4 inline-flex min-h-9 items-center gap-1 rounded-sm border border-accent/25 bg-background px-3 py-2 text-sm font-semibold text-accent transition-colors hover:border-accent/45 hover:text-accent/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+              >
+                {t("common.view")}
+                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <table className="hidden w-full border-collapse text-left text-sm sm:table">
         <thead className="bg-background">
           <tr>
-            <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.columns.campaign")}</th>
-            <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.columns.versions")}</th>
-            <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.columns.latestState")}</th>
-            <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.columns.lastRun")}</th>
-            <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium"></th>
+            <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.columns.campaign")}</th>
+            <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.columns.versions")}</th>
+            <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.columns.latestState")}</th>
+            <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.columns.lastRun")}</th>
+            <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium"></th>
           </tr>
         </thead>
         <tbody>
@@ -143,7 +241,7 @@ export function CampaignList() {
               <td className="px-5 py-4">
                 <p className="text-[14px] font-medium text-foreground tracking-tighter2">{campaign.name}</p>
                 {campaign.jurisdiction ? (
-                  <p className="mt-0.5 text-[11px] text-muted font-mono">{campaign.jurisdiction}</p>
+                  <p className="mt-0.5 text-xs text-muted font-mono">{campaign.jurisdiction}</p>
                 ) : null}
               </td>
               <td className="px-5 py-4 font-mono text-[12px] text-subtle">{versionCount}</td>
@@ -151,23 +249,23 @@ export function CampaignList() {
                 {latestReadinessState ? (
                   <span
                     className={cn(
-                      "inline-flex rounded-sm border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]",
+                      "inline-flex rounded-sm border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]",
                       readinessBadgeClass(latestReadinessState)
                     )}
                   >
-                    {readinessLabel(latestReadinessState)}
+                    {readinessLabel(latestReadinessState, language)}
                   </span>
                 ) : (
                   <span className="text-muted">—</span>
                 )}
               </td>
               <td className="px-5 py-4 text-[12px] text-subtle">
-                {latestCreatedAt ? formatDate(latestCreatedAt) : "—"}
+                {latestCreatedAt ? formatDate(latestCreatedAt, language) : "—"}
               </td>
               <td className="px-5 py-4">
                 <Link
                   href={`/app/campaigns/${campaign.id}`}
-                  className="inline-flex items-center gap-1 text-[11px] text-accent hover:text-accent/80 transition-colors"
+                  className="inline-flex min-h-8 items-center gap-1 rounded-sm px-1 text-xs text-accent hover:text-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                 >
                   {t("common.view")}
                   <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -188,7 +286,7 @@ export function CampaignVersionList({
   campaignId: string;
   workspaceOwners: OwnerOverrides;
 }) {
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const [state, setState] = useState<CampaignVersionListState | null>(null);
 
   const refreshCampaign = useCallback(() => {
@@ -209,6 +307,10 @@ export function CampaignVersionList({
     const timeoutId = window.setTimeout(refreshIfActive, 0);
     window.addEventListener("storage", refreshIfActive);
     window.addEventListener(
+      PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT,
+      refreshIfActive
+    );
+    window.addEventListener(
       PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT,
       refreshIfActive
     );
@@ -217,6 +319,10 @@ export function CampaignVersionList({
       active = false;
       window.clearTimeout(timeoutId);
       window.removeEventListener("storage", refreshIfActive);
+      window.removeEventListener(
+        PROMO_PREFLIGHT_DEMO_DATA_CHANGED_EVENT,
+        refreshIfActive
+      );
       window.removeEventListener(
         PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT,
         refreshIfActive
@@ -237,16 +343,16 @@ export function CampaignVersionList({
   return (
     <div className="space-y-6">
       <header>
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
           {t("campaigns.detailEyebrow")}
         </p>
         <h2 className="display mt-3 text-[32px] tracking-tighter2 text-foreground">{state.campaign.name}</h2>
         {state.campaign.jurisdiction ? (
           <p className="mt-1 text-[13px] text-subtle">{state.campaign.jurisdiction}</p>
         ) : null}
-        <p className="mt-1 font-mono text-[10px] text-muted">
+        <p className="mt-1 font-mono text-xs text-muted">
           {t("campaigns.created", {
-            date: formatDate(state.campaign.createdAt),
+            date: formatDate(state.campaign.createdAt, language),
             count: state.versions.length,
             versionWord:
               state.versions.length === 1
@@ -271,14 +377,51 @@ export function CampaignVersionList({
             {t("campaigns.versionsSubtitle")}
           </p>
         </div>
-        <table className="w-full border-collapse text-left text-sm">
+        <div className="sm:hidden">
+          <ul className="divide-y divide-white/[0.06]">
+            {[...state.versions].reverse().map((version) => (
+              <li key={version.id} className="px-4 py-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-sm font-semibold text-foreground">
+                      v{version.n}
+                    </p>
+                    <p className="mt-1 text-sm text-subtle">
+                      {formatDate(version.createdAt, language)}
+                    </p>
+                  </div>
+                  <span
+                    className={cn(
+                      "inline-flex min-h-8 shrink-0 rounded-sm border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]",
+                      readinessBadgeClass(version.readinessState)
+                    )}
+                  >
+                    {readinessLabel(version.readinessState, language)}
+                  </span>
+                </div>
+                <p className="mt-3 font-mono text-xs text-subtle">
+                  {t("campaigns.blockers")}: {version.blockers.length}
+                </p>
+                <Link
+                  href={`/app/campaigns/${campaignId}/versions/${version.n}`}
+                  className="mt-4 inline-flex min-h-9 items-center gap-1 rounded-sm border border-accent/25 bg-background px-3 py-2 text-sm font-semibold text-accent transition-colors hover:border-accent/45 hover:text-accent/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                >
+                  {version.n > 1 ? t("common.viewDiff") : t("common.view")}
+                  <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <table className="hidden w-full border-collapse text-left text-sm sm:table">
           <thead className="bg-background">
             <tr>
-              <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.version")}</th>
-              <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.readinessState")}</th>
-              <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.blockers")}</th>
-              <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium">{t("campaigns.createdColumn")}</th>
-              <th className="px-5 py-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted font-medium"></th>
+              <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.version")}</th>
+              <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.readinessState")}</th>
+              <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.blockers")}</th>
+              <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium">{t("campaigns.createdColumn")}</th>
+              <th className="px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted font-medium"></th>
             </tr>
           </thead>
           <tbody>
@@ -288,23 +431,23 @@ export function CampaignVersionList({
                 <td className="px-5 py-4">
                   <span
                     className={cn(
-                      "inline-flex rounded-sm border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em]",
+                      "inline-flex rounded-sm border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]",
                       readinessBadgeClass(version.readinessState)
                     )}
                   >
-                    {readinessLabel(version.readinessState)}
+                    {readinessLabel(version.readinessState, language)}
                   </span>
                 </td>
                 <td className="px-5 py-4 font-mono text-[12px] text-subtle">
                   {version.blockers.length}
                 </td>
                 <td className="px-5 py-4 text-[12px] text-subtle">
-                  {formatDate(version.createdAt)}
+                  {formatDate(version.createdAt, language)}
                 </td>
                 <td className="px-5 py-4">
                   <Link
                     href={`/app/campaigns/${campaignId}/versions/${version.n}`}
-                    className="inline-flex items-center gap-1 text-[11px] text-accent hover:text-accent/80 transition-colors"
+                    className="inline-flex min-h-8 items-center gap-1 rounded-sm px-1 text-xs text-accent hover:text-accent/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                   >
                     {version.n > 1 ? t("common.viewDiff") : t("common.view")}
                     <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />

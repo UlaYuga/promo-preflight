@@ -252,17 +252,6 @@ export function WelcomeScreen() {
                 </Link>
               </div>
 
-              <div className="brief-entry" data-tour="brief-import-entry">
-                <div className="brief-copy">
-                  <span className="brief-kicker">{t("briefImport.eyebrow" as TranslationKey)}</span>
-                  <p>{t("welcome.body")}</p>
-                </div>
-                <Link href="/app/intake" className="brief-link">
-                  {t("briefImport.title" as TranslationKey)}
-                  <ArrowIcon />
-                </Link>
-              </div>
-
               <div className="syslinks">
                 {SYSTEM_LINKS.map((l) => (
                   <Link key={l.href} href={l.href} className="syslink">

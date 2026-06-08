@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { NextRequest } from 'next/server';
 import { Client } from 'pg';
 import { POST as postRun } from '../app/api/v1/runs/route';
@@ -8,6 +7,7 @@ import { getDb } from '../infrastructure/db/client';
 import { PgAuditRepository } from '../infrastructure/persistence/PgAuditRepository';
 import { PreflightEventSchema } from '../domain/event/PreflightEvent';
 import type { CampaignBundleInput } from '../schemas';
+import { applyDbMigrations } from './db-smoke-helpers';
 
 type OutboxRow = {
   payload: unknown;
@@ -59,11 +59,7 @@ function assert(condition: unknown, message: string): asserts condition {
 }
 
 async function prepareDb(client: Client): Promise<void> {
-  const sql = await readFile(
-    join(process.cwd(), 'db/migrations/0001_block4_complete_schema.sql'),
-    'utf8'
-  );
-  await client.query(sql);
+  await applyDbMigrations(client);
   await client.query(`
     truncate table
       audit_log,
@@ -84,7 +80,7 @@ async function runSmoke(): Promise<void> {
   try {
     await prepareDb(client);
 
-    const idempotencyKey = `smoke-audit-${Date.now()}`;
+    const idempotencyKey = randomUUID();
     const runRequest = new NextRequest('http://localhost/api/v1/runs', {
       method: 'POST',
       headers: {

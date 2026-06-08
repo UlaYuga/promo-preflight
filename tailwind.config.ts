@@ -44,9 +44,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
-          "var(--font-inter-tight)",
-          "Inter Tight",
-          "Inter",
+          "var(--font-sans)",
+          "Manrope",
+          "Onest",
+          "Golos Text",
+          "IBM Plex Sans",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
@@ -55,8 +57,9 @@ const config: Config = {
           "sans-serif",
         ],
         display: [
-          "var(--font-inter-tight)",
-          "Inter Tight",
+          "var(--font-sans)",
+          "Manrope",
+          "Onest",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",
@@ -71,8 +74,8 @@ const config: Config = {
         ],
       },
       letterSpacing: {
-        tightest: "-0.045em",
-        tighter2: "-0.028em",
+        tightest: "-0.012em",
+        tighter2: "-0.01em",
       },
     }
   },

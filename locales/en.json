@@ -53,8 +53,8 @@
     "intakeDescription": "Inputs and materials",
     "riskReport": "Risk Report",
     "riskReportDescription": "Stages and issues",
-    "handoff": "Handoff",
-    "handoffDescription": "Summary for launch",
+    "handoff": "Final package",
+    "handoffDescription": "Slack update and actions",
     "readiness": "Launch Readiness",
     "readinessDescription": "Owners and blockers",
     "rules": "Rules",
@@ -74,8 +74,8 @@
   "welcome": {
     "eyebrow": "Start here · guided tour",
     "headline": "Promo Preflight",
-    "positioning": "Deterministic pre-launch review for synthetic promo scenarios",
-    "body": "Interactive browser demo for synthetic campaign bundles: AI Import structures a pasted brief for human confirmation, then deterministic checks create the report. A protected REST API persistence contract is available separately for integrations.",
+    "positioning": "Pre-launch review for promo campaigns",
+    "body": "Promo Preflight helps teams spot blockers, missing owners, and handoff gaps before a campaign ships.",
     "openIntake": "Open campaign bundle",
     "testCases": "Start with Sample Case",
     "ctaHint": "Open Campaign bundle and select Import from brief to try the AI review flow, then inspect the separate protected backend path.",
@@ -87,9 +87,9 @@
     "architectureTitle": "Two deliberate paths",
     "architectureBody": "The browser demo can extract candidate fields from a synthetic text brief, then runs deterministic checks and stores structured draft and report state in localStorage. Separately, authenticated /api/v1/* clients create persisted Postgres runs with audit and outbox records.",
     "systemLinks": {
-      "status": "Open System Status",
-      "api": "Protected API evidence",
-      "evidence": "Open Evidence",
+      "status": "Status",
+      "api": "API contract",
+      "evidence": "Evidence",
       "docs": "Read API docs",
       "github": "GitHub + CI"
     },
@@ -142,7 +142,7 @@
       "tests": "tests"
     },
     "heroA": {
-      "positioning": "Interactive browser demo: AI-assisted import, deterministic synthetic promo checks",
+      "positioning": "Check a promo campaign before it goes live.",
       "ctaPrimary": "Start guided tour",
       "ctaSecondary": "Sample case"
     },
@@ -407,9 +407,9 @@
     "savedReportInvalid": "The saved report cannot be shown because its data is invalid.",
     "useFallback": "Use sample report",
     "nextStepsTitle": "Next steps",
-    "nextStepsBody": "Save this review run from the top-right, then continue to Launch Readiness, prepare the handoff update, or open Campaigns to review version history and diffs.",
+    "nextStepsBody": "Save this review run from the top-right, then continue to Launch Readiness, prepare the final package, or open Campaigns to review version history and diffs.",
     "nextStepsReadiness": "Open Launch Readiness",
-    "nextStepsHandoff": "Prepare Handoff",
+    "nextStepsHandoff": "Prepare final package",
     "nextStepsCampaigns": "Open Campaigns",
     "summary": {
       "overallStatus": "Overall status",
@@ -453,8 +453,8 @@
       "ownerToAssign": "Owner",
       "notSpecified": "Not specified",
       "whyBlocker": "This is a blocker because the campaign should not move to launch readiness until the assigned owner resolves it or accepts the risk.",
-      "whyHighSeverity": "This needs owner review because it may affect approval, handoff clarity, or post-launch handling.",
-      "whyDefault": "Clean this up before handoff so launch owners have clear, traceable actions."
+      "whyHighSeverity": "This needs owner review because it may affect approval, final package clarity, or post-launch handling.",
+      "whyDefault": "Clean this up before the final package so launch owners have clear, traceable actions."
     },
     "empty": {
       "noIssueSelected": "No issue selected",
@@ -482,7 +482,7 @@
     "stateDescriptions": {
       "ready": "The linked Risk Report has no FAIL or WARN checks.",
       "readyWithWarnings": "The linked Risk Report has no FAIL checks, but review dependencies remain.",
-      "blocked": "One or more critical or high-severity blockers must be resolved before launch handoff.",
+      "blocked": "One or more critical or high-severity blockers must be resolved before the final package.",
       "needsReview": "Uncertainty or low confidence on a core check requires manual review before go/no-go."
     },
     "metrics": {
@@ -526,10 +526,10 @@
     },
     "ownerNotes": {
       "resolveBlockers": "Resolve linked blockers before go/no-go review.",
-      "reviewIssues": "Review linked issues and confirm the launch handoff path.",
+      "reviewIssues": "Review linked issues and confirm the final package path.",
       "noAction": "No linked readiness action.",
       "noActionGenerated": "No action generated from the current Risk Report.",
-      "confirmStatus": "Confirm owner status before launch handoff."
+      "confirmStatus": "Confirm owner status before the final package."
     }
   },
   "rules": {
@@ -587,8 +587,8 @@
     "pageEyebrow": "Versioning",
     "pageTitle": "Campaigns",
     "emptyTitle": "No campaigns saved yet",
-    "emptyDescription": "Saved review runs appear here with version history. Start with a sample case, run the check, and save the result from the Risk Report.",
-    "emptyAction": "Open Sample Cases",
+    "emptyDescription": "Load the demo review run to see blocked, warning, and ready versions in one campaign.",
+    "emptyAction": "Load demo review run",
     "goToIntake": "Open campaign bundle",
     "columns": {
       "campaign": "Campaign",
@@ -605,7 +605,9 @@
     "blockers": "Blockers",
     "createdColumn": "Created",
     "versionSingular": "version",
-    "versionPlural": "versions"
+    "versionPlural": "versions",
+    "emptyActionLoading": "Loading demo",
+    "emptySecondaryAction": "Open sample cases"
   },
   "versionDiff": {
     "eyebrow": "Version details",
@@ -630,12 +632,12 @@
     }
   },
   "handoff": {
-    "eyebrow": "04 / Handoff",
-    "title": "Prepare launch handoff",
-    "subtitle": "Generate a Slack-ready internal ops update so launch owners can act without reopening the full workspace.",
+    "eyebrow": "04 / Final package",
+    "title": "Final launch package",
+    "subtitle": "Generate the Slack update, decision, and action list so launch owners can act without reopening the full workspace.",
     "savedReport": "Saved report",
-    "offlineSample": "Sample handoff",
-    "preview": "Slack preview",
+    "offlineSample": "Sample package",
+    "preview": "Slack message",
     "channel": "Channel",
     "mentionLevel": "Mention level",
     "mentionOwners": "Owners only",
@@ -649,8 +651,8 @@
     "copyBtn": "Copy to clipboard",
     "exportBtn": "Export as Markdown",
     "compareBtn": "Compare versions",
-    "emptyTitle": "No report to hand off",
-    "emptySubtitle": "Run a sample case or campaign check first, then save the run to prepare a handoff update.",
+    "emptyTitle": "No report for the final package",
+    "emptySubtitle": "Run a sample case or campaign check first, then save the review run to prepare the final package.",
     "goToIntake": "Open Sample Case",
     "copied": "Copied",
     "botName": "Preflight Bot",
@@ -678,7 +680,7 @@
     "savedMessage": "Saved as version {version}. View it at {path}",
     "viewVersionDetail": "View version details",
     "openCampaigns": "Open Campaigns",
-    "openHandoff": "Open Handoff"
+    "openHandoff": "Open final package"
   },
   "systemStatus": {
     "eyebrow": "08 / System status",

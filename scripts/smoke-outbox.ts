@@ -1,9 +1,9 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { NextRequest } from 'next/server';
 import { Client } from 'pg';
 import { POST } from '../app/api/v1/runs/route';
 import type { CampaignBundleInput } from '../schemas';
+import { applyDbMigrations } from './db-smoke-helpers';
 
 type OutboxRow = {
   event_type: string;
@@ -45,11 +45,7 @@ function assert(condition: unknown, message: string): asserts condition {
 }
 
 async function prepareDb(client: Client): Promise<void> {
-  const sql = await readFile(
-    join(process.cwd(), 'db/migrations/0001_block4_complete_schema.sql'),
-    'utf8'
-  );
-  await client.query(sql);
+  await applyDbMigrations(client);
   await client.query(`
     truncate table
       outbox,
@@ -69,7 +65,7 @@ async function runSmoke(): Promise<void> {
   try {
     await prepareDb(client);
 
-    const idempotencyKey = `smoke-outbox-${Date.now()}`;
+    const idempotencyKey = randomUUID();
     const req = new NextRequest('http://localhost/api/v1/runs', {
       method: 'POST',
       headers: {
