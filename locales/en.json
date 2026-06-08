@@ -83,7 +83,7 @@
     "workflowSubtitle": "Browser demo first; authenticated API records separately",
     "safetyNote": "Portfolio demo workspace · synthetic data · browser-local drafts.",
     "strip": "8 checks · 23 rules · 6 owners · EN/RU",
-    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 218 tests · Apache 2.0",
+    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 210 tests · Apache 2.0",
     "architectureTitle": "Two deliberate paths",
     "architectureBody": "The browser demo can extract candidate fields from a synthetic text brief, then runs deterministic checks and stores structured draft and report state in localStorage. Separately, authenticated /api/v1/* clients create persisted Postgres runs with audit and outbox records.",
     "systemLinks": {
@@ -759,7 +759,7 @@
       "title": "Quality gates",
       "subtitle": "Checks that keep the portfolio build honest",
       "items": [
-        "218 Vitest tests across 40 files",
+        "210 Vitest tests across 39 files",
         "TypeScript strict mode",
         "ESLint and Next.js production build",
         "Schema, DB, rules, owners, and i18n checks in CI",
@@ -834,7 +834,7 @@
         {
           "area": "Risk engine",
           "visible": "Risk Report with blockers, warnings, owners, evidence, and export controls.",
-          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples, and 218 tests."
+          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples, and 210 tests."
         },
         {
           "area": "Browser demo state",
@@ -953,7 +953,7 @@
     "footer": {
       "move": "Move",
       "open": "Open",
-      "stats": "23 rules · 8 checks · 11 endpoints · 218 tests · 10 screens"
+      "stats": "23 rules · 8 checks · 11 endpoints · 210 tests · 10 screens"
     },
     "noMatches": "No results"
   },

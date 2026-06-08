@@ -37,8 +37,8 @@ describe('command palette supported behavior', () => {
     expect(ru.actions).toEqual({ openIntake: 'Открыть пакет кампании' });
     expect(en.placeholder).toBe('Search or jump');
     expect(ru.placeholder).toBe('Найти или перейти');
-    expect(en.footer.stats).toContain('218 tests');
-    expect(ru.footer.stats).toContain('218 тестов');
+    expect(en.footer.stats).toContain('210 tests');
+    expect(ru.footer.stats).toContain('210 тестов');
   });
 
   it('uses the defined footer translations', () => {
