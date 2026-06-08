@@ -8,4 +8,5 @@ This directory contains the architectural decisions made for Promo Preflight.
 | [ADR-0002](0002-cqrs-lite-bus.md) | CQRS-lite with a tiny in-process bus | Accepted |
 | [ADR-0003](0003-deterministic-first-ai-second.md) | Deterministic checks run first; AI is augmentation only | Accepted |
 | [ADR-0004](0004-outbox-pattern-for-events.md) | Outbox pattern for at-least-once event delivery | Accepted |
-| [ADR-0005](0005-ai-augmentation-roadmap.md) | AI augmentation roadmap (planned, deferred from v1) | Proposed |
+| [ADR-0005](0005-ai-augmentation-roadmap.md) | AI augmentation roadmap (planned, deferred from v1) | Partially superseded by ADR-0006 |
+| [ADR-0006](0006-ai-brief-import-demo.md) | AI Brief Import for the browser demo | Accepted |

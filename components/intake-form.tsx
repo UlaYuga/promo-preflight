@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   X
 } from "lucide-react";
+import { BriefImportPanel } from "@/components/brief-import-panel";
 import { runChecks } from "@/lib/checks/runner";
 import {
   PROMO_PREFLIGHT_DEMO_DATA_CLEARED_EVENT,
@@ -26,6 +27,7 @@ import type {
   TargetJurisdiction
 } from "@/schemas";
 import { CampaignBundleSchema } from "@/schemas";
+import type { CampaignExtractionCandidate } from "@/schemas/brief-extraction";
 
 type DraftMetadata = Omit<
   CampaignBundleInput["metadata"],
@@ -66,6 +68,7 @@ type IntakeDraft = {
   termsText: string;
   notes: string;
   targetJurisdiction: TargetJurisdiction[];
+  paymentMethods: string[];
   updatedAt?: string;
 };
 
@@ -259,7 +262,8 @@ function createDefaultDraft(): IntakeDraft {
     })),
     termsText: "",
     notes: "",
-    targetJurisdiction: []
+    targetJurisdiction: [],
+    paymentMethods: []
   };
 }
 
@@ -303,7 +307,10 @@ function parseStoredDraft(raw: string): IntakeDraft | null {
         ? (parsed.targetJurisdiction.filter((j) =>
             targetJurisdictionOptions.includes(j as TargetJurisdiction)
           ) as TargetJurisdiction[])
-        : fallback.targetJurisdiction
+        : fallback.targetJurisdiction,
+      paymentMethods: Array.isArray(parsed.paymentMethods)
+        ? parsed.paymentMethods.filter((item): item is string => typeof item === "string")
+        : fallback.paymentMethods
     };
   } catch {
     return null;
@@ -384,7 +391,8 @@ function bundleToIntakeDraft(bundle: CampaignBundleInput): IntakeDraft {
     owners: normalizeOwners(bundle.owners),
     termsText: bundle.termsText ?? "",
     notes: "",
-    targetJurisdiction: (bundle.targetJurisdiction ?? []) as TargetJurisdiction[]
+    targetJurisdiction: (bundle.targetJurisdiction ?? []) as TargetJurisdiction[],
+    paymentMethods: bundle.paymentMethods ?? []
   };
 }
 
@@ -423,7 +431,40 @@ function buildBundle(draft: IntakeDraft): CampaignBundleInput {
     links: draft.links.filter((l) => l.url.trim()),
     owners: draft.owners.filter((o) => o.name?.trim() || o.status !== "pending"),
     notes: draft.notes || undefined,
-    targetJurisdiction: draft.targetJurisdiction.length > 0 ? draft.targetJurisdiction : undefined
+    targetJurisdiction: draft.targetJurisdiction.length > 0 ? draft.targetJurisdiction : undefined,
+    paymentMethods: draft.paymentMethods.length > 0 ? draft.paymentMethods : undefined
+  };
+}
+
+function mergeExtractionIntoDraft(
+  current: IntakeDraft,
+  candidate: CampaignExtractionCandidate
+): IntakeDraft {
+  return {
+    ...current,
+    metadata: { ...current.metadata, ...candidate.metadata },
+    offer: { ...current.offer, ...candidate.offer },
+    assets:
+      candidate.assets.length > 0
+        ? candidate.assets.map((asset) => ({
+            ...asset,
+            fieldName: normalizeAssetFieldName(asset.channel, asset.fieldName)
+          }))
+        : current.assets,
+    links:
+      candidate.links.length > 0
+        ? candidate.links.map((link) => ({
+            ...link,
+            label: LINK_LABEL_MAP[link.label] ?? link.label
+          }))
+        : current.links,
+    owners:
+      candidate.owners.length > 0 ? normalizeOwners(candidate.owners) : current.owners,
+    termsText: candidate.termsText ?? current.termsText,
+    notes: candidate.notes ?? current.notes,
+    targetJurisdiction:
+      candidate.targetJurisdiction ?? current.targetJurisdiction,
+    paymentMethods: candidate.paymentMethods ?? current.paymentMethods
   };
 }
 
@@ -491,6 +532,7 @@ export function IntakeForm() {
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [showExamples, setShowExamples] = useState(false);
+  const [entryMode, setEntryMode] = useState<"manual" | "brief">("manual");
 
   useEffect(() => {
     if (window.location.search.includes("examples=1")) {
@@ -709,13 +751,13 @@ export function IntakeForm() {
     });
   }
 
-  function handleRunPreflight() {
-    if (!readyToRun) {
+  function executeChecks(nextDraft: IntakeDraft) {
+    if (getMinimumRequirements(nextDraft).some((requirement) => !requirement.ready)) {
       return;
     }
 
     try {
-      const rawBundle = buildBundle(draft);
+      const rawBundle = buildBundle(nextDraft);
       const bundle = CampaignBundleSchema.parse(rawBundle);
       const report = runChecks({
         bundle,
@@ -725,7 +767,7 @@ export function IntakeForm() {
       });
       window.localStorage.setItem(
         PROMO_PREFLIGHT_REPORT_KEY,
-        JSON.stringify({ report, owners: draft.owners })
+        JSON.stringify({ report, owners: nextDraft.owners })
       );
       window.location.href = "/app/risk-report";
     } catch (err) {
@@ -733,6 +775,32 @@ export function IntakeForm() {
         err instanceof Error ? err.message : t("intake.unknownRunError");
       setStatusMessage(`Error: ${message}`);
     }
+  }
+
+  function handleRunPreflight() {
+    executeChecks(draft);
+  }
+
+  function handleConfirmExtraction(candidate: CampaignExtractionCandidate) {
+    const nextDraft = mergeExtractionIntoDraft(createDefaultDraft(), candidate);
+    const hasMissingFields = getMinimumRequirements(nextDraft).some(
+      (requirement) => !requirement.ready
+    );
+
+    setDraft(nextDraft);
+    setDirty(true);
+    setHasSavedDraft(true);
+    window.localStorage.setItem(
+      PROMO_PREFLIGHT_DRAFT_KEY,
+      JSON.stringify({ ...nextDraft, updatedAt: new Date().toISOString() })
+    );
+
+    if (hasMissingFields) {
+      setStatusMessage(t("intake.briefImport.fillMissing"));
+      return;
+    }
+
+    executeChecks(nextDraft);
   }
 
   function handleLoadExample(exampleId: string) {
@@ -829,7 +897,34 @@ export function IntakeForm() {
               </p>
             </div>
           ) : null}
+
+          <div
+            role="group"
+            aria-label={t("intake.briefImport.startMode")}
+            className="mt-4 inline-flex rounded border border-white/[0.07] bg-surface/60 p-1"
+          >
+            {(["manual", "brief"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={entryMode === mode}
+                onClick={() => setEntryMode(mode)}
+                className={cn(
+                  "rounded px-3 py-2 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
+                  entryMode === mode
+                    ? "bg-accent/15 text-accent"
+                    : "text-muted hover:text-foreground"
+                )}
+              >
+                {t(`intake.briefImport.mode.${mode}` as TranslationKey)}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {entryMode === "brief" ? (
+          <BriefImportPanel onConfirm={handleConfirmExtraction} />
+        ) : null}
 
         <div className="space-y-4">
           <Section title={t("intake.sections.metadata")} tourId="intake-sample">
@@ -1050,6 +1145,20 @@ export function IntakeForm() {
                 label={t("intake.fields.cooldown")}
                 value={draft.offer.cooldown}
                 onChange={(value) => updateOffer("cooldown", value)}
+              />
+              <TextInput
+                label={t("intake.fields.paymentMethods")}
+                value={draft.paymentMethods.join(", ")}
+                placeholder={t("intake.placeholders.paymentMethods")}
+                onChange={(value) =>
+                  updateDraft((current) => ({
+                    ...current,
+                    paymentMethods: value
+                      .split(",")
+                      .map((method) => method.trim())
+                      .filter(Boolean)
+                  }))
+                }
               />
               <TextArea
                 label={t("intake.fields.eligibleGames")}

@@ -13,7 +13,7 @@
 
 | Variable | Default | Description |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | — | Enables AI augmentation features. Without it, AI calls fall back to deterministic-only mode. |
+| `ANTHROPIC_API_KEY` | — | Enables live free-text AI brief extraction when `USE_MOCK_AI=false`; the default demo uses a labeled synthetic sample extraction. |
 | `USE_MOCK_AI` | `false` | Set `true` to short-circuit the Anthropic provider with deterministic stubs. Useful in CI and local dev without a key. |
 | `HTTP_PORT` | `3000` | Port the Next.js server listens on. |
 | `LOG_LEVEL` | `info` | Log verbosity: `debug` / `info` / `warn` / `error`. |

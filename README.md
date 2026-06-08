@@ -30,10 +30,10 @@ Promo Preflight runs 8 deterministic preflight checks against a campaign bundle,
 
 Promo Preflight exposes two deliberate surfaces:
 
-- **Interactive browser demo** — a guided workflow over synthetic sample data. Drafts, reports, campaign versions, and tour state remain in that browser's `localStorage`; the demo does not claim durable server persistence.
+- **Interactive browser demo** — a guided workflow over synthetic sample data. An AI Import mode turns a pasted synthetic brief into candidate fields for human confirmation, then the existing deterministic checks produce the report. Structured drafts, reports, campaign versions, and tour state remain in that browser's `localStorage`; raw imported text is not stored by the demo endpoint.
 - **Protected REST API persistence contract** — `/api/v1/*` accepts authenticated integration requests, persists API runs and policy provenance to Postgres, and supports audit/outbox records.
 
-The browser demo never sends `PREFLIGHT_API_KEY` and does not submit an authenticated API run. Use an authenticated API client or the documented `curl` path to exercise the persisted backend contract.
+The browser demo never sends `PREFLIGHT_API_KEY` and does not submit an authenticated API run. `POST /api/brief-extraction` is a separate non-persisted, rate-limited demo helper: it uses a disclosed synthetic mock by default or optional live AI when configured. Use an authenticated API client or the documented `curl` path to exercise the persisted backend contract.
 
 Runtime policy provenance is part of the persisted API contract. `POST /api/v1/runs`, idempotency replay, `GET /api/v1/runs/:id`, and `GET /api/v1/campaigns/:id/versions` include `policyRuleVersions` for `paymentCompatibility`, `cryptoDisclosure`, and `jurisdictionalRisk`. These values come from `rules/payment-methods-by-region.yaml`, `rules/crypto-disclosure-rules.yaml`, and `rules/forbidden-phrases-by-region.yaml`; changing one of those runtime artifacts must bump its top-level `version`. `rules/rules.yaml` remains documentation/catalog metadata for the 8 core offline checks, not the runtime source for these 3 API policy artifacts.
 
@@ -222,24 +222,28 @@ Full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 - No multi-tenant (org-scoped data) — out of scope for this sprint; can be added without changing core
 - No gRPC — REST + webhooks fit the consumer model (CRM/Promo Ops teams)
-- No live LLM in default checks path — checks must be deterministic and reproducible; AI is an optional augmentation only (see ADR-0003 + ADR-0005 for the planned augmentation roadmap)
+- No live LLM in default checks path — checks must be deterministic and reproducible; AI extraction only prepares candidate input for human confirmation (see ADR-0003 and ADR-0006)
 - No end-user accounts or browser sign-in — the browser workflow remains a credential-free demo, while every `/api/v1/*` endpoint requires bearer authentication
 - No microservices — one process: in production the outbox worker boots inside the Next server via `instrumentation.node.ts`; a standalone `bin/preflight-worker.ts` entrypoint exists for local docker-compose and tests
 - No opaque policy score — verdicts are GO / WARN / BLOCK based on configured rule severity, not AI inference
 
-## AI augmentation roadmap
+## AI augmentation status
 
-Preflight ships a deterministic-first preflight engine. AI is the planned augmentation layer on top, never the decision-maker.
+Preflight ships a deterministic-first preflight engine. AI is an augmentation layer on top, never the decision-maker.
 
-Five augmentations are scoped for v1.x:
+One bounded portfolio-demo augmentation now ships:
 
-- **PDF / text extraction** — drop a T&C PDF or a free-text campaign brief; AI extracts a structured `CampaignBundle`; the deterministic checks run as normal.
+- **Text brief extraction** — in the browser demo, paste a synthetic free-text campaign brief, inspect extracted candidate fields, evidence snippets and missing information, then confirm the candidate before deterministic checks run. The default mock works only with the supplied sample and is labeled as synthetic; configured live AI supports free-form text.
+
+The remaining augmentations are planned:
+
+- **PDF extraction** — extract candidate fields from a T&C document after file handling and evaluation safeguards are designed.
 - **Fix suggestion per blocker** — for each `BLOCK`, AI generates 3 locale-aware replacement copy variants that preserve marketing intent.
 - **Cultural localization review** — suggests candidate text mismatches for human review where regex rules are insufficient.
 - **Plain-language explanation per blocker** — explains why an artifact matched and which rule label produced the finding.
 - **Policy-artifact Q&A** — retrieves answers grounded in versioned rule artifacts for responsible-owner review.
 
-See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for full reasoning. None of these ship in v1.0; the deterministic kernel does. AI lands incrementally in v1.x.
+See [ADR-0005](./docs/adr/0005-ai-augmentation-roadmap.md) for the original roadmap and [ADR-0006](./docs/adr/0006-ai-brief-import-demo.md) for the shipped text-import boundary.
 
 ## Contributing / License / Author
 

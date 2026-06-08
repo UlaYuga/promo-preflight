@@ -87,10 +87,10 @@ describe('client UI protected API boundary', () => {
         language === 'en' ? 'same underlying state' : 'одно underlying state'
       );
       expect(JSON.stringify(dictionary)).toContain(
-        language === 'en' ? '207 tests' : '207 тестов'
+        language === 'en' ? '218 tests' : '218 тестов'
       );
       expect(JSON.stringify(dictionary)).toContain(
-        language === 'en' ? '37 files' : '37 файлах'
+        language === 'en' ? '40 files' : '40 файлах'
       );
     }
   );

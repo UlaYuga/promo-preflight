@@ -52,7 +52,7 @@ api/
 
 ## Data flow
 
-Full lifecycle of an authenticated `POST /api/v1/runs` integration request. The browser demo is a separate synthetic `localStorage` workflow; it does not call this protected route or carry `PREFLIGHT_API_KEY`.
+Full lifecycle of an authenticated `POST /api/v1/runs` integration request. The browser demo is a separate synthetic `localStorage` workflow; it does not call this protected route or carry `PREFLIGHT_API_KEY`. Its optional `POST /api/brief-extraction` helper returns non-persisted candidate fields for human confirmation before local deterministic checks.
 
 ```mermaid
 sequenceDiagram

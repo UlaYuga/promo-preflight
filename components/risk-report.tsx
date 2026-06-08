@@ -12,6 +12,7 @@ import {
   MessageSquareText
 } from "lucide-react";
 import { SaveCampaignPanel } from "@/components/save-campaign-panel";
+import { LoadingState } from "@/components/ui-states";
 import {
   LaunchReadinessSchema,
   OwnerSchema,
@@ -82,6 +83,7 @@ export function RiskReport() {
   const [source, setSource] = useState<ReportSource>("offline");
   const [savedReportError, setSavedReportError] = useState<string | null>(null);
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const loadSavedReport = () => {
@@ -92,6 +94,7 @@ export function RiskReport() {
         setOwners(getStoredDraftOwners() ?? localizedFallbackOwners);
         setSource("offline");
         setSavedReportError(null);
+        setHydrated(true);
         return;
       }
 
@@ -118,6 +121,8 @@ export function RiskReport() {
           t("riskReport.savedReportInvalid")
         );
       }
+
+      setHydrated(true);
     };
 
     loadSavedReport();
@@ -193,6 +198,14 @@ export function RiskReport() {
     setOwners(localizedFallbackOwners);
     setSource("offline");
     setSavedReportError(null);
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="px-10 py-10">
+        <LoadingState label={t("common.loading")} />
+      </div>
+    );
   }
 
   return (
