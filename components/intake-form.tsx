@@ -513,13 +513,15 @@ export function IntakeForm() {
   );
 
   useEffect(() => {
-    if (searchParams?.get("examples") === "1") {
-      setShowExamples(true);
-      setMode("manual");
-    } else {
-      setShowExamples(false);
-      setMode("import");
-    }
+    const showExamples = searchParams?.get("examples") === "1";
+    const timeoutId = window.setTimeout(() => {
+      setShowExamples(showExamples);
+      setMode(showExamples ? "manual" : "import");
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [searchParams]);
 
   useEffect(() => {

@@ -1,16 +1,17 @@
 # Codex Handoff Report — Current Product State
 
-**Date:** 2026-05-18
-**Branch:** main
+**Date:** 2026-05-27
+**Branch:** `codex/ai-brief-import`
 **Production:** <https://promo-preflight-production.up.railway.app/>
-**Status:** Live on Railway. Browser-local synthetic demo plus a separate authenticated REST API with Postgres persistence and outbox→audit evidence. Portfolio-grade, single-tenant.
+**Status:** Existing main deployment is live on Railway. This branch adds the browser-local AI Brief Import flow; it becomes visible in production only after merge and deploy. The authenticated REST API with Postgres persistence and outbox-to-audit evidence remains separate.
 
 ## What Is Implemented
 
 ### Product surface
 
 - Next.js 16 App Router workspace with welcome page, EN/RU UI, Driver.js desktop tour (8 steps).
-- Campaign intake form with metadata, offer basics, assets, links, terms, owners, worked examples, validation, browser draft persistence, double-click guard on Save (T-065).
+- Campaign intake form with metadata, offer basics, assets, links, terms, owners, worked examples, validation, browser draft persistence, double-click guard on Save (T-065), and AI Brief Import review mode.
+- AI Brief Import browser-demo flow: `POST /api/brief-extraction` turns the supplied synthetic text sample (or free-form text with configured live AI) into incomplete-safe candidate fields, evidence snippets and confirmation gaps. Raw text is not persisted; confirmed fields proceed to the existing offline deterministic report.
 - Offline deterministic check runner — 8 check modules against 23 versioned YAML rules. Same input → same verdict.
 - Risk Report screen with saved / sample state badge, issue table, evidence, owner suggestions, Markdown / Slack / clipboard export.
 - Launch Readiness screen with Go / No-Go, owner matrix, blockers, dependencies, checklist.
@@ -22,6 +23,8 @@
 ### REST API (`docs/API.md`)
 
 Versioned under `/api/v1/`. This is an authenticated integration surface separate from the localStorage-backed browser demo; all versioned endpoints require `Authorization: Bearer <PREFLIGHT_API_KEY>`. Single canonical request shape; response shapes documented to match implementation (T-059).
+
+`POST /api/brief-extraction` is deliberately outside `/api/v1/*`: it is a rate-limited, non-persisted browser-demo helper and does not create an API run, audit entry or outbox record.
 
 - `POST /api/v1/runs` — runs all enabled checks, persists, returns `{runId, campaignId, campaignVersion, verdict, status, counts, blockers, createdAt, completedAt, policyRuleVersions}`. Requires `Idempotency-Key` header. Same key + same body → same persisted response snapshot; same key + different body → `409 IDEMPOTENCY_CONFLICT`.
 - `GET /api/v1/runs/:id` — same shape as POST, including persisted `policyRuleVersions`. Non-UUID id → 404.
@@ -52,14 +55,14 @@ Versioned under `/api/v1/`. This is an authenticated integration surface separat
 ### CI
 
 - GitHub Actions `.github/workflows/ci.yml` on Node 22 with a Postgres 16 service.
-- Quality gates per PR: typecheck, lint, schema check, db migrate, db check, vitest (202 tests / 35 files), rules check, owners check, i18n parity, versioning check, AI check, checks regression smoke. Docker build runs in a separate job.
+- Quality gates per PR: typecheck, lint, schema check, db migrate, db check, vitest (210 tests / 39 files, including 4 database-dependent skips without Postgres), rules check, owners check, i18n parity, versioning check, AI check, checks regression smoke. Docker build runs in a separate job.
 - Action versions kept current: `actions/checkout@v5`, `actions/setup-node@v5`, `docker/setup-buildx-action@v4` (T-068).
 
 ## What Is Not Implemented
 
 - No end-user auth/accounts, billing, SaaS onboarding, or payments. The protected `/api/v1/*` integration surface does enforce bearer authentication.
 - No durable campaign persistence in the running **UI**; saved reports, campaigns, owner overrides, and tour state use `localStorage`. The REST API persists to Postgres separately — these are two different stores by design.
-- No live LLM call in the default check path; Anthropic provider wiring exists for the planned augmentation roadmap (ADR-0005).
+- No live LLM call in the default check path; optional live AI only extracts a reviewable candidate brief before deterministic checks. The default demo uses the labeled synthetic mock (ADR-0006).
 - No raw campaign / T&C storage by default (`STORE_RAW_INPUT=false`).
 - No player-facing gambling journey, operator logos, affiliate funnel, or casino visual positioning.
 
@@ -69,7 +72,7 @@ Versioned under `/api/v1/`. This is an authenticated integration surface separat
 - API contract: `docs/API.md` (matches implementation as of T-059).
 - Architecture overview: `docs/ARCHITECTURE.md`.
 - Case study: `docs/CASE-STUDY.md`.
-- ADRs: `docs/adr/` (0001–0005). ADR-0004 documents the outbox pattern and the at-least-once → idempotent-sink contract (T-063).
+- ADRs: `docs/adr/` (0001–0006). ADR-0004 documents the outbox pattern and the at-least-once → idempotent-sink contract (T-063); ADR-0006 records the AI Brief Import boundary.
 - Production URL and app metadata: `app/layout.tsx`.
 - Commands and package metadata: `package.json`.
 - Rules artifact: `rules/rules.yaml` (23 rules).
@@ -91,7 +94,7 @@ Recommended:
 Optional:
 
 - `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` — enables the Telegram notifier; both unset is a clean no-op.
-- `ANTHROPIC_API_KEY` + `ANTHROPIC_MODEL_*` — reserved for the AI augmentation roadmap; not used in the default check path.
+- `ANTHROPIC_API_KEY` + `ANTHROPIC_MODEL_FAST` — enable live free-text Brief Import when `USE_MOCK_AI=false`; never used in the deterministic check path.
 
 See `.env.example` for the full list with comments.
 

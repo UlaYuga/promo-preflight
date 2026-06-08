@@ -75,17 +75,17 @@
     "eyebrow": "Start here · guided tour",
     "headline": "Promo Preflight",
     "positioning": "Deterministic pre-launch review for synthetic promo scenarios",
-    "body": "Interactive browser demo for synthetic campaign bundles, with draft and report state stored locally. A protected REST API persistence contract is available separately for integrations.",
+    "body": "Interactive browser demo for synthetic campaign bundles: AI Import structures a pasted brief for human confirmation, then deterministic checks create the report. A protected REST API persistence contract is available separately for integrations.",
     "openIntake": "Open campaign bundle",
     "testCases": "Start with Sample Case",
-    "ctaHint": "Use a sample case to follow the browser demo, then open System Status and API Contract to inspect the separate persisted backend path.",
+    "ctaHint": "Open Campaign bundle and select Import from brief to try the AI review flow, then inspect the separate protected backend path.",
     "workflowTitle": "Workflow at a glance",
     "workflowSubtitle": "Browser demo first; authenticated API records separately",
     "safetyNote": "Portfolio demo workspace · synthetic data · browser-local drafts.",
     "strip": "8 checks · 23 rules · 6 owners · EN/RU",
-    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 207 tests · Apache 2.0",
+    "proofStrip": "REST API v1 · Idempotent runs · Postgres · Transactional outbox · Audit log · Telegram alerts · CI · 210 tests · Apache 2.0",
     "architectureTitle": "Two deliberate paths",
-    "architectureBody": "The browser demo runs checks over synthetic data and stores draft and report state in localStorage. Separately, authenticated /api/v1/* clients create persisted Postgres runs with audit and outbox records.",
+    "architectureBody": "The browser demo can extract candidate fields from a synthetic text brief, then runs deterministic checks and stores structured draft and report state in localStorage. Separately, authenticated /api/v1/* clients create persisted Postgres runs with audit and outbox records.",
     "systemLinks": {
       "status": "Open System Status",
       "api": "Protected API evidence",
@@ -95,12 +95,12 @@
     },
     "workflowPreview": [
       {
-        "label": "Try a synthetic bundle",
-        "description": "Start the interactive browser demo from sample promo, CRM, terms, links, owners, and GEO data"
+        "label": "Import a synthetic brief",
+        "description": "Paste a messy campaign note and review AI-extracted candidate fields, evidence snippets, and missing facts"
       },
       {
-        "label": "Run browser-demo checks",
-        "description": "The local workflow validates the bundle and runs 8 deterministic checks without an API credential"
+        "label": "Confirm before checks",
+        "description": "A person confirms the structured candidate before the local workflow runs 8 deterministic checks without an API credential"
       },
       {
         "label": "Review blockers locally",
@@ -142,7 +142,7 @@
       "tests": "tests"
     },
     "heroA": {
-      "positioning": "Interactive browser demo for synthetic promo checks",
+      "positioning": "Interactive browser demo: AI-assisted import, deterministic synthetic promo checks",
       "ctaPrimary": "Start guided tour",
       "ctaSecondary": "Sample case"
     },
@@ -273,6 +273,61 @@
     "runningChecks": "Running checks",
     "runPreflightMissing": "Fill in the required fields before running the check.",
     "unknownRunError": "Something went wrong while running the check.",
+    "briefImport": {
+      "startMode": "Start mode",
+      "mode": {
+        "manual": "Fill manually",
+        "brief": "Import from brief"
+      },
+      "eyebrow": "AI import / human review",
+      "title": "Paste a messy campaign brief",
+      "promise": "AI extracts candidate fields. Versioned rules determine the verdict. Review and confirm before running checks.",
+      "loadSample": "Load sample brief",
+      "rawBrief": "Raw brief or draft T&C",
+      "placeholder": "Paste campaign notes, channel copy, offer mechanics, terms fragments, links, and approval status…",
+      "rawNotStored": "Raw input is not stored; live mode sends it to the configured model provider.",
+      "extract": "Extract candidate fields",
+      "extracting": "Extracting…",
+      "shortBrief": "Paste at least 20 characters before extraction.",
+      "mockOnly": "Mock mode extracts the supplied sample brief only. Load the sample or configure live AI.",
+      "extractionFailed": "AI extraction could not be completed. Retry or use the sample brief.",
+      "invalidResponse": "The extracted candidate did not match the review contract.",
+      "emptyTitle": "Extraction review appears here",
+      "emptyDescription": "Load the synthetic sample for a reliable demo, or paste a brief when live AI is configured.",
+      "reviewTitle": "Confirm extraction",
+      "reviewHelp": "Check source evidence and unresolved fields. Confirmation replaces the current draft before deterministic checks.",
+      "mockBadge": "Synthetic mock",
+      "liveBadge": "Live AI",
+      "extracted": "Extracted",
+      "needsConfirmation": "Needs confirmation",
+      "notProvided": "Not provided",
+      "confirmAndRun": "Confirm and run deterministic checks",
+      "fillMissing": "Candidate fields were added to the draft. Confirm the remaining required fields before running checks.",
+      "confidence": {
+        "high": "High confidence",
+        "medium": "Medium confidence",
+        "low": "Low confidence"
+      },
+      "fieldLabels": {
+        "market": "Market / jurisdiction",
+        "localeCurrency": "Locale and currency",
+        "offerMechanics": "Offer mechanics",
+        "emailCopy": "Email copy",
+        "paymentMethods": "Payment methods",
+        "legalApproval": "Legal approval",
+        "launchDate": "Launch date",
+        "maxCashout": "Maximum cashout"
+      },
+      "mockValues": {
+        "offerMechanics": "100% up to R$500; min deposit R$50",
+        "emailCopy": "Email body captured"
+      },
+      "mockReasons": {
+        "legalApproval": "The brief says legal review is pending; an approver must confirm status.",
+        "launchDate": "No calendar date is supplied in the brief.",
+        "maxCashout": "No maximum cashout term is supplied in the brief."
+      }
+    },
     "sections": {
       "metadata": "Campaign metadata",
       "offer": "Offer basics",
@@ -299,6 +354,7 @@
       "maxCashout": "Max cashout",
       "maxBet": "Max bet",
       "cooldown": "Cooldown",
+      "paymentMethods": "Payment methods",
       "eligibleGames": "Eligible games",
       "contribution": "Contribution",
       "eligibilityRules": "Eligibility rules",
@@ -314,6 +370,7 @@
       "selectLocale": "Select locale",
       "selectCurrency": "Select currency",
       "currency": "EUR",
+      "paymentMethods": "Pix, Visa, USDT",
       "ownerName": "Name or team",
       "maxJurisdictions": "Up to 3 jurisdictions"
     },
@@ -702,7 +759,7 @@
       "title": "Quality gates",
       "subtitle": "Checks that keep the portfolio build honest",
       "items": [
-        "207 Vitest tests across 37 files",
+        "210 Vitest tests across 39 files",
         "TypeScript strict mode",
         "ESLint and Next.js production build",
         "Schema, DB, rules, owners, and i18n checks in CI",
@@ -777,7 +834,7 @@
         {
           "area": "Risk engine",
           "visible": "Risk Report with blockers, warnings, owners, evidence, and export controls.",
-          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples, and 207 tests."
+          "proof": "8 offline checks, 23 rules, rules.yaml validation, regression examples, and 210 tests."
         },
         {
           "area": "Browser demo state",
@@ -896,7 +953,7 @@
     "footer": {
       "move": "Move",
       "open": "Open",
-      "stats": "23 rules · 8 checks · 10 endpoints · 207 tests · 10 screens"
+      "stats": "23 rules · 8 checks · 11 endpoints · 210 tests · 10 screens"
     },
     "noMatches": "No results"
   },
